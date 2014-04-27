@@ -1,0 +1,46 @@
+<div id="temp" class="container">
+  <!-- Modal Window -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="myModalLabel">Next person in line:</h4>
+        </div>
+        <div class="modal-body">
+          <h5>Name: {{ queue[0].displayName }}</h5>
+          <p>
+          ID: {{ queue[0].id }}
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" data-ng-click="dequeueNext()">Dequeue</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>ID</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-ng-repeat="person in queue">
+        <td>{{ $index + 1 }}</td>
+        <td>{{ person.displayName }}</td>
+        <td>{{ person.id }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div id="temp" class="container">
+    <p>
+      <button class="btn btn-primary" data-toggle="modal" data-target="#myModal">Dequeue Next</button>
+    </p>
+  </div>
+</div>

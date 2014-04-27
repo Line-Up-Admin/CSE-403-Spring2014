@@ -1,0 +1,24 @@
+<div id="temp" class="container">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>ID</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-ng-repeat="person in queue">
+        <td>{{ $index + 1 }}</td>
+        <td>{{ person.id == user.id ? person.displayName : "Person " + ($index + 1) }}</td>
+        <td>{{ person.id }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div id="temp" class="container">
+    <p>
+      <button type="button" class="btn btn-primary" data-ng-click="joinQueue()">Join Queue</button>
+    </p>
+  </div>
+</div>
