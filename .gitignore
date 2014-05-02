@@ -1,1 +1,8 @@
+*.pyc
+*.pyo
+
+app.db
+search.db
 .DS_Store
+
+flask
