@@ -9,7 +9,6 @@ page.open('file:///var/www/lineup/tests/angular_tests/SpecRunner.html', function
   results = page.evaluate(function() {
     element = document.getElementsByClassName('bar');
     return element[0].textContent;
-    }
   });
 
   console.log("Angular Tests: " + results);
