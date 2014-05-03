@@ -1,3 +1,9 @@
+""" 
+The purpose of this file is to contain a number of Queue classes.
+These classes will be used by the flask framework to handle the
+actual data structures involved. 
+"""
+
 # deque is Python's double ended queue implementation.
 # append adds to the right, and popleft removes from the left.
 # (similar methods are pop and appendleft if we wanted the queue to go
@@ -16,18 +22,27 @@ class Queue(object):
       return len(self.my_q)
 
    def add(self, member):
+      """ Adds a Queue Member to a Queue """
       self.my_q.append(member)
 
    def remove(self, member):
+      """ Removes a Queue Member from a Queue """
       self.my_q.remove(member)
 
    def postpone(self, member):
+      """ Postpones a Queue Member's position in a Queue.
+         If a user attempt to postpone past the end of the line,
+         the user is placed at the end of the line."""
       return "Not yet implemented"
 
    def getWaitTime(self, member):
+      """ Returns the estimated wait time of a user in a Queue, using
+      intelligent heuristics based on their current position and 
+      previous line information. """
       return "Not yet implemented"
 
    def deq(self):
+      """ Dequeues the next QueueMember from the Queue. """
       if len(self.my_q) > 0:
          return self.my_q.popleft()
       else:
@@ -35,6 +50,8 @@ class Queue(object):
 
 
    def getPosition(self, member):
+      """ Returns the current position in the queue of the Queue member
+         being asked about. """
       return "Not yet implemented"
 
 
@@ -47,6 +64,8 @@ class QueueMember(object):
          self.ID = ID
 
       def __eq__(self, other):
+         """ Queue Members are defined to be equal only if they
+            have the same ID. """
          if other == None:
             return False
          else:
@@ -55,7 +74,9 @@ class QueueMember(object):
 
 class QueueServer(object):
    """ This is a Queue Server object, which is responsible
-   for keeping track of all the queues in the system. """
+   for keeping track of all the queues in the system. 
+   The table field is a table of the Queues in the system, 
+   and index is a reverse index """
    table = {}
    index = {}
 
@@ -63,10 +84,9 @@ class QueueServer(object):
       if q_ID in self.table:
          # raise an exception here?
          return False
-      self.table
+      self.table[q_ID] = member
+      return True
 
-
-      return "Not yet implemented"
    def remove(self, member, q_ID):
       return "Not yet implemented"
    def dequeue(self, member):
@@ -82,7 +102,7 @@ class QueueServer(object):
 
 
 class QueueSettings(object):
-   """ This class stores all the settings that an administrator
+   """ This class is used to store all the settings that an administrator
       might want to set regarding a queue. """
    def __init__(self, max_size, keywords, name, employees, 
          admins, blockedUsers, location):
