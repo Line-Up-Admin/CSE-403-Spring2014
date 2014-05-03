@@ -1,4 +1,4 @@
 var page = require('webpage').create();
-page.open('angular_tests/SpecRunner.html', function() {
+page.open('SpecRunner.html', function() {
   phantom.exit();
 });
