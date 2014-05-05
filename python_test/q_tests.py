@@ -22,7 +22,6 @@ class SomeTest(unittest.TestCase):
 
    def test_everything(self):
       """ Add 2 people to a queue, and remove them both. """
-      print "Helllo"
       qq = self.q
       m1 = self.mem1
       m2 = self.mem2
