@@ -7,8 +7,7 @@ QueueMemeber.
 import os
 import unittest
 import sys
-from q_classes import Queue
-from q_classes import QueueMember
+from q_classes import *
 
 
 class SomeTest(unittest.TestCase):
@@ -22,17 +21,23 @@ class SomeTest(unittest.TestCase):
       pass
 
    def test_everything(self):
+      """ Add 2 people to a queue, and remove them both. """
+      print "Helllo"
       qq = self.q
-      m = self.mem1
-      qq.add(m)
+      m1 = self.mem1
+      m2 = self.mem2
+      qq.add(m1)
       assert len(qq) == 1
-      qq.add(self.mem2)
+      qq.add(m2)
       assert len(qq) == 2
-      m2 = qq.deq()
-      print m2 != None
-      assert m2 != None
-      assert m2.username == "bob"
-      assert m2.ID == 123
+      first_off = qq.dequeue()
+      assert first_off != None
+      assert first_off.username == "bob"
+      assert first_off.ID == 123
+      second_off = qq.dequeue()
+      assert second_off != None
+      assert second_off.username == "carol"
+      assert second_off.ID == 125
  
 
 if __name__ == '__main__':
