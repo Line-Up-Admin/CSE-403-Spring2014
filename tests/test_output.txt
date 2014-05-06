@@ -1,0 +1,14 @@
+F.
+======================================================================
+FAIL: test_Fail (__main__.TestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "flask_tests/test.py", line 22, in test_Fail
+    assert 'Goodbye, World!' in rv.data
+AssertionError
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.025s
+
+FAILED (failures=1)
+Angular Tests: 6 specs, 1 failure
