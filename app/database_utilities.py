@@ -155,3 +155,4 @@ def get_queue_settings(qid):
     DatabaseException: the queue doesn't exist.
     PermissionException: the current session user does not have permission to view this queue.
   """
+  raise NotImplementedError()
