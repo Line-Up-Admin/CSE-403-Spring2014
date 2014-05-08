@@ -4,8 +4,7 @@
 
 import os
 from sqlite3 import dbapi2 as sqlite3
-from flask import Flask, request, session, g, redirect, url_for, abort, \
-  render_template, flash
+from flask import Flask, request, session, g, redirect, url_for, abort
 app = Flask(__name__, static_url_path='')
 
 database_file = os.path.join(app.root_path, 'app.db')
@@ -21,10 +20,9 @@ def get_db():
   """Opens a new database connection if there is none yet for the
   current application context.
   """
-  with app.app_context():
-    if not hasattr(g, 'sqlite_db'):
-      g.sqlite_db = connect_db()
-    return g.sqlite_db
+  if not hasattr(g, 'sqlite_db'):
+    g.sqlite_db = connect_db()
+  return g.sqlite_db
 
 def init_db():
   """Initializes the database."""
