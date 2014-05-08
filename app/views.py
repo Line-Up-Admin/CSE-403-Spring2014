@@ -4,8 +4,8 @@ from flask import Flask, request, session, g, redirect, url_for, abort, render_t
 
 app = Flask(__name__)
 app.config.from_object(__name__)
-server = new QueueServer()
-module = new UserModule()
+server = QueueServer()
+module = UserModule()
 
 # This procedure picks up the default route and returns index.html.
 @app.route('/')
