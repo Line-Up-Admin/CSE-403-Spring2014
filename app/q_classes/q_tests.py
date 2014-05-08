@@ -13,18 +13,16 @@ from q_classes import *
 class SomeTest(unittest.TestCase):
 
    def setUp(self):
-      self.q = Queue(114)
-      self.mem1 = QueueMember("bob", 123)
-      self.mem2 = QueueMember("carol", 125)
+      pass
 
    def tearDown(self):
       pass
 
-   def test_everything(self):
+   def test_add_remove(self):
       """ Add 2 people to a queue, and remove them both. """
-      qq = self.q
-      m1 = self.mem1
-      m2 = self.mem2
+      qq = Queue(112)
+      m1 = QueueMember("bob", 123)
+      m2 = QueueMember("carol", 125)
       qq.add(m1)
       assert len(qq) == 1
       qq.add(m2)
@@ -38,6 +36,9 @@ class SomeTest(unittest.TestCase):
       assert second_off.username == "carol"
       assert second_off.ID == 125
  
+   def test_postpone(self):
+      """Test postponing in the queue """
+      qq = Queue(33)
 
 if __name__ == '__main__':
    unittest.main()
