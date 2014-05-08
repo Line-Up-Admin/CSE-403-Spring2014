@@ -25,13 +25,13 @@ class MockDatabase(object):
       (And other things?) """
    def __init__(self):
       pass
-   add_to_q(self, user_ID, q_ID):
+   def add_to_q(self, user_ID, q_ID):
       pass
-   create_q(self, q_settings):
+   def create_q(self, q_settings):
       pass
-   get_permissions(self, user_ID, q_ID):
+   def get_permissions(self, user_ID, q_ID):
       pass
-   create_user(self, user):
+   def create_user(self, user):
       pass
 
 

@@ -1,7 +1,8 @@
 # This is the file that contains all the route handlers.
 from app import app
 from flask import Flask, request, session, g, redirect, url_for, abort, render_template, flash
-
+from q_classes import QueueServer
+from user_module import UserModule
 app = Flask(__name__)
 app.config.from_object(__name__)
 server = QueueServer()
@@ -16,7 +17,7 @@ def root():
 def add_to_queue():
     userID = request.form['userID']
     queueID = request.form['queueID']
-    queue result = server.add(userID, queueID)
+    queue_result = server.add(userID, queueID)
     #return JSON version of queue
 
 @app.route('/login', methods=['GET','POST'])
@@ -27,7 +28,9 @@ def login():
         result = module.login(username, password)
         # EVAN: is result the userID?
     else:
-        # THOMAS: so I shouldn't redirect to static login page? what if method is GET?
+        # THOMAS: so I shouldn't redirect to static login page? 
+        #what if method is GET?
+        pass
 
 @app.route('/dequeue', methods=['POST'])
 def dequeue():
