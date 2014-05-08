@@ -20,6 +20,13 @@ class PermissionException(Exception):
 class ValidationException(Exception):
   pass
 
+def row_to_dict(row):
+  keys = row.keys()
+  dictionary = dict()
+  for key in keys:
+    dictionary[key]=row[key]
+  return dictionary
+
 #############################################
 # User related utilities.
 #############################################
