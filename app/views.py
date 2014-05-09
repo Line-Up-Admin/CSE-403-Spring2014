@@ -149,9 +149,9 @@ def create_temp_user_debug():
    user['id'] = None
    try:
       user['id'] = db_util.create_user(user)
-         return jsonify(user)
-      except sqlite3.Error as e:
-         return e.message
+      return jsonify(user)
+   except sqlite3.Error as e:
+      return e.message
 
 
 def copy_request_args(origRequest):
