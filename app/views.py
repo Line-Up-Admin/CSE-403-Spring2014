@@ -2,7 +2,6 @@
 from app import app
 import database_utilities as db_util
 import sqlite3
-import user_module
 from flask import request, session, g, redirect, url_for, abort, jsonify
 
 from q_classes import QueueServer
@@ -135,7 +134,7 @@ def get_queue_settings_debug():
 
 @app.route('/debug/createqueue', methods=['GET'])
 def create_queue_debug():
-   queueSettings = request.args.copy()
+   queueSettings = copy_request_args(request)
    try:
       queueSettings['id'] = db_util.create_queue(queueSettings)
       return jsonify(queueSettings)
@@ -144,14 +143,19 @@ def create_queue_debug():
 
 @app.route('/debug/createtempuser')
 def create_temp_user_debug():
-	if not app.debug:
-		abort(404)
-	user = dict()
-	user['id'] = None
-	user['temp'] = 1
-	user['uname'] = request.args.get('uname')
-	try:
-		user['id'] = db_util.create_user(user)
-		return jsonify(user)
-	except sqlite3.Error as e:
-		return e.message
+   if not app.debug:
+      abort(404)
+   user = copy_request_args(request)
+   user['id'] = None
+   try:
+      user['id'] = db_util.create_user(user)
+         return jsonify(user)
+      except sqlite3.Error as e:
+         return e.message
+
+
+def copy_request_args(origRequest):
+   res = dict()
+   for key in origRequest.args.keys():
+      res[key] = origRequest.args.get(key)
+   return res;
