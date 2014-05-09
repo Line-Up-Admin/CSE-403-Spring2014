@@ -1,6 +1,7 @@
 # This is the file that contains all the route handlers.
 from app import app
 import database_utilities as db_util
+import sqlite3
 import user_module
 from flask import request, session, g, redirect, url_for, abort, jsonify
 
@@ -84,16 +85,63 @@ def hello_world():
     return "Hello, World!"
 
 # Temporary: debugging purposes only.
-@app.route('/user')
-def get_user():
+@app.route('/debug/getuser')
+def get_user_debug():
+	if not app.debug:
+	    abort(404)
 	username = request.args.get('username')
 	password = request.args.get('password')
 	try:
 		user = db_util.get_user(username, password)
 		return jsonify(user)
-	except db_util.DatabaseException as e:
+	except sqlite3.Error as e:
+		return e.message
+	except db_util.ValidationException as e:
+		return e.message
+		
+# Temporary: debugging purposes only.
+@app.route('/debug/gettempuser')
+def get_temp_user_debug():
+	if not app.debug:
+		abort(404)
+	id = request.args.get('id')
+	try:
+		temp_user = db_util.get_temp_user(id)
+		return jsonify(temp_user)
+	except sqlite3.Error as e:
 		return e.message
 	except db_util.ValidationException as e:
 		return e.message
 	
-		
+# Temporary: debugging purposes only.
+@app.route('/debug/createuser')
+def create_user_debug():
+	if not app.debug:
+		abort(404)
+	user = dict()
+	user['id'] = None
+	user['temp'] = request.args.get('temp')
+	user['uname'] = request.args.get('uname')
+	user['fname'] = request.args.get('fname')
+	user['lname']  = request.args.get('lname')
+	user['email'] = request.args.get('email')
+	user['pw'] = request.args.get('pw')
+	try:
+		user['id'] = db_util.create_user(user)
+		return jsonify(user)
+	except sqlite3.Error as e:
+		return e.message
+
+@app.route('/debug/createtempuser')
+def create_temp_user_debug():
+	if not app.debug:
+		abort(404)
+	user = dict()
+	user['id'] = None
+	user['temp'] = 1
+	user['uname'] = request.args.get('uname')
+	try:
+		user['id'] = db_util.create_user(user)
+		return jsonify(user)
+	except sqlite3.Error as e:
+		return e.message

@@ -6,6 +6,7 @@ import os
 from sqlite3 import dbapi2 as sqlite3
 from flask import Flask, request, session, g, redirect, url_for, abort
 app = Flask(__name__, static_url_path='')
+app.secret_key = os.urandom(24)
 
 database_file = os.path.join(app.root_path, 'app.db')
 schema_file = os.path.join(app.root_path, 'schema.sql')

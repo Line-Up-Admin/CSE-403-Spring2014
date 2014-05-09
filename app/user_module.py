@@ -35,15 +35,25 @@ class MockDatabase(object):
 
 class User(object):
    """ This class stores information about a user """
-   def __init__(self, username, email, firstname, lastname, 
-         ID, password, temporary):
-      self.username = username
+   def __init__(self, id, temp, uname, fname, lname, email, pw):
+      self.id = id
+      self.temp = temp
+      self.uname = uname
+      self.fname = fname
+      self.lname = lname
       self.email = email
-      self.firstname = firstname
-      self.lastname = lastname
-      self.ID = ID
-      self.password = password
-      self.temporary = temporary
+      self.pw = pw
 
-def user_from_db_row(db_row):
-   return User(db_row['uname'], db_row['email'], db_row['fname'], db_row['lname'], db_row['id'], db_row['pw'], db_row['temp'])
+def user_from_dict(user_dict):
+   return User(user_dict['id'], user_dict['temp'], user_dict['uname'], user_dict['fname'], user_dict['lname'], user_dict['email'], user_dict['pw'])
+   
+def dict_from_user(user):
+   user_dict = dict()
+   user_dict['id'] = user.id
+   user_dict['temp'] = user.temp
+   user_dict['uname'] = user.uname
+   user_dict['fname'] = user.fname
+   user_dict['lname'] = user.lname
+   user_dict['email'] = user.email
+   user_dict['pw'] = user.pw
+   return user_dict

@@ -6,7 +6,10 @@ __init__.py in app. All methods are static.
 """
 
 # Query constants
-GET_USER_BY_USERNAME = 'select * from users where temp=0 and uname=?'
+GET_PROFILED_USER_BY_USERNAME = 'select * from users where temp=0 and uname=?'
+GET_TEMP_USER_BY_ID = 'select * from users where temp=1 and id=?'
+INSERT_PROFILED_USER = 'insert into users values(?, ?, ?, ?, ?, ?, ?)'
+INSERT_TEMP_USER = 'insert into users values(?, 1, ?, NULL, NULL, NULL, NULL)'
 
 def query_db(query, args=()):
   db = get_db()
@@ -14,6 +17,9 @@ def query_db(query, args=()):
   rows = cursor.fetchall()
   cursor.close()
   return rows
+  
+def user_dict_to_db_tuple(user_dict):
+  return (user_dict['id'], user_dict['temp'], user_dict['uname'], user_dict['fname'], user_dict['lname'], user_dict['email'], user_dict['pw'])
 
 class DatabaseException(Exception):
   pass
@@ -27,14 +33,33 @@ class ValidationException(Exception):
 # Database Utilities
 import permissions
 import validators
-from user_module import User, user_from_db_row
+import sqlite3
+import user_module
 from app import get_db
 
 #############################################
 # User related utilities.
 #############################################
 
-def create_user(user_data):
+def create_temp_user(user_dict):
+  db = get_db()
+  user_dict['id'] = validators.get_unique_id()
+  db.execute(INSERT_TEMP_USER, (user_dict['id'], user_dict['uname']))
+  db.commit()
+  return user_dict['id']
+  
+def create_user_profile(user_dict):  
+  db = get_db()
+  rows = query_db(GET_PROFILED_USER_BY_USERNAME, user_dict['uname'])
+  if (rows and (len(rows) > 0)):
+    raise ValidationException('The given username is already in use.')
+  user_dict['pw'] = validators.encrypt_password(user_dict['pw'])
+  user_dict['id'] = validators.get_unique_id()
+  db.execute(INSERT_PROFILED_USER, user_dict_to_db_tuple(user_dict))
+  db.commit()
+  return user_dict['id']
+
+def create_user(user_dict):
   """Adds a user defined by user_data to the database.
 
   Args:
@@ -44,10 +69,16 @@ def create_user(user_data):
     The new uid if the user was successfully added to the database.
 
   Raises:
-    DatabaseException: the database operation failed.
-    ValueError: the given user_data is invalid.
+    sqlite3.Error: the database operation failed.
+    ValidationError: the username is already in use (only applies if account isn't temporary).
   """
-  raise NotImplementedError()
+  if user_dict['temp']:
+    user_dict['id'] = create_temp_user(user_dict)
+  else:
+    user_dict['id'] = create_user_profile(user_dict)
+  return user_dict['id']
+  
+
 
 def modify_user(user_data):
   """Modfiy the user to match the user_data.
@@ -74,7 +105,7 @@ def delete_user():
     None if the deletion was a success.
 
   Raises:
-    DatabaseException: the uid does not exist in the database.
+    sqlite3.Error: database operation failed.
     ValidationException: the current session user is not logged in.
     PermissionException: the current session does not have the required permissions.
   """
@@ -87,12 +118,12 @@ def get_user(username, given_password):
     A User object if the user was found. No temporary users are considered.
 
   Raises:
-    DatabaseException: the username password combination is invalid.
+    sqlite3.Error: database operation failed.
     ValidationException: the username password combination is invalid.
   """
-  rows = query_db(GET_USER_BY_USERNAME, (username,))
+  rows = query_db(GET_PROFILED_USER_BY_USERNAME, (username,))
   if (not rows) or (len(rows) == 0):
-    raise DatabaseException('The username password combination is invalid.')
+    raise ValidationException('The username password combination is invalid.')
   else:
     encrypted_password = rows[0]['pw']
     if validators.are_matching(encrypted_password, given_password):
@@ -109,7 +140,11 @@ def get_temp_user(temp_uid):
   Raises:
     DatabaseException: the temp_uid was not a temporary user.
   """
-  raise NotImplementedError()
+  rows = query_db(GET_TEMP_USER_BY_ID, (temp_uid,))
+  if (not rows) or (len(rows) == 0):
+    raise ValidationException('The user could not be found.')
+  else:
+    return rows[0]
 
 #################################################
 # Queue related utilities.
