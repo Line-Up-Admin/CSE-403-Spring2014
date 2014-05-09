@@ -131,7 +131,7 @@ def create_queue_debug():
       queueSettings['id'] = db_util.create_queue(queueSettings)
       return jsonify(queueSettings)
    except sqlite3.Error as e:
-      print e.message
+      return e.message
 
 @app.route('/debug/createtempuser')
 def create_temp_user_debug():

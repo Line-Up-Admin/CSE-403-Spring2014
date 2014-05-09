@@ -12,6 +12,7 @@ INSERT_PROFILED_USER = 'insert into users values(?, ?, ?, ?, ?, ?, ?)'
 INSERT_TEMP_USER = 'insert into users values(?, 1, ?, NULL, NULL, NULL, NULL)'
 GET_QUEUE_BY_ID = 'select * from qsettings where id=?'
 INSERT_QUEUE = 'insert into qsettings values(?, ?, ?, ?, ?, ?)'
+INSERT_USER_INTO_QUEUE = 'insert into qindex values(?, ?, ?)'
 
 def query_db(query, args=()):
   db = get_db()
@@ -216,4 +217,8 @@ def get_queue_settings(qid):
     DatabaseException: the queue doesn't exist.
     PermissionException: the current session user does not have permission to view this queue.
   """
-  raise NotImplementedError()
+  db = get_db()
+  rows = query_db(GET_QUEUE_BY_ID, (qid,))
+  if (not rows) or (len(rows) == 0):
+    raise sqlite3.Error('The queue does not exist.')
+  return rows[0]
