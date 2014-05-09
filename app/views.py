@@ -130,7 +130,7 @@ def get_queue_settings_debug():
       queue = db_util.get_queue_settings(queueID)
       return jsonify(queue)
    except sqlite3.Error as e:
-      print e.message
+      return e.message
 
 @app.route('/debug/createqueue', methods=['GET'])
 def create_queue_debug():
@@ -139,7 +139,7 @@ def create_queue_debug():
       queueSettings['id'] = db_util.create_queue(queueSettings)
       return jsonify(queueSettings)
    except sqlite3.Error as e:
-      print e.message
+      return e.message
 
 @app.route('/debug/createtempuser')
 def create_temp_user_debug():
