@@ -128,7 +128,7 @@ def create_user_debug():
 def get_queue_settings_debug():
    queueID = request.args.get('qid')
    try:
-      queue = db_utils.get_queue_settings(queueID)
+      queue = db_util.get_queue_settings(queueID)
       return jsonify(queue)
    except sqlite3.Error as e:
       print e.message
