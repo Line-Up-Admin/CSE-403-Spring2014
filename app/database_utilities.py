@@ -8,11 +8,12 @@ __init__.py in app. All methods are static.
 # Query constants
 GET_USER_BY_USERNAME = 'select * from users where temp=0 and uname=?'
 
-# Database Utilities
-import permissions
-import validators
-from user_module import User, user_from_db_row
-from app import get_db()
+def query_db(query, args=()):
+  db = get_db()
+  cursor = db.execute(query, args)
+  rows = cursor.fetchall()
+  cursor.close()
+  return rows
 
 class DatabaseException(Exception):
   pass
@@ -22,13 +23,12 @@ class PermissionException(Exception):
 
 class ValidationException(Exception):
   pass
-
-def query_db(query, args=())
-  db = get_db()
-  cursor = db.execute(query, args)
-  rows = cursor.fetchall()
-  cursor.close()
-  return rows
+  
+# Database Utilities
+import permissions
+import validators
+from user_module import User, user_from_db_row
+from app import get_db
 
 #############################################
 # User related utilities.
@@ -90,13 +90,13 @@ def get_user(username, given_password):
     DatabaseException: the username password combination is invalid.
     ValidationException: the username password combination is invalid.
   """
-  rows = query_db(GET_USER_BY_USERNAME, username)
+  rows = query_db(GET_USER_BY_USERNAME, (username,))
   if (not rows) or (len(rows) == 0):
     raise DatabaseException('The username password combination is invalid.')
   else:
     encrypted_password = rows[0]['pw']
     if validators.are_matching(encrypted_password, given_password):
-      return user_from_db_row(rows[0])
+      return rows[0]
     else:
       raise ValidationException('the username password combination is invalid.')
 
