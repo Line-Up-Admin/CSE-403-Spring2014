@@ -8,7 +8,7 @@ def encrypt_password(password):
   return password
 
 def get_unique_user_id():
-  return unpack("<i", urandom(4))[0]
+  return unpack("<L", urandom(4))[0]
   
 def get_unique_queue_id():
-   return unpack("<i", urandom(4))[0]
+   return unpack("<L", urandom(4))[0]

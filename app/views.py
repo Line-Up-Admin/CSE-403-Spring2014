@@ -127,9 +127,11 @@ def create_user_debug():
 @app.route('/debug/createqueue', methods=['GET'])
 def create_queue_debug():
    queueSettings = request.args.copy()
-   queueSettings['id'] = db_util.create_queue(queueSettings)
-   return jsonify(queueSettings)
-
+   try:
+      queueSettings['id'] = db_util.create_queue(queueSettings)
+      return jsonify(queueSettings)
+   except sqlite3.Error as e:
+      print e.message
 
 @app.route('/debug/createtempuser')
 def create_temp_user_debug():
