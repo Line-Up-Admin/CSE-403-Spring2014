@@ -18,8 +18,6 @@ class UserModule(object):
    def remove_user(self, user_ID):
       pass
 
-
-
 class MockDatabase(object):
    """ The database is a store of all the information about user accounts. 
       (And other things?) """
@@ -47,7 +45,5 @@ class User(object):
       self.password = password
       self.temporary = temporary
 
-
-
-
-
+def user_from_db_row(db_row):
+   return User(db_row['uname'], db_row['email'], db_row['fname'], db_row['lname'], db_row['id'], db_row['pw'], db_row['temp'])

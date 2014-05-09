@@ -6,10 +6,13 @@ __init__.py in app. All methods are static.
 """
 
 # Query constants
-
+GET_USER_BY_USERNAME = 'select * from users where temp=0 and uname=?'
 
 # Database Utilities
 import permissions
+import validators
+from user_module import User, user_from_db_row
+from app import get_db()
 
 class DatabaseException(Exception):
   pass
@@ -20,12 +23,12 @@ class PermissionException(Exception):
 class ValidationException(Exception):
   pass
 
-def row_to_dict(row):
-  keys = row.keys()
-  dictionary = dict()
-  for key in keys:
-    dictionary[key]=row[key]
-  return dictionary
+def query_db(query, args=())
+  db = get_db()
+  cursor = db.execute(query, args)
+  rows = cursor.fetchall()
+  cursor.close()
+  return rows
 
 #############################################
 # User related utilities.
@@ -77,17 +80,25 @@ def delete_user():
   """
   raise NotImplementedError()
 
-def get_user():
-  """Retrieves the user data associated with the current session user.
+def get_user(username, given_password):
+  """Retrieves the User associated with this user.
 
   Returns:
     A User object if the user was found. No temporary users are considered.
 
   Raises:
-    DatabaseException: the user data was not found.
-    ValidationException: the current session user is not logged in.
+    DatabaseException: the username password combination is invalid.
+    ValidationException: the username password combination is invalid.
   """
-  raise NotImplementedError()
+  rows = query_db(GET_USER_BY_USERNAME, username)
+  if (not rows) or (len(rows) == 0):
+    raise DatabaseException('The username password combination is invalid.')
+  else:
+    encrypted_password = rows[0]['pw']
+    if validators.are_matching(encrypted_password, given_password):
+      return user_from_db_row(rows[0])
+    else:
+      raise ValidationException('the username password combination is invalid.')
 
 def get_temp_user(temp_uid):
   """Retrieves the user data associated with the given user id, only if the uid matches a temporary user.
