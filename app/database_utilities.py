@@ -10,6 +10,8 @@ GET_PROFILED_USER_BY_USERNAME = 'select * from users where temp=0 and uname=?'
 GET_TEMP_USER_BY_ID = 'select * from users where temp=1 and id=?'
 INSERT_PROFILED_USER = 'insert into users values(?, ?, ?, ?, ?, ?, ?)'
 INSERT_TEMP_USER = 'insert into users values(?, 1, ?, NULL, NULL, NULL, NULL)'
+GET_QUEUE_BY_ID = 'select * from qsettings where id=?'
+INSERT_QUEUE = 'insert into qsettings values(?, ?, ?, ?, ?, ?)'
 
 def query_db(query, args=()):
   db = get_db()
@@ -20,6 +22,9 @@ def query_db(query, args=()):
   
 def user_dict_to_db_tuple(user_dict):
   return (user_dict['id'], user_dict['temp'], user_dict['uname'], user_dict['fname'], user_dict['lname'], user_dict['email'], user_dict['pw'])
+
+def qsettings_dict_to_db_tuple(qsettings):
+  return (qsettings['id'], qsettings['qname'], qsettings['max_size'], qsettings['keywords'], qsettings['location'], qsettings['active'])
 
 class DatabaseException(Exception):
   pass
@@ -34,7 +39,6 @@ class ValidationException(Exception):
 import permissions
 import validators
 import sqlite3
-import user_module
 from app import get_db
 
 #############################################
@@ -43,7 +47,7 @@ from app import get_db
 
 def create_temp_user(user_dict):
   db = get_db()
-  user_dict['id'] = validators.get_unique_id()
+  user_dict['id'] = validators.get_unique_user_id()
   db.execute(INSERT_TEMP_USER, (user_dict['id'], user_dict['uname']))
   db.commit()
   return user_dict['id']
@@ -54,7 +58,7 @@ def create_user_profile(user_dict):
   if (rows and (len(rows) > 0)):
     raise ValidationException('The given username is already in use.')
   user_dict['pw'] = validators.encrypt_password(user_dict['pw'])
-  user_dict['id'] = validators.get_unique_id()
+  user_dict['id'] = validators.get_unique_user_id()
   db.execute(INSERT_PROFILED_USER, user_dict_to_db_tuple(user_dict))
   db.commit()
   return user_dict['id']
@@ -162,7 +166,11 @@ def create_queue(q_settings):
   Raises:
     DatabaseException: the q_settings are invalid.
   """
-  raise NotImplementedError()
+  db = get_db()
+  q_settings['id'] = validators.get_unique_queue_id()
+  db.execute(INSERT_QUEUE, qsettings_dict_to_db_tuple(q_settings))
+  db.commit()
+  return q_settings['id']
 
 def modify_queue_settings(q_settings):
   """Modifies the queue with the qid defined in q_settings to match the q_settings given.

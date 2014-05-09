@@ -6,9 +6,7 @@ import user_module
 from flask import request, session, g, redirect, url_for, abort, jsonify
 
 from q_classes import QueueServer
-from user_module import UserModule
 server = QueueServer()
-module = UserModule()
 
 # This procedure picks up the default route and returns index.html.
 @app.route('/')
@@ -118,14 +116,7 @@ def get_temp_user_debug():
 def create_user_debug():
 	if not app.debug:
 		abort(404)
-	user = dict()
-	user['id'] = None
-	user['temp'] = request.args.get('temp')
-	user['uname'] = request.args.get('uname')
-	user['fname'] = request.args.get('fname')
-	user['lname']  = request.args.get('lname')
-	user['email'] = request.args.get('email')
-	user['pw'] = request.args.get('pw')
+	user = request.args.copy()
 	try:
 		user['id'] = db_util.create_user(user)
 		return jsonify(user)
