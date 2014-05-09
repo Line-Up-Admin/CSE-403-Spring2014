@@ -124,6 +124,15 @@ def create_user_debug():
 	except sqlite3.Error as e:
 		return e.message
 
+@app.route('/debug/getqueuesettings')
+def get_queue_settings_debug():
+   queueID = request.args.get('qid')
+   try:
+      queue = db_util.get_queue_settings(queueID)
+      return jsonify(queue)
+   except sqlite3.Error as e:
+      print e.message
+
 @app.route('/debug/createqueue', methods=['GET'])
 def create_queue_debug():
    queueSettings = request.args.copy()
