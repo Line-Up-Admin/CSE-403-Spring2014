@@ -13,11 +13,12 @@ module = UserModule()
 # This procedure picks up the default route and returns index.html.
 @app.route('/')
 def root():
-    return app.send_static_file('index.html')
+   return app.send_static_file('index.html')
 
-@app.route('/join')
+@app.route('/join', methods=['POST'])
 def add_to_queue():
-    return 'Not implemented yet!'
+   
+   return 'Not implemented yet!'
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -71,9 +72,9 @@ def queue_tracks_data():
 def create_user():
 	return 'Not implemented yet!'
 
-@app.route('/createQueue')
+@app.route('/createQueue', methods=['GET', 'POST'])
 def create_queue():
-	return 'Not implemented yet!'
+   return 'Not implemented yet!'
 
 @app.route('/logout')
 def logout():
@@ -131,6 +132,13 @@ def create_user_debug():
 		return jsonify(user)
 	except sqlite3.Error as e:
 		return e.message
+
+@app.route('/debug/createqueue', methods=['GET'])
+def create_queue_debug():
+   queueSettings = request.args.copy()
+   queueSettings['id'] = db_util.create_queue(queueSettings)
+   return jsonify(queueSettings)
+
 
 @app.route('/debug/createtempuser')
 def create_temp_user_debug():
