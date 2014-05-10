@@ -10,6 +10,13 @@ actual data structures involved.
 #   the other direction.)
 from collections import deque
 
+#Might use this in the future
+#import database_utilities as db_util
+
+# Custom Exception
+class QueueFullException(Exception):
+   pass
+
 class Queue(object):
    """ A Queue object stores the actual in-memory representation 
       of a Queue. """
@@ -34,8 +41,8 @@ class Queue(object):
 
    def add(self, member):
       """ Adds a Queue Member to a Queue. (If there is room.) """
-      if self.q_settings and len(self.my_q >= self.q_settings.max_size):
-         raise Exception("Queue is already at maximum size")
+      if self.q_settings and len(self.my_q) >= self.q_settings.max_size:
+         raise QueueFullException("Queue is already at maximum size")
       else:
          self.my_q.append(member)
 
@@ -61,7 +68,7 @@ class Queue(object):
          self.my_q[pos + 1] = temp
       #else: member is already at the end of the queue
 
-   def getWaitTime(self, member):
+   def get_wait_time(self, member):
       """ Returns the estimated wait time of a user in a Queue, using
       intelligent heuristics based on their current position and 
       previous line information. """
@@ -75,9 +82,10 @@ class Queue(object):
       else:
          return None
 
-   def getPosition(self, member):
+   def get_position(self, member):
       """ Returns the current position in the queue of the Queue member
-         being asked about. """
+         being asked about. This is a 0-based index from the front
+         of the line. """
       for i, j in enumerate(self.my_q):
          if j == member:
             return i
@@ -110,15 +118,28 @@ class QueueServer(object):
    tries to modify a non-existent queue."""
 
    def __init__(self):
+      # table from q_ID to Queue
       self.table = {}
+      # reverse index from QueueMember to a set of q_IDs
       self.index = {}
+      # read all the queues from the database, and put them into the tables
+      # get_all_queues returns a list of tuples of q_IDs to QueueSettings 
+      #  objects
+      """" This will be turned on once the method is written in db_util 
+      all_qs = db_util.get_all_queues()
+      for q_id, q_set in all_qs:
+         table[q_id] = Queue(q_id, q_set)
+      """
 
    def add(self, member, q_ID):
       """ Adds a new member to a specific queue."""
       if a_ID not in self.table:
          raise Exception('Queue not found')
       q = self.table[q_ID]
-      q.add(member)
+      #add member to the reverse index
+      if member not in index:
+         index[member] = set()
+      index[member].add(q_ID)
 
    def remove(self, member, q_ID):
       """ This could raise a KeyError, which we are currently
@@ -142,7 +163,13 @@ class QueueServer(object):
       return "Not yet implemented"
 
    def create(self, settings):
-      return "Not yet implemented"
+      """ Creates a queue, adds to the database, and 
+         returns the id of the queue created. """
+      #save the queue to the database
+      q_ID = db_util.create_queue(settings)
+      new_q = Queue(q_ID, settings)
+      self.table[q_ID] = new_q
+      return q_ID
 
    def get(self, q_id):
       """ I'm not sure this method is necessary if all Queue 
@@ -153,6 +180,28 @@ class QueueServer(object):
       if a_ID not in self.table:
          raise Exception('Queue not found')
       return self.table[q_ID].postpone(member)
+
+   def get_info(self, member, q_ID):
+      """ This method gets the info associated with a queue.
+         (Not currently in UML diagram.) """
+      q = self.table[q_ID]
+      q_set = q.q_settings
+      if q_set:
+         name = q_set.name
+      else:
+         name = None
+      size = len(q)
+      avg_wait = q.avg_wait
+      #this is a zero-based index
+      position = q.get_position(member)
+      # the expected wait time here could be improved to be something
+      #  more intelligent. Currently, it is average wait time of the queue
+      #  times the proportion of the queue remaining.
+      if avg_wait:
+         ex_wait = avg_wait * (position + 0.5)/float(size) 
+      else:
+         ex_wait = None
+      return QueueInfo(name, q_ID, size, ex_wait, avg_wait, position)
 
 
 class QueueSettings(object):
@@ -169,6 +218,20 @@ class QueueSettings(object):
       self.admins = admins
       self.blockedUsers = blockedUsers
       self.location = location
+
+
+class QueueInfo(object):
+   """ This is a class to store a number of pieces of information
+      about a queue. This info will be sent back to the client
+      as JSON, and rendered in the browser."""
+   def __init__(self, name, q_ID, size, expected_wait, avg_wait_time,
+         member_position):
+      self.name = name
+      self.q_ID = q_ID
+      self.size = size
+      self.expected_wait = expected_wait
+      self.avg_wait_time = avg_wait_time
+      self.member_position = member_position
 
 
 
