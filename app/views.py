@@ -69,9 +69,14 @@ def queue_tracks_data():
 def create_user():
 	return 'Not implemented yet!'
 
-@app.route('/createQueue', methods=['GET', 'POST'])
+@app.route('/createQueue', methods=['POST'])
 def create_queue():
-   return 'Not implemented yet!'
+   q_settings = request.form.copy()
+   try:
+      q_settings['id'] = db_util.create_queue(q_settings)
+      return jsonify(q_settings)
+   except sqlite3.Error as e:
+      return e.message
 
 @app.route('/logout')
 def logout():
