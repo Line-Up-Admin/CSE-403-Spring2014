@@ -2,6 +2,12 @@
 	width: 86px;
 }
 
+.line-up-banner {
+	width: 180px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .header-content {
 	background-color: white;
 }
@@ -44,6 +50,31 @@ body {
 
 .recent-queues {
 	margin-bottom: 20px;
+}
+
+#create-account  {
+	width: 55%;
+}
+
+#submit-login  {
+	width: 35%;
+}
+
+#create-account, #submit-login  {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.login-input {
+	height: 20px;
+	width: 70px;
+}
+
+.info-box {
+	background: linear-gradient(#E7CDFC, #C0A0DC);
+	border: 5px solid black;
+	padding: 10px;
+	margin-top: 80px;
 }
 
 .btn-line-up {
