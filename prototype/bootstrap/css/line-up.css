@@ -1,0 +1,61 @@
+.line-up-icon {
+	width: 86px;
+}
+
+.header-content {
+	background-color: white;
+}
+
+hr {
+	border: 1px solid black;
+	height: 4px;
+	background-color: #4C116D;
+	color: #4C116D;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.queue {
+	border: 2px solid black;
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+
+body {
+	background: linear-gradient(#C5A7DF, #814BB3);
+	background-attachment: fixed;
+}
+
+.main-page-content h2 {
+	font-size: x-large;
+}
+
+.main-page-content h1 {
+	margin-bottom: 0px;
+}
+
+.queue {
+	background: linear-gradient(#E7CDFC, #C0A0DC);
+	text-align: left;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	padding-left: 15px;
+}
+
+.recent-queues {
+	margin-bottom: 20px;
+}
+
+.btn-line-up {
+	color: #000;
+	background: linear-gradient(#E7CDFC, #C0A0DC);
+	border: 2px solid black;
+	font-size: small;
+	width: 60%;
+	margin-left: auto;
+	margin-right: auto;
+}
+.btn-line-up:hover,
+.btn-line-up:focus,
+.btn-line-up:active,
+.btn-line-up.active,
