@@ -10,11 +10,11 @@ angular.module('LineUpApp', [
 config(['$routeProvider', function($routeProvider) {
   $routeProvider.
   when("/", {
-    templateUrl: "/index.html",
+    templateUrl: "partials/login.html",
     controller: "lineUpController"
   }).
   when("/search", {
-    templateUrl: "/index.html",
+    templateUrl: "partials/search.html",
     controller: "lineUpController"
   }).
   when("/queue_info", {
@@ -31,6 +31,10 @@ config(['$routeProvider', function($routeProvider) {
   }).
   when("/anonymous", {
     templateUrl: "/index.html",
+    controller: "lineUpController"
+  }).
+  when("/create_account", {
+    templateUrl: "partials/create_account.html",
     controller: "lineUpController"
   }).
   when("/debug_q", { //SHOULD BE REMOVED BEFORE BETA RELEASE
