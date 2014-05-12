@@ -1,0 +1,20 @@
+<div>
+  <h2>Current Data Model Queue Information:</h2>
+  Name: {{ queue.qname }}<br \>
+  ID: {{ queue.qid }}<br \>
+  Max Size: {{ queue.max_size }}<br \>
+  Keywords: {{ queue.keywords }}<br \>
+  Location: {{ queue.location }}<br \>
+  Active: {{ queue.active }}<br \>
+
+  <h2>Create New Queue Information:</h2>
+  Name: <input name="qname" type="text" ng-model="queue.qname" \><br \>
+  Maximum Size: <input name="max_size" type="text" ng-model="queue.max_size" \><br \>
+  Keywords: <input name="keywords" type="text" ng-model="queue.keywords" \><br \>
+  Location: <input name="location" type="text" ng-model="queue.location" \><br \>
+  Active: <input name="active" type="checkbox" ng-model="queue.active" \><br \>
+  <input type="submit" value="Submit" ng-click="createNewQueue()" \><br \>
+
+  <h2>Lookup Queue Information:</h2>
+  ID: <input type="text" ng-model="queue.qid" \> <input type="submit" value="Submit" ng-click="getQueueSettings()"\><br \>
+</div>

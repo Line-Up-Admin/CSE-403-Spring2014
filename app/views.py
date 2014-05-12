@@ -14,7 +14,7 @@ def root():
 
 @app.route('/join', methods=['POST'])
 def add_to_queue():
-   
+
    return 'Not implemented yet!'
 
 @app.route('/login', methods=['GET','POST'])
@@ -24,7 +24,7 @@ def login():
 @app.route('/dequeue')
 def dequeue():
     return 'Not implemented yet!'
-	
+
 @app.route('/searchResults')
 def get_search_results():
 	return 'Not implemented yet!'
@@ -43,7 +43,7 @@ def get_employee_queue(qid):
 
 @app.route('/adminQueue/<qid>')
 def get_admin_queue(qid):
-	return 
+	return
 
 @app.route('/queueStatus')
 def get_queue_status():
@@ -71,7 +71,8 @@ def create_user():
 
 @app.route('/createQueue', methods=['POST'])
 def create_queue():
-   q_settings = request.form.copy()
+   # q_settings = request.form.copy()
+   q_settings = request.json
    try:
       q_settings['id'] = db_util.create_queue(q_settings)
       return jsonify(q_settings)
@@ -101,7 +102,7 @@ def get_user_debug():
 		return e.message
 	except db_util.ValidationException as e:
 		return e.message
-		
+
 # Temporary: debugging purposes only.
 @app.route('/debug/gettempuser')
 def get_temp_user_debug():
@@ -115,7 +116,7 @@ def get_temp_user_debug():
 		return e.message
 	except db_util.ValidationException as e:
 		return e.message
-	
+
 # Temporary: debugging purposes only.
 @app.route('/debug/createuser')
 def create_user_debug():
@@ -128,9 +129,11 @@ def create_user_debug():
 	except sqlite3.Error as e:
 		return e.message
 
-@app.route('/debug/getqueuesettings')
+#@app.route('/debug/getqueuesettings')
+@app.route('/debug/getqueuesettings', methods=['POST'])
 def get_queue_settings_debug():
-   queueID = request.args.get('qid')
+   #queueID = request.args.get('qid')
+   queueID = request.json
    try:
       queue = db_util.get_queue_settings(queueID)
       return jsonify(queue)
