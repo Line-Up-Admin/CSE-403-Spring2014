@@ -56,7 +56,21 @@ body {
 	width: 55%;
 }
 
-#submit-login  {
+.queue-name, .time-left {
+	display: inline-block;
+}
+
+.queue-img {
+	margin-right: 10px;
+}
+
+.time-left {
+	float: right;
+	margin-top: 8px;
+	margin-right: 10px;
+}
+
+#submit-login, #submit-acct-info  {
 	width: 35%;
 }
 
