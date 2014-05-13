@@ -152,8 +152,8 @@ def create_queue():
    """need to add validation"""
    q_settings = request.json
    try:
-      queueSettings['id'] = queue_server.create(queueSettings)
-      return jsonify(queueSettings)
+      q_settings['id'] = queue_server.create(q_settings)
+      return jsonify(q_settings)
    except sqlite3.Error as e:
       return e.message
 
