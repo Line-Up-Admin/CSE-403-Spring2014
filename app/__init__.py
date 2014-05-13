@@ -43,7 +43,7 @@ def close_db(error):
 if not os.path.isfile(database_file):
   init_db()
 
-from q_classes import QueueServer
+from q_classes import *
 with app.app_context():
   queue_server = QueueServer()
 

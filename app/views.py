@@ -141,8 +141,8 @@ def create_queue():
    # q_settings = request.form.copy()
    q_settings = request.json
    try:
-      q_settings['id'] = db_util.create_queue(q_settings)
-      return jsonify(q_settings)
+      queueSettings['id'] = queue_server.create(queueSettings)
+      return jsonify(queueSettings)
    except sqlite3.Error as e:
       return e.message
 
