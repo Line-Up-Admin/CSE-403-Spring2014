@@ -12,7 +12,7 @@ INSERT_PROFILED_USER = 'insert into users values(?, ?, ?, ?, ?, ?, ?)'
 INSERT_TEMP_USER = 'insert into users values(?, 1, ?, NULL, NULL, NULL, NULL)'
 GET_QUEUE_BY_ID = 'select * from qsettings where id=?'
 INSERT_QUEUE = 'insert into qsettings values(?, ?, ?, ?, ?, ?)'
-INSERT_USER_INTO_QUEUE = 'insert into qindex values(?, ?, ?)'
+GET_ALL_QUEUES = 'select * from qsettings'
 
 def query_db(query, args=()):
   db = get_db()
@@ -77,7 +77,7 @@ def create_user(user_dict):
     sqlite3.Error: the database operation failed.
     ValidationError: the username is already in use (only applies if account isn't temporary).
   """
-  if not user_dict['temp']:
+  if not user_dict.has_key('temp') or not user_dict['temp']:
     user_dict['id'] = create_temp_user(user_dict)
   else:
     user_dict['id'] = create_user_profile(user_dict)
@@ -222,3 +222,8 @@ def get_queue_settings(qid):
   if (not rows) or (len(rows) == 0):
     raise sqlite3.Error('The queue does not exist.')
   return rows[0]
+
+def get_all_queues():
+  db = get_db()
+  rows = query_db(GET_ALL_QUEUES)
+  return rows

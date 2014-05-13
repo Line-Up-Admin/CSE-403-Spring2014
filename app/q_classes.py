@@ -11,7 +11,7 @@ actual data structures involved.
 from collections import deque
 
 #Might use this in the future
-#import database_utilities as db_util
+import database_utilities as db_util
 
 # Custom Exception
 class QueueFullException(Exception):
@@ -116,7 +116,7 @@ class QueueServer(object):
    and index is a reverse index that maps from memberID to QID.
    Current behavior is to raise an exception when a client
    tries to modify a non-existent queue."""
-
+   
    def __init__(self):
       # table from q_ID to Queue
       self.table = {}
@@ -130,16 +130,27 @@ class QueueServer(object):
       for q_id, q_set in all_qs:
          table[q_id] = Queue(q_id, q_set)
       """
+      rows = db_util.get_all_queues()
+      print 'Loading queues from db...'
+      i = 0
+      for row in rows:
+         q_settings = QueueSettings(row['max_size'], row['keywords'], row['qname'], None, None, None, row['location'])
+         qid = row['id']
+         q = Queue(qid, q_settings)
+         self.table[qid] = q
+         i = i + 1
+      print 'Done loading. loaded', i, 'queues'
 
    def add(self, member, q_ID):
       """ Adds a new member to a specific queue."""
-      if a_ID not in self.table:
+      if q_ID not in self.table:
          raise Exception('Queue not found')
       q = self.table[q_ID]
+      q.add(member)
       #add member to the reverse index
-      if member not in index:
-         index[member] = set()
-      index[member].add(q_ID)
+      if member not in self.index:
+         self.index[member] = set()
+      self.index[member].add(q_ID)
 
    def remove(self, member, q_ID):
       """ This could raise a KeyError, which we are currently
@@ -197,7 +208,7 @@ class QueueServer(object):
       # the expected wait time here could be improved to be something
       #  more intelligent. Currently, it is average wait time of the queue
       #  times the proportion of the queue remaining.
-      if avg_wait:
+      if avg_wait and position:
          ex_wait = avg_wait * (position + 0.5)/float(size) 
       else:
          ex_wait = None
@@ -232,6 +243,3 @@ class QueueInfo(object):
       self.expected_wait = expected_wait
       self.avg_wait_time = avg_wait_time
       self.member_position = member_position
-
-
-
