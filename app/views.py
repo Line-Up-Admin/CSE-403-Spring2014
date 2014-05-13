@@ -37,7 +37,7 @@ def add_to_queue():
    qid = int(request.json['qid'])
    temp = None
    if session.has_key('logged_in') and session['logged_in']:
-      uid = session['uid']
+      uid = session['id']
       username = session['uname']
    else:
       temp = True
@@ -72,9 +72,14 @@ def dequeue():
 def get_search_results():
    return 'Not implemented yet!'
 
-@app.route('/search')
+@app.route('/search', methods=['POST'])
 def search():
    return 'Not implemented yet!'
+
+@app.route('/popular', methods=['GET'])
+def get_popular_queues():
+   q_info_list = queue_server.get_all_queues_info()
+   return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
 
 @app.route('/memberQueue', methods=['POST'])
 def get_member_queue():
@@ -95,11 +100,11 @@ def get_queue_status():
    Returns: example return value below
       {
          "avg_wait_time": null,
-         "confirmation_number": 1472823387,
+         "confirmation_number": null,
          "expected_wait": null,
-         "member_position": 0,
-         "name": "ohhey",
-         "q_ID": 556035656,
+         "member_position": null,
+         "qname": "ohhey",
+         "qid": 556035656,
          "size": 1
       }
    """

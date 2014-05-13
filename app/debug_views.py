@@ -85,18 +85,23 @@ def create_temp_user_debug():
    except sqlite3.Error as e:
       return e.message
 
-@app.route('/debug/queueinfo/<int:qid>', methods=['POST'])
+@app.route('/debug/popular', methods=['GET'])
+def get_popular_queues_debug():
+   q_info_list = queue_server.get_all_queues_info()
+   return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
+      
+
+@app.route('/debug/queueStatus/<int:qid>', methods=['POST'])
 def get_queue_info_debug(qid):
     q_info = queue_server.get_info(None, qid)
     return jsonify(q_info.__dict__)
 
-@app.route('/debug/join', methods=['POST'])
-def add_to_queue_debug():
+@app.route('/debug/join/<int:qid>', methods=['POST'])
+def add_to_queue_debug(qid):
    if not app.debug:
       abort(404)
    uid = None
    username = None
-   qid = int(request.args['qid'])
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['uid']
       username = session['uname']
@@ -121,6 +126,22 @@ def add_to_queue_debug():
    else:
       return 'User is blocked from this queue.'
 
+@app.route('/debug/dequeue/<int:qid>', methods=['POST'])
+def dequeue_debug(qid):
+   if not app.debug:
+      abort(404)
+   uid = None
+   if session.has_key('logged_in') and session['logged_in']:
+      uid = session['id']
+   else:
+      uid = request.args['employee']
+   if permissions.has_flag(uid, qid, permissions.EMPLOYEE):
+      q_member = queue_server.dequeue(qid)
+      if q_member is None:
+         return 'The queue is empty.'
+      return jsonify(q_member.__dict__)
+   else:
+      return 'You must be an employee to dequeue.'
 
 def copy_request_args(origRequest):
    res = dict()

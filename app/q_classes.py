@@ -21,7 +21,7 @@ class Queue(object):
    """ A Queue object stores the actual in-memory representation 
       of a Queue. """
 
-   def __init__(self, id, q_settings = None):
+   def __init__(self, qid, q_settings = None):
       # This is the actual Queue field of the object
       self.my_q = deque()
 
@@ -30,6 +30,7 @@ class Queue(object):
       # Queue settings is a 'default' queue, with no max size,
       # no admins, etc.
       self.q_settings = q_settings
+      self.id = qid
 
       # Avg wait is initially undefined, and is not passed in.
       self.avg_wait = None
@@ -160,7 +161,7 @@ class QueueServer(object):
 
    def dequeue(self, q_ID):
       """ Note -- parameter here differs from UML diagram. """
-      if a_ID not in self.table:
+      if q_ID not in self.table:
          raise Exception('Queue not found')
       return self.table[q_ID].dequeue()
 
@@ -187,18 +188,18 @@ class QueueServer(object):
          modification is done through the QueueServer object. """
       return self.table[q_id]
 
-   def postpone(self, member, q_ID):
-      if a_ID not in self.table:
+   def postpone(self, member, qid):
+      if qid not in self.table:
          raise Exception('Queue not found')
-      return self.table[q_ID].postpone(member)
+      return self.table[qid].postpone(member)
 
-   def get_info(self, member, q_ID):
+   def get_info(self, member, qid):
       """ This method gets the info associated with a queue.
          (Not currently in UML diagram.) """
-      q = self.table[q_ID]
+      q = self.table[qid]
       q_set = q.q_settings
       if q_set:
-         name = q_set.name
+         qname = q_set.qname
       else:
          name = None
       size = len(q)
@@ -212,19 +213,26 @@ class QueueServer(object):
          ex_wait = avg_wait * (position + 0.5)/float(size) 
       else:
          ex_wait = None
-      return QueueInfo(name, q_ID, size, ex_wait, avg_wait, position)
+      return QueueInfo(qname, qid, size, ex_wait, avg_wait, position)
+
+   def get_all_queues_info(self):
+      result = list()
+      for queue in self.table.values():
+         q_info = self.get_info(None, queue.id)
+         result.append(q_info)
+      return result
 
 
 class QueueSettings(object):
    """ This class is used to store all the settings that an administrator
       might want to set regarding a queue. """
-   def __init__(self, max_size, keywords, name, employees, 
+   def __init__(self, max_size, keywords, qname, employees, 
          admins, blockedUsers, location):
       self.max_size = max_size
       # keywords is a list of strings
       self.keywords = keywords
       # name is the name of the Queue, such as "Hall Health" 
-      self.name = name
+      self.qname = qname
       self.employees = employees
       self.admins = admins
       self.blockedUsers = blockedUsers
@@ -235,10 +243,10 @@ class QueueInfo(object):
    """ This is a class to store a number of pieces of information
       about a queue. This info will be sent back to the client
       as JSON, and rendered in the browser."""
-   def __init__(self, name, q_ID, size, expected_wait, avg_wait_time,
+   def __init__(self, qname, qid, size, expected_wait, avg_wait_time,
          member_position):
-      self.name = name
-      self.q_ID = q_ID
+      self.qname = qname
+      self.qid = qid
       self.size = size
       self.expected_wait = expected_wait
       self.avg_wait_time = avg_wait_time
