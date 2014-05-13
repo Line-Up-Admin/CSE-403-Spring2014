@@ -23,7 +23,7 @@
 		<form action="#">
 			<fieldset>
 				<label for="keywords">Keywords</label>
-				<input class="login-input"  type="text" name="keywords" /> <br />
+				<input class="login-input" type="text" name="keywords" /> <br />
 
 				<label for="location">Location</label>
 				<input class="login-input" type="text" name="location" /> <br />
@@ -37,15 +37,10 @@
 
 	<h1>Popular Queues</h1>
 	<div class="popular-queues">
-		<div class="queue">
+		<div class="queue" ng-repeat="queueInfo in queueInfos">
 			<img class="queue-img" src="img/CLUE_phys.png"/>
-			<p class="queue-name">CLUE - Physics</p>
-			<p class="time-left">10 min</p>
-		</div>
-		<div class="queue">
-			<img class="queue-img" src="img/CLUE_chem.png"/>
-			<p class="queue-name">CLUE - Chemistry</p>
-			<p class="time-left">5 min</p>
+			<p class="queue-name">{{queueInfo.qname}}</p>
+			<p class="time-left">{{queueInfo.expected_wait}}</p>
 		</div>
 	</div>
 </div>

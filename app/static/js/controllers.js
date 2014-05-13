@@ -4,6 +4,8 @@
 angular.module('LineUpApp.controllers', []).
   controller('lineUpController', function ($scope, lineUpAPIService) {
     $scope.queue = {};
+    $scope.queueInfos = [];
+    $scope.user = {};
 
     // Sends a request to the server to create a new queue. The request
     // contains the new queue settings.
@@ -36,4 +38,29 @@ angular.module('LineUpApp.controllers', []).
           alert("Something went wrong with the queue lookup request!\nStatus: " + status);
         });
     }
+
+    // Sends a request to the server to get the information for the most popular
+    // queues.
+    // Upon success: Updates the current queueInfos array to store the results
+    // of the request.
+    // Upon error: TODO: Do something smart to handle the error
+    $scope.getPopularQueues = function () {
+      lineUpAPIService.getPopularQueues().
+        success(function (data, status, headers, config) {
+          queueInfos = data.queue_info_list;
+        }).
+        error(function (data, status, headers, config) {
+          alert("Something went wrong with the popular queue request! \nStatus: " + status);
+      });
+    }
+
+
+
+
+    //HACK STARTS HERE - REMOVE BEFORE BETA
+    $scope.queueInfos = $scope.getPopularQueues();
+
+
+
+
   });
