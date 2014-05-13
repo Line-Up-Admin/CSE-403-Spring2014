@@ -109,6 +109,27 @@ class QueueMember(object):
          else:
             return self.ID == other.ID
 
+class QueueSettings(object):
+   """ This class is used to store all the settings that an administrator
+      might want to set regarding a queue. """
+   def __init__(self):
+      self.max_size = 0
+      # keywords is a list of strings
+      self.keywords = ''
+      # name is the name of the Queue, such as "Hall Health" 
+      self.qname = ''
+      self.employees = None
+      self.admins = None
+      self.blockedUsers = None
+      self.location = ''
+
+   @staticmethod
+   def from_dict(settings):
+      q_settings = QueueSettings()
+      for key in settings.keys():
+         if hasattr(q_settings, key):
+            setattr(q_settings, key, settings[key])
+      return q_settings
 
 class QueueServer(object):
    """ This is a Queue Server object, which is responsible
@@ -135,7 +156,7 @@ class QueueServer(object):
       print 'Loading queues from db...'
       i = 0
       for row in rows:
-         q_settings = QueueSettings(row['max_size'], row['keywords'], row['qname'], None, None, None, row['location'])
+         q_settings = QueueSettings.from_dict(row)
          qid = row['id']
          q = Queue(qid, q_settings)
          self.table[qid] = q
@@ -179,7 +200,8 @@ class QueueServer(object):
          returns the id of the queue created. """
       #save the queue to the database
       q_ID = db_util.create_queue(settings)
-      new_q = Queue(q_ID, settings)
+      qsettings = QueueSettings.from_dict(settings)
+      new_q = Queue(q_ID, qsettings)
       self.table[q_ID] = new_q
       return q_ID
 
@@ -212,7 +234,7 @@ class QueueServer(object):
       if avg_wait and position:
          ex_wait = avg_wait * (position + 0.5)/float(size) 
       else:
-         ex_wait = None
+         ex_wait = 10
       return QueueInfo(qname, qid, size, ex_wait, avg_wait, position)
 
    def get_all_queues_info(self):
@@ -221,23 +243,6 @@ class QueueServer(object):
          q_info = self.get_info(None, queue.id)
          result.append(q_info)
       return result
-
-
-class QueueSettings(object):
-   """ This class is used to store all the settings that an administrator
-      might want to set regarding a queue. """
-   def __init__(self, max_size, keywords, qname, employees, 
-         admins, blockedUsers, location):
-      self.max_size = max_size
-      # keywords is a list of strings
-      self.keywords = keywords
-      # name is the name of the Queue, such as "Hall Health" 
-      self.qname = qname
-      self.employees = employees
-      self.admins = admins
-      self.blockedUsers = blockedUsers
-      self.location = location
-
 
 class QueueInfo(object):
    """ This is a class to store a number of pieces of information
