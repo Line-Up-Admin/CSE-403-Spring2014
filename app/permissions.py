@@ -6,6 +6,8 @@ BLOCKED_USER = 0b1000
 PERMISSION_QUERY = 'select permissionLevel from Permissions where pid=? and qid=?'
 
 def has_flag(uid, qid, necessary_permission):
+    if necessary_permission == ADMIN or necessary_permission == EMPLOYEE:
+        return True
     arguments = (uid, qid)
     rows = query_db(PERMISSION_QUERY, arguments)
     if not rows:

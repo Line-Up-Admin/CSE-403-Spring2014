@@ -93,6 +93,16 @@ def get_employee_queue(qid):
 def get_admin_queue(qid):
 	return
 
+@app.route('/getQueueSettings', methods=['POST'])
+def get_queue_settings():
+   queueID = request.json
+   try:
+      #permissions.has_flag
+      queue = db_util.get_queue_settings(queueID)
+      return jsonify(queue)
+   except sqlite3.Error as e:
+      return e.message
+
 @app.route('/queueStatus/<qid>')
 def get_queue_status():
    """View the queue with the given qid.
@@ -139,6 +149,7 @@ def create_user():
 @app.route('/createQueue', methods=['POST'])
 def create_queue():
    # q_settings = request.form.copy()
+   """need to add validation"""
    q_settings = request.json
    try:
       queueSettings['id'] = queue_server.create(queueSettings)

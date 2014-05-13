@@ -59,6 +59,7 @@ def get_queue_settings_debug():
    #queueID = request.args.get('qid')
    queueID = request.json
    try:
+      
       queue = db_util.get_queue_settings(queueID)
       return jsonify(queue)
    except sqlite3.Error as e:
