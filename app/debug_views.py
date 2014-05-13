@@ -57,9 +57,9 @@ def create_user_debug():
 @app.route('/debug/getqueuesettings', methods=['POST'])
 def get_queue_settings_debug():
    #queueID = request.args.get('qid')
-   queueID = request.json
+   queueID = request.args.get('qid')
    try:
-      
+      #permissions.has_flag
       queue = db_util.get_queue_settings(queueID)
       return jsonify(queue)
    except sqlite3.Error as e:

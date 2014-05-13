@@ -95,6 +95,18 @@ def get_admin_queue(qid):
 
 @app.route('/getQueueSettings', methods=['POST'])
 def get_queue_settings():
+   """
+
+   Returns: example return value
+      {
+         "active": 1,
+         "id": 2789801433,
+         "keywords": "seattle",
+         "location": "seattle",
+         "max_size": 10,
+         "qname": "bestqueueever"
+      }
+   """
    queueID = request.json
    try:
       #permissions.has_flag
