@@ -1,14 +1,5 @@
 <div>
-  <h2>Current Data Model Queue Information:</h2>
-  Name: {{ queue.qname }}<br \>
-  ID: {{ queue.qid }}<br \>
-  Max Size: {{ queue.max_size }}<br \>
-  Keywords: {{ queue.keywords }}<br \>
-  Location: {{ queue.location }}<br \>
-  Active: {{ queue.active }}<br \>
-  <input type="submit" value="Join Queue" ng-click="joinQueue()" \><br \>
-
-  <h2>Create New Queue Information:</h2>
+  <h2>Create New Queue Settings:</h2>
   Name: <input name="qname" type="text" ng-model="queue.qname" \><br \>
   Maximum Size: <input name="max_size" type="text" ng-model="queue.max_size" \><br \>
   Keywords: <input name="keywords" type="text" ng-model="queue.keywords" \><br \>
@@ -16,6 +7,47 @@
   Active: <input name="active" type="checkbox" ng-model="queue.active" \><br \>
   <input type="submit" value="Submit" ng-click="createNewQueue()" \><br \>
 
-  <h2>Lookup Queue Information:</h2>
-  ID: <input type="text" ng-model="queue.qid" \> <input type="submit" value="Submit" ng-click="getQueueSettings()"\><br \>
+  <h2>Lookup Queue Settings:</h2>
+  ID: <input type="text" ng-model="queue.id" \> <input type="submit" value="Submit" ng-click="getQueueSettings()"\><br \>
+
+  <h2>Current Data Model Queue Settings:</h2>
+  Name: {{ queue.qname }}<br \>
+  ID: {{ queue.id }}<br \>
+  Max Size: {{ queue.max_size }}<br \>
+  Keywords: {{ queue.keywords }}<br \>
+  Location: {{ queue.location }}<br \>
+  Active: {{ queue.active }}<br \>
+  <input type="submit" value="Join Queue" data-toggle="modal" data-target="#myModal" \><br \>
+
+  <h2>Lookup Queue Info:</h2>
+  ID: <input type="text" ng-model="queue.id" \> <input type="submit" value="Submit" ng-click="getQueueSettings()"\><br \>
+
+  <h2>Current Data Model Queue Information:</h2>
+  Name: {{ queue.qname }}<br \>
+  ID: {{ queue.id }}<br \>
+  Current Size: {{ queue.size }}<br \>
+  Confirmation Number: {{ queue.confirmation_number }}<br \>
+  Average Wait Time: {{ queue.avg_wait_time }}<br \>
+  Expected Wait Time: {{ queue.expected_wait }}<br \>
+  Member Position: {{ queue.member_position }}<br \>
+  <input type="submit" value="Join Queue" data-toggle="modal" data-target="#myModal" \><br \>
+
+  <!-- Modal Window -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="myModalLabel">How would you like to be called?</h4>
+        </div>
+        <div class="modal-body">
+          Name: <input name="location" type="text" ng-model="user.uname" \><br \>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="joinQueue()">Join Queue</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
