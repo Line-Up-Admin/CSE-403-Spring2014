@@ -14,26 +14,49 @@ def root():
 
 @app.route('/join', methods=['POST'])
 def add_to_queue():
+   """Joins a queue defined by the 'qid' passed as a parameter.
+
+   If the session is not logged in, assumes that the user is a temporary user,
+   and looks for a 'uname' parameter as well. This will create a temporary
+   user.
+
+   Returns: example return value below
+      {
+         "avg_wait_time": null,
+         "confirmation_number": 1472823387,
+         "expected_wait": null,
+         "member_position": 0,
+         "name": "ohhey",
+         "q_ID": 556035656,
+         "size": 1
+      }
+   """
+   
    uid = None
    username = None
-   qid = request.json['qid']
-   if session['logged_in']:
+   qid = int(request.json['qid'])
+   temp = None
+   if session.has_key('logged_in') and session['logged_in']:
       uid = session['uid']
-      username = session['username']
+      username = session['uname']
    else:
+      temp = True
       temp_user = dict()
-      temp_user['username'] = request.json['username']
+      temp_user['uname'] = request.json['uname']
       try:
-         temp_user['id'] = db_util.create_user(temp_user)
+         temp_user['id'] = db_util.create_temp_user(temp_user)
       except sqlite3.Error as e:
          return e.message
-      username = temp_user['username']
+      username = temp_user['uname']
       uid = temp_user['id']
    if not permissions.has_flag(uid, qid, permissions.BLOCKED_USER):
       q_member = QueueMember(username, uid)
       queue_server.add(q_member, qid)
       q_info = queue_server.get_info(q_member, qid)
-      return jsonify(q_info.__dict__)
+      q_info_dict = dict(q_info.__dict__)
+      if temp:
+         q_info_dict['confirmation_number'] = uid
+      return jsonify(q_info_dict)
    else:
       return 'User is blocked from this queue.'
 
@@ -43,9 +66,7 @@ def login():
 
 @app.route('/dequeue', methods=['POST'])
 def dequeue():
-   uid = None
-   if not session['logged_in']:
-      raise
+   return 'Not implemented yet!'
 
 @app.route('/searchResults')
 def get_search_results():
@@ -55,8 +76,8 @@ def get_search_results():
 def search():
    return 'Not implemented yet!'
 
-@app.route('/memberQueue/<qid>')
-def get_member_queue(qid):
+@app.route('/memberQueue', methods=['POST'])
+def get_member_queue():
    return 'Not implemented yet!'
 
 @app.route('/employeeQueue/<qid>')
@@ -67,9 +88,23 @@ def get_employee_queue(qid):
 def get_admin_queue(qid):
 	return
 
-@app.route('/queueStatus')
+@app.route('/queueStatus/<qid>')
 def get_queue_status():
-	return 'Not implemented yet!'
+   """View the queue with the given qid.
+
+   Returns: example return value below
+      {
+         "avg_wait_time": null,
+         "confirmation_number": 1472823387,
+         "expected_wait": null,
+         "member_position": 0,
+         "name": "ohhey",
+         "q_ID": 556035656,
+         "size": 1
+      }
+   """
+   q_info = queue_server.get_info(None, qid)
+   return jsonify(q_info.__dict__)
 
 @app.route('/myQueues')
 def get_my_queues():

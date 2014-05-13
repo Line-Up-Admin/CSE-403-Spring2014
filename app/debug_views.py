@@ -101,6 +101,7 @@ def add_to_queue_debug():
       uid = session['uid']
       username = session['uname']
    else:
+      temp = True
       temp_user = dict()
       temp_user['uname'] = request.args['uname']
       try:
@@ -113,7 +114,10 @@ def add_to_queue_debug():
       q_member = QueueMember(username, uid)
       queue_server.add(q_member, qid)
       q_info = queue_server.get_info(q_member, qid)
-      return jsonify(q_info.__dict__)
+      q_info_dict = dict(q_info.__dict__)
+      if temp:
+         q_info_dict['confirmation_number'] = uid
+      return jsonify(q_info_dict)
    else:
       return 'User is blocked from this queue.'
 
