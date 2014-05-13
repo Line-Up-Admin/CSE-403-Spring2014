@@ -10,12 +10,17 @@ angular.module('LineUpApp.services', []).
       return $http.post('/createQueue', queue);
     }
 
-    lineUpAPI.getQueue = function (qid) {
-      return $http.post('/debug/getqueuesettings', qid);
+    lineUpAPI.getQueueSettings = function (qid) {
+      return $http.post('/getQueueSettings', qid);
     }
 
     lineUpAPI.getPopularQueues = function () {
-      return $http.get('/popular')
+      return $http.get('/popular');
     }
+
+    lineUpAPI.joinQueue = function () {
+      return $http.post('/joinQueue');
+    }
+
     return lineUpAPI;
   });

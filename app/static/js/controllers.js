@@ -47,12 +47,29 @@ angular.module('LineUpApp.controllers', []).
     $scope.getPopularQueues = function () {
       lineUpAPIService.getPopularQueues().
         success(function (data, status, headers, config) {
-          queueInfos = data.queue_info_list;
+          $scope.queueInfos = data.queue_info_list;
         }).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the popular queue request! \nStatus: " + status);
       });
     }
+
+    $scope.joinQueue = function () {
+      lineUpAPIService.joinQueue().
+        success(function (data, status, headers, config) {
+
+        }).
+        error(function (data, status, headers, config) {
+          alert("Something went wrong with the join queue request! \nStatus: " + status);
+        });
+    }
+
+
+
+
+
+
+
 
 
 
