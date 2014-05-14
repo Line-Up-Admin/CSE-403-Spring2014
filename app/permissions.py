@@ -3,7 +3,7 @@ from database_utilities import query_db, DatabaseException
 EMPLOYEE = 0b0001
 ADMIN = 0b0011
 BLOCKED_USER = 0b1000
-PERMISSION_QUERY = 'select permissionLevel from Permissions where pid=? and qid=?'
+PERMISSION_QUERY = 'select permission_level from Permissions where pid=? and qid=?'
 
 def has_flag(uid, qid, necessary_permission):
     if necessary_permission == ADMIN or necessary_permission == EMPLOYEE:

@@ -26,8 +26,8 @@ def add_to_queue():
          "confirmation_number": 1472823387,
          "expected_wait": null,
          "member_position": 0,
-         "name": "ohhey",
-         "q_ID": 556035656,
+         "qname": "ohhey",
+         "qid": 556035656,
          "size": 1
       }
    """
@@ -74,7 +74,8 @@ def get_search_results():
 
 @app.route('/search', methods=['POST'])
 def search():
-   return 'Not implemented yet!'
+   q_info_list = queue_server.get_all_queues_info()
+   return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
 
 @app.route('/popular', methods=['GET'])
 def get_popular_queues():
@@ -85,9 +86,17 @@ def get_popular_queues():
 def get_member_queue():
    return 'Not implemented yet!'
 
-@app.route('/employeeQueue/<qid>')
+@app.route('/employeeView/<qid>', methods=['POST'])
 def get_employee_queue(qid):
-   return 'Not implemented yet!'
+    uid = None
+    if session.has_key('logged_in') and session['logged_in']:
+        uid = session['id']
+    else:
+        uid = int(request.json)
+    if permissions.has_flag(uid, qid, permissions.EMPLOYEE):
+        members = queue_server.get_members(qid)
+        q_info = queue_server.get_info(None, qid)
+        return jsonify(queue_info=q_info.__dict__, member_list=[member.__dict__ for member in members])
 
 @app.route('/adminQueue/<qid>')
 def get_admin_queue(qid):
@@ -133,9 +142,15 @@ def get_queue_status():
    q_info = queue_server.get_info(None, qid)
    return jsonify(q_info.__dict__)
 
-@app.route('/myQueues')
+@app.route('/myQueues', methods=['POST'])
 def get_my_queues():
-	return 'Not implemented yet!'
+   uid = None
+   if session.has_key('logged_in') and session['logged_in']:
+      uid = session['id']
+   else:
+      uid = int(request.json)
+   q_info_list = queue_server.get_queue_info_list(uid)
+   return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
 
 @app.route('/remove')
 def remove_queue_member():
