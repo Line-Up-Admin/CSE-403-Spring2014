@@ -10,4 +10,4 @@ sudo apt-get install fontconfig
 sudo apt-get install phantomjs
 
 # install ssmtp
-sudo apt-get install ssmpt
+sudo apt-get install ssmtp
