@@ -192,9 +192,10 @@ class QueueServer(object):
                # already ordered
                q_member = QueueMember.from_dict(member_row)
                q.add(q_member)
-               if q_member not in self.index:
+               if q_member.uid not in self.index:
                   self.index[q_member.uid] = set()
                self.index[q_member.uid].add(qid)
+               print 'added', q_member.uname, ':', q_member.uid, type(q_member.uid), 'to queue', q_settings.qname
                j = j + 1
             print 'Loaded', j, 'members into queue', q_settings.qname
          i = i + 1

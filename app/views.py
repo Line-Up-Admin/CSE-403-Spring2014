@@ -70,12 +70,13 @@ def login():
           # user is already logged in
           return 'User is already logged in.'
       try:
-         user = db_util.get_user(request.json['username'], request.json['password'])
+         user = db_util.get_user(request.json['uname'], request.json['pw'])
          session['logged_in'] = True
          session['id'] = user['id']
+         session['uname'] = user['uname']
       except sqlite3.Error as e:
          return e.message
-      except db.util.ValidationException as e:
+      except db_util.ValidationException as e:
          session['logged_in'] = False
          return 'Invalid username or password'
 

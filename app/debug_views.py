@@ -13,12 +13,12 @@ def hello_world():
     return "Hello, World!"
 
 # Temporary: debugging purposes only.
-@app.route('/debug/getuser')
+@app.route('/debug/getuser', methods=['GET', 'POST'])
 def get_user_debug():
 	if not app.debug:
 	    abort(404)
-	username = request.args.get('username')
-	password = request.args.get('password')
+	username = request.args.get('uname')
+	password = request.args.get('pw')
 	try:
 		user = db_util.get_user(username, password)
 		return jsonify(user)
@@ -28,7 +28,7 @@ def get_user_debug():
 		return e.message
 
 # Temporary: debugging purposes only.
-@app.route('/debug/gettempuser')
+@app.route('/debug/gettempuser', methods=['GET', 'POST'])
 def get_temp_user_debug():
 	if not app.debug:
 		abort(404)
@@ -42,7 +42,7 @@ def get_temp_user_debug():
 		return e.message
 
 # Temporary: debugging purposes only.
-@app.route('/debug/createuser')
+@app.route('/debug/createuser', methods=['GET', 'POST'])
 def create_user_debug():
 	if not app.debug:
 		abort(404)
@@ -54,7 +54,7 @@ def create_user_debug():
 		return e.message
 
 #@app.route('/debug/getqueuesettings')
-@app.route('/debug/getqueuesettings', methods=['POST'])
+@app.route('/debug/getqueuesettings', methods=['GET', 'POST'])
 def get_queue_settings_debug():
    #queueID = request.args.get('qid')
    qid = request.args.get('qid')
@@ -65,7 +65,7 @@ def get_queue_settings_debug():
    except sqlite3.Error as e:
       return e.message
 
-@app.route('/debug/createqueue', methods=['GET'])
+@app.route('/debug/createqueue', methods=['GET', 'POST'])
 def create_queue_debug():
    queueSettings = copy_request_args(request)
    try:
@@ -74,7 +74,7 @@ def create_queue_debug():
    except sqlite3.Error as e:
       return e.message
 
-@app.route('/debug/createtempuser')
+@app.route('/debug/createtempuser', methods=['GET', 'POST'])
 def create_temp_user_debug():
    if not app.debug:
       abort(404)
@@ -86,13 +86,13 @@ def create_temp_user_debug():
    except sqlite3.Error as e:
       return e.message
 
-@app.route('/debug/popular', methods=['GET'])
+@app.route('/debug/popular', methods=['GET', 'POST'])
 def get_popular_queues_debug():
    q_info_list = queue_server.get_all_queues_info()
    return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
       
 
-@app.route('/debug/login')
+@app.route('/debug/login', methods=['GET', 'POST'])
 def login_debug():
    if session.has_key('logged_in'):
       if session['logged_in']:
@@ -102,19 +102,20 @@ def login_debug():
       user = db_util.get_user(request.args.get('uname'), request.args.get('pw'))
       session['logged_in'] = True
       session['id'] = user['id']
+      session['uname'] = user['uname']
       return jsonify(user)
    except sqlite3.Error as e:
       return e.message
    except db_util.ValidationException as e:
       session['logged_in'] = False
-      return 'Invalid username or password'
+      return e.message
 
-@app.route('/debug/queueStatus/<int:qid>', methods=['POST'])
+@app.route('/debug/queueStatus/<int:qid>', methods=['GET', 'POST'])
 def get_queue_info_debug(qid):
    q_info = queue_server.get_info(None, qid)
    return jsonify(q_info.__dict__)
 
-@app.route('/debug/myqueues', methods=['POST'])
+@app.route('/debug/myqueues', methods=['GET'])
 def get_my_queues_debug():
    if not app.debug:
       abort(404)
@@ -126,7 +127,7 @@ def get_my_queues_debug():
    q_info_list = queue_server.get_queue_info_list(uid)
    return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
        
-@app.route('/debug/employeeView/<int:qid>', methods=['POST'])
+@app.route('/debug/employeeView/<int:qid>', methods=['GET', 'POST'])
 def get_queue_info_and_members(qid):
     if not app.debug:
         abort(404)
@@ -140,14 +141,15 @@ def get_queue_info_and_members(qid):
         q_info = queue_server.get_info(None, qid)
         return jsonify(queue_info=q_info.__dict__, member_list=[member.__dict__ for member in members])
 
-@app.route('/debug/join/<int:qid>', methods=['POST'])
+@app.route('/debug/join/<int:qid>', methods=['GET', 'POST'])
 def add_to_queue_debug(qid):
    if not app.debug:
       abort(404)
    uid = None
    username = None
+   temp = False
    if session.has_key('logged_in') and session['logged_in']:
-      uid = session['uid']
+      uid = session['id']
       username = session['uname']
    else:
       temp = True
@@ -170,7 +172,7 @@ def add_to_queue_debug(qid):
    else:
       return 'User is blocked from this queue.'
 
-@app.route('/debug/dequeue/<int:qid>', methods=['POST'])
+@app.route('/debug/dequeue/<int:qid>', methods=['GET', 'POST'])
 def dequeue_debug(qid):
    if not app.debug:
       abort(404)
