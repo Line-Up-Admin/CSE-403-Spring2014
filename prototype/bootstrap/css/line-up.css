@@ -2,6 +2,36 @@
 	font-size: xx-large;
 }
 
+.control_list {
+	min-width: 160px;
+	max-width: 300px;
+	float: right;
+}
+
+.control_options {
+	width: 120px;
+	padding-right: 15px;
+}
+
+.control_list, .control_options {
+	display: inline-block;
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.control_buttons a {
+	width: 100%;
+	margin: 5px;
+	min-width: 80px;
+	font-size: x-small;
+}
+
+.control_buttons a span {
+	font-size: x-large;
+}
+
 .button_join {
 	width: 120px;
 }
@@ -10,7 +40,7 @@
 	width: 86px;
 }
 
-.queue_face, .queue_control {
+.queue_face, .queue_control, .control_options {
 	margin-top: 25px;
 	margin-bottom: 25px;
 	margin-left: 10px;
