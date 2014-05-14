@@ -7,7 +7,6 @@ rm -rf ~/LineUpTestSpace/lineUp
 #cp testlogs/test_output_template.txt testlogs/test_output.txt
 git clone https://github.com/Line-Up-Admin/CSE-403-Spring2014.git ~/LineUpTestSpace/lineUp
 
-
 cd ~/LineUpTestSpace/lineUp/tests/
 
 # run python tests and redirect output to file
