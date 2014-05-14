@@ -92,14 +92,31 @@ class Queue(object):
             return i
       return None
 
+   def get_member(self, userid):
+      """
+      Returns:
+         the saved QueueMember object associated with the uid."""
+      q_member = QueueMember(uid=userid)
+      for i, j in enumerate(self.my_q):
+         if j == q_member:
+            return j
+      return None
+
+   def get_members(self):
+      members = list()
+      for member in self.my_q:
+         members.append(member)
+      return members
+
 
 class QueueMember(object):
       """  This is a person / anonymous user in a queue. More
          fields may be added to this object to support more options
          such as party size. """
-      def __init__(self, username, ID):
-         self.username = username
-         self.ID = ID
+      def __init__(self, uname=None, uid=None, optional_data=None):
+         self.uname = uname
+         self.uid = uid
+         self.optional_data = optional_data
 
       def __eq__(self, other):
          """ Queue Members are defined to be equal only if they
@@ -107,7 +124,15 @@ class QueueMember(object):
          if other == None:
             return False
          else:
-            return self.ID == other.ID
+            return self.uid == other.uid
+
+      @staticmethod
+      def from_dict(member_dict):
+         q_member = QueueMember()
+         for key in member_dict.keys():
+            if hasattr(q_member, key):
+               setattr(q_member, key, member_dict[key])
+         return q_member
 
 class QueueSettings(object):
    """ This class is used to store all the settings that an administrator
@@ -152,39 +177,58 @@ class QueueServer(object):
       for q_id, q_set in all_qs:
          table[q_id] = Queue(q_id, q_set)
       """
-      rows = db_util.get_all_queues()
+      (q_settings_rows, q_rows) = db_util.get_all_queues()
       print 'Loading queues from db...'
       i = 0
-      for row in rows:
-         q_settings = QueueSettings.from_dict(row)
-         qid = row['id']
+      for q_settings_row in q_settings_rows:
+         q_settings = QueueSettings.from_dict(q_settings_row)
+         qid = q_settings_row['qid']
          q = Queue(qid, q_settings)
          self.table[qid] = q
+         member_rows = db_util.get_queue_members(qid)
+         if member_rows:
+            j = 0
+            for member_row in member_rows:
+               # already ordered
+               q_member = QueueMember.from_dict(member_row)
+               q.add(q_member)
+               if q_member not in self.index:
+                  self.index[q_member.uid] = set()
+               self.index[q_member.uid].add(qid)
+               j = j + 1
+            print 'Loaded', j, 'members into queue', q_settings.qname
          i = i + 1
       print 'Done loading. loaded', i, 'queues'
 
-   def add(self, member, q_ID):
+   def add(self, member, qid):
       """ Adds a new member to a specific queue."""
-      if q_ID not in self.table:
+      if qid not in self.table:
          raise Exception('Queue not found')
-      q = self.table[q_ID]
+      q = self.table[qid]
       q.add(member)
       #add member to the reverse index
-      if member not in self.index:
-         self.index[member] = set()
-      self.index[member].add(q_ID)
+      if member.uid not in self.index:
+         self.index[member.uid] = set()
+      self.index[member.uid].add(qid)
+      db_util.add_to_queue(member.uid, qid, member.optional_data)
 
-   def remove(self, member, q_ID):
+   def remove(self, member, qid):
       """ This could raise a KeyError, which we are currently
          passing on the to caller. """
-      q = self.table[q_ID]
+      q = self.table[qid]
+      self.index[member.uid].remove(qid)
       return q.remove(member)
 
-   def dequeue(self, q_ID):
+   def dequeue(self, qid):
       """ Note -- parameter here differs from UML diagram. """
-      if q_ID not in self.table:
+      if qid not in self.table:
          raise Exception('Queue not found')
-      return self.table[q_ID].dequeue()
+      q_member = self.table[qid].dequeue()
+      if q_member is None:
+         return None
+      self.index[q_member.uid].remove(qid)
+      db_util.remove_by_uid_qid(q_member.uid, qid)
+      return q_member
 
    def search(self, name, location):
       """ Implementation here is not very efficient. """
@@ -205,10 +249,10 @@ class QueueServer(object):
       self.table[q_ID] = new_q
       return q_ID
 
-   def get(self, q_id):
+   def get_members(self, qid):
       """ I'm not sure this method is necessary if all Queue 
          modification is done through the QueueServer object. """
-      return self.table[q_id]
+      return self.table[qid].get_members()
 
    def postpone(self, member, qid):
       if qid not in self.table:
@@ -243,6 +287,22 @@ class QueueServer(object):
          q_info = self.get_info(None, queue.id)
          result.append(q_info)
       return result
+
+   def get_queue_info_list(self, userid):
+      """
+
+      Args:
+         q_member: a QueueMember object. QueueMembers are defined by uid, so if uname and optional_data is
+         not known, just create a QueueMember and assign it the uid.
+
+      Returns:
+         a list of QueueInfo.
+
+      """
+      queue_list = list()
+      for qid in self.index[userid]:
+         queue_list.append(self.get_info(QueueMember(uid=userid), qid))
+      return queue_list   
 
 class QueueInfo(object):
    """ This is a class to store a number of pieces of information

@@ -3,6 +3,7 @@
 /* Controllers */
 angular.module('LineUpApp.controllers', []).
   controller('lineUpController', function ($scope, lineUpAPIService) {
+    $scope.user = {};
     $scope.queue = {};
     $scope.queueInfos = [];
     $scope.user = {};
@@ -15,7 +16,7 @@ angular.module('LineUpApp.controllers', []).
       lineUpAPIService.createQueue($scope.queue).
         success(function (data, status, headers, config) {
           // set the local queue to be the newly created queue
-          $scope.queue.qid = data.id;
+          $scope.queue = data;
         }).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the create request!\nStatus: " + status);
@@ -28,11 +29,11 @@ angular.module('LineUpApp.controllers', []).
     // settings.
     // Upon error: TODO: Do something smart to handle the error
     $scope.getQueueSettings = function () {
-      lineUpAPIService.getQueue($scope.queue.qid).
+      lineUpAPIService.getQueueSettings($scope.queue.id).
         success(function (data, status, headers, config) {
           // set the local queue to be the newly created queue
           $scope.queue = data;
-          $scope.queue.qid = data.id;
+          //$scope.queue.qid = data.id;
         }).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the queue lookup request!\nStatus: " + status);
@@ -54,10 +55,15 @@ angular.module('LineUpApp.controllers', []).
       });
     }
 
+    // Sends a request to the server to join the queue
+    // queues.
+    // Upon success: Updates the current queueInfos array to store the results
+    // of the request.
+    // Upon error: TODO: Do something smart to handle the error
     $scope.joinQueue = function () {
-      lineUpAPIService.joinQueue().
+      lineUpAPIService.joinQueue({ 'qid': $scope.queue.id, 'uname': $scope.user.uname }).
         success(function (data, status, headers, config) {
-
+          console.log(data);
         }).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the join queue request! \nStatus: " + status);

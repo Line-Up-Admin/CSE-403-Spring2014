@@ -1,5 +1,5 @@
 var page = require('webpage').create();
-page.open('file:///var/www/lineup/tests/angular_tests/SpecRunner.html', function(status) {
+page.open('file:///~/LineUpTestSpace/lineup/tests/angular_tests/SpecRunner.html', function(status) {
 
   // var title = page.evaluate(function() {
   //   return document.title;

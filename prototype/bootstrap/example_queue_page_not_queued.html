@@ -26,7 +26,7 @@
 					<img class="pull-left img-responsive" src="images/LineUp_Icon.png"/>
 				</div>
 				<button type="button" class="btn btn-default btn-lg">
-					<span class="glyphicon glyphicon-edit"></span>
+					<span class="glyphicon glyphicon-home"></span>
 				</button>
 				<button type="button" class="btn btn-default btn-lg">
 					<span class="glyphicon glyphicon-exclamation-sign"></span>
@@ -38,32 +38,19 @@
 			<hr>
 		</div>
 		
-		<div class="container text-center main-page-content">
-			<h1>Your Queues</h1>
-			<div class="current-queues">
-				<h2>Current</h2>
-				<a href="#"><div class="queue">
-					<img class="queue-img" src="images/CLUE_phys.png"/>
-					<div class="progress"><div class="progress-bar" style="width: 80%;"></div></div>
-					<p class="queue-name">CLUE - Physics</p>
-					<p class="time-left">10 min</p>
-				</div></a>
-				<a href="#"><div class="queue">
-					<img class="queue-img" src="images/hall_health.png"/>
-					<div class="progress"><div class="progress-bar" style="width: 30%;"></div></div>
-					<p class="queue-name">Hall Health</p>
-					<p class="time-left">3 hours</p>
-				</div></a>
+		<div class="queue_face container text-center">
+			<img class="queue-portrait" src="images/CLUE_phys_large.png"/>
+			<h1 class="queue-page-header">CLUE - Physics</h1>
+		</div>
+		<div class="queue_control container">
+			<p class="button_join"><a href="#" id="btn-join" class="btn btn-line-up btn-lg btn-block" role="button">
+				<span class="glyphicon glyphicon-send"></span></br>
+				Join Queue
+			</a></p>
+			<div class="queue-status">
+				5 min wait</br>
+				19 people			
 			</div>
-			<div class="recent-queues">
-				<h2>Recent</h2>
-				<a href="#"><div class="queue">
-					<img class="queue-img" src="images/hall_health.png"/>
-					<p class="queue-name">Hall Health</p>
-					<p class="time-left">3 hours</p>
-				</div></a>
-			</div>
-			<p><a href="#" class="btn btn-line-up btn-lg btn-block" role="button">Join a New Queue</a></p>
 		</div>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>

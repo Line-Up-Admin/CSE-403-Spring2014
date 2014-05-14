@@ -1,5 +1,66 @@
+.glyphicon-send, .glyphicon-time, .glyphicon-remove-sign {
+	font-size: xx-large;
+}
+
+.control_list {
+	min-width: 160px;
+	max-width: 300px;
+	float: right;
+}
+
+.control_options {
+	width: 120px;
+	padding-right: 15px;
+}
+
+.control_list, .control_options {
+	display: inline-block;
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.control_buttons a {
+	width: 100%;
+	margin: 5px;
+	min-width: 80px;
+	font-size: x-small;
+}
+
+.control_buttons a span {
+	font-size: x-large;
+}
+
+.button_join {
+	width: 120px;
+}
+
 .line-up-icon {
 	width: 86px;
+}
+
+.queue_face, .queue_control, .control_options {
+	margin-top: 25px;
+	margin-bottom: 25px;
+	margin-left: 10px;
+}
+
+.queue-status {
+	text-align: center;
+	font-size: large;
+	font-weight: bold;
+	padding: 25px;
+}
+
+#btn-join {
+	width: 100%;
+}
+
+#btn-postpone, #btn-leave {
+	width: 30%;
+	margin: 10px;
+	min-width: 100px;
 }
 
 .line-up-banner {
@@ -71,13 +132,21 @@ h1.page-content-header {
 }
 
 h1.queue-page-header {
-	margin-top: 40px;
+	padding: 12px;
 	font-size: x-large;
 	text-decoration: underline;
+	font-weight: bold;
 }
 
-.queue-portrait {
+.progress {
+	width: 20%;
+	display: inline-block;
+	margin: 0px;
+}
+
+.queue-portrait, .button_join {
 	float: left;
+	margin: 10px;
 }
 
 #submit-login, #submit-acct-info  {
@@ -110,7 +179,11 @@ h1.queue-page-header {
 	margin-left: auto;
 	margin-right: auto;
 }
-.btn-line-up:hover,
-.btn-line-up:focus,
-.btn-line-up:active,
-.btn-line-up.active,
+
+.queue_position {
+	width: 50%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}

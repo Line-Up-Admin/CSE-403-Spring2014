@@ -57,11 +57,11 @@ def create_user_debug():
 @app.route('/debug/getqueuesettings', methods=['POST'])
 def get_queue_settings_debug():
    #queueID = request.args.get('qid')
-   queueID = request.args.get('qid')
+   qid = request.args.get('qid')
    try:
-      #permissions.has_flag
-      queue = db_util.get_queue_settings(queueID)
-      return jsonify(queue)
+      #permissions.has_flag(qid, 
+      q_settings = db_util.get_queue_settings(qid)
+      return jsonify(q_settings)
    except sqlite3.Error as e:
       return e.message
 
@@ -69,7 +69,7 @@ def get_queue_settings_debug():
 def create_queue_debug():
    queueSettings = copy_request_args(request)
    try:
-      queueSettings['id'] = queue_server.create(queueSettings)
+      queueSettings['qid'] = queue_server.create(queueSettings)
       return jsonify(queueSettings)
    except sqlite3.Error as e:
       return e.message
@@ -111,8 +111,34 @@ def login_debug():
 
 @app.route('/debug/queueStatus/<int:qid>', methods=['POST'])
 def get_queue_info_debug(qid):
-    q_info = queue_server.get_info(None, qid)
-    return jsonify(q_info.__dict__)
+   q_info = queue_server.get_info(None, qid)
+   return jsonify(q_info.__dict__)
+
+@app.route('/debug/myqueues', methods=['POST'])
+def get_my_queues_debug():
+   if not app.debug:
+      abort(404)
+   uid = None
+   if session.has_key('logged_in') and session['logged_in']:
+      uid = session['id']
+   else:
+      uid = int(request.args.get('uid'))
+   q_info_list = queue_server.get_queue_info_list(uid)
+   return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
+       
+@app.route('/debug/employeeView/<int:qid>', methods=['POST'])
+def get_queue_info_and_members(qid):
+    if not app.debug:
+        abort(404)
+    uid = None
+    if session.has_key('logged_in') and session['logged_in']:
+        uid = session['id']
+    else:
+        uid = int(request.args.get('uid'))
+    if permissions.has_flag(uid, qid, permissions.EMPLOYEE):
+        members = queue_server.get_members(qid)
+        q_info = queue_server.get_info(None, qid)
+        return jsonify(queue_info=q_info.__dict__, member_list=[member.__dict__ for member in members])
 
 @app.route('/debug/join/<int:qid>', methods=['POST'])
 def add_to_queue_debug(qid):
@@ -152,7 +178,7 @@ def dequeue_debug(qid):
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['id']
    else:
-      uid = request.args['employee']
+      uid = int(request.args.get('employeeID'))
    if permissions.has_flag(uid, qid, permissions.EMPLOYEE):
       q_member = queue_server.dequeue(qid)
       if q_member is None:
