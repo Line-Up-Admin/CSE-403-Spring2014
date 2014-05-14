@@ -1,14 +1,14 @@
 #!/bash/bin
 
 # clean up any repos from previous tests
-rm -rf ~/LineUpTestSpace/CSE-403-Spring2014
+rm -rf ~/LineUpTestSpace/lineUp
 
 #copy email template
 #cp testlogs/test_output_template.txt testlogs/test_output.txt
-git clone https://github.com/Line-Up-Admin/CSE-403-Spring2014.git ~/LineUpTestSpace
+git clone https://github.com/Line-Up-Admin/CSE-403-Spring2014.git ~/LineUpTestSpace/lineUp
 
 
-cd ~/LineUpTestSpace/CSE-403-Spring2014/tests/
+cd ~/LineUpTestSpace/lineUp/tests/
 
 # run python tests and redirect output to file
 python flask_tests/test.py 2> test_output.txt
