@@ -138,6 +138,12 @@ h1.queue-page-header {
 	font-weight: bold;
 }
 
+.progress {
+	width: 20%;
+	display: inline-block;
+	margin: 0px;
+}
+
 .queue-portrait, .button_join {
 	float: left;
 	margin: 10px;
