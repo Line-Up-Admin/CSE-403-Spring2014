@@ -92,6 +92,23 @@ def get_popular_queues_debug():
    return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
       
 
+@app.route('/debug/login')
+def login_debug():
+   if session.has_key('logged_in'):
+      if session['logged_in']:
+         # user is already logged in
+         return 'User is already logged in.'
+   try:
+      user = db_util.get_user(request.args.get('uname'), request.args.get('pw'))
+      session['logged_in'] = True
+      session['id'] = user['id']
+      return jsonify(user)
+   except sqlite3.Error as e:
+      return e.message
+   except db_util.ValidationException as e:
+      session['logged_in'] = False
+      return 'Invalid username or password'
+
 @app.route('/debug/queueStatus/<int:qid>', methods=['POST'])
 def get_queue_info_debug(qid):
     q_info = queue_server.get_info(None, qid)

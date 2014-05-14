@@ -60,9 +60,24 @@ def add_to_queue():
    else:
       return 'User is blocked from this queue.'
 
-@app.route('/login', methods=['GET','POST'])
+@app.route('/login')
 def login():
-   return 'Not implemented yet!'
+   if request.method == 'GET':
+      return app.send_static_file('login.html')
+   else:
+      # POST message
+      if session.has_key('logged_in') and session['logged_in']:
+          # user is already logged in
+          return 'User is already logged in.'
+      try:
+         user = db_util.get_user(request.json['username'], request.json['password'])
+         session['logged_in'] = True
+         session['id'] = user['id']
+      except sqlite3.Error as e:
+         return e.message
+      except db.util.ValidationException as e:
+         session['logged_in'] = False
+         return 'Invalid username or password'
 
 @app.route('/dequeue', methods=['POST'])
 def dequeue():
