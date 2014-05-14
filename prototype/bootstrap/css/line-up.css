@@ -1,5 +1,30 @@
+.glyphicon-send {
+	font-size: xx-large;
+}
+
+.button_join {
+	width: 120px;
+}
+
 .line-up-icon {
 	width: 86px;
+}
+
+.queue_face, .queue_control {
+	margin-top: 25px;
+	margin-bottom: 25px;
+	margin-left: 10px;
+}
+
+.queue-status {
+	text-align: center;
+	font-size: large;
+	font-weight: bold;
+	padding: 25px;
+}
+
+#btn-join {
+	width: 100%;
 }
 
 .line-up-banner {
@@ -71,13 +96,15 @@ h1.page-content-header {
 }
 
 h1.queue-page-header {
-	margin-top: 40px;
+	padding: 12px;
 	font-size: x-large;
 	text-decoration: underline;
+	font-weight: bold;
 }
 
-.queue-portrait {
+.queue-portrait, .button_join {
 	float: left;
+	margin: 10px;
 }
 
 #submit-login, #submit-acct-info  {
