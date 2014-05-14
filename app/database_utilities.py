@@ -20,7 +20,7 @@ INSERT_QUEUE_SETTINGS = 'insert into qsettings values(?, ?, ?, ?, ?, ?)'
 INSERT_TEMP_USER = 'insert into users values(?, 1, ?, NULL, NULL, NULL, NULL)'
 REMOVE_MEMBER_FROM_QUEUE = 'delete from qindex where uid=? and qid=?'
 UPDATE_QUEUE_FOR_ADD = 'update Queues set ending_index=ending_index+1 where id=?'
-UPDATE_QUEUE_FOR_DEQUEUE = 'update queues set starting_index=starting_index+1'
+UPDATE_QUEUE_FOR_REMOVE = 'update queues set starting_index=starting_index+1 where id=?'
 
 def query_db(query, args=()):
   db = get_db()
@@ -242,6 +242,17 @@ def add_to_queue(uid, qid, optional_data):
   db = get_db()
   db.execute(INSERT_MEMBER_INTO_QUEUE, (uid, qid, qid, optional_data))
   db.execute(UPDATE_QUEUE_FOR_ADD, (qid,))
+  db.commit()
+
+def remove_by_uid_qid(uid, qid):
+  """
+
+  Returns:
+    nothing is returned. The q_member data should have been obtained from the software model.
+  """
+  db = get_db()
+  db.execute(REMOVE_MEMBER_FROM_QUEUE, (uid, qid))
+  db.execute(UPDATE_QUEUE_FOR_REMOVE, (qid,))
   db.commit()
 
 def get_queue_members(qid):

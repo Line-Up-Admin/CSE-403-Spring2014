@@ -224,7 +224,10 @@ class QueueServer(object):
       if qid not in self.table:
          raise Exception('Queue not found')
       q_member = self.table[qid].dequeue()
+      if q_member is None:
+         return None
       self.index[q_member.uid].remove(qid)
+      db_util.remove_by_uid_qid(q_member.uid, qid)
       return q_member
 
    def search(self, name, location):

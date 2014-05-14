@@ -64,9 +64,23 @@ def add_to_queue():
 def login():
    return 'Not implemented yet!'
 
-@app.route('/dequeue', methods=['POST'])
+@app.route('/dequeue/<int:qid>', methods=['POST'])
 def dequeue():
-   return 'Not implemented yet!'
+   uid=None
+   if session.has_key('logged_in') and session['logged_in']:
+      uid=session['id']
+   else:
+      if app.debug:
+         uid=int(request.json)
+      else:
+         return "You must be logged in as an employee to dequeue."
+   if permissions.has_flag(uid, qid, permissions.EMPLOYEE):
+      q_member = queue_server.dequeue(qid)
+      if q_member is None:
+         return 'The queue is empty.'
+      return jsonify(q_member.__dict__)
+   else:
+      return 'You must be an employee to dequeue.'
 
 @app.route('/searchResults')
 def get_search_results():
@@ -88,15 +102,15 @@ def get_member_queue():
 
 @app.route('/employeeView/<qid>', methods=['POST'])
 def get_employee_queue(qid):
-    uid = None
-    if session.has_key('logged_in') and session['logged_in']:
-        uid = session['id']
-    else:
-        uid = int(request.json)
-    if permissions.has_flag(uid, qid, permissions.EMPLOYEE):
-        members = queue_server.get_members(qid)
-        q_info = queue_server.get_info(None, qid)
-        return jsonify(queue_info=q_info.__dict__, member_list=[member.__dict__ for member in members])
+   uid = None
+   if session.has_key('logged_in') and session['logged_in']:
+      uid = session['id']
+   else:
+      return "You must be logged in as an employee to dequeue."
+   if permissions.has_flag(uid, qid, permissions.EMPLOYEE):
+      members = queue_server.get_members(qid)
+      q_info = queue_server.get_info(None, qid)
+      return jsonify(queue_info=q_info.__dict__, member_list=[member.__dict__ for member in members])
 
 @app.route('/adminQueue/<qid>')
 def get_admin_queue(qid):

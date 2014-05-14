@@ -10,4 +10,10 @@ insert into Users values (0, 1, 'Creator', 'Thomas', 'Rothschilds', 'tgr4@uw.edu
 insert into Users values (1, 1, 'Jim', 'Jim', 'Jim', 'jim@jim.jim', 'jimjimjim');
 insert into Users values (2, 1, 'boi', 'oh', 'hai', 'boi@oh.hai', 'boiohhai');
 insert into QIndex values(0, 0, (select ending_index from Queues where id=0), 'party_size:3');
+update Queues set ending_index=ending_index+1 where id=0;
 insert into QIndex values(1, 0, (select ending_index from Queues where id=0), 'party_size:5');
+update Queues set ending_index=ending_index+1 where id=0;
+insert into QIndex values(2, 1, (select ending_index from Queues where id=1), 'party_size:4');
+update Queues set ending_index=ending_index+1 where id=1;
+insert into QIndex values(1, 1, (select ending_index from Queues where id=1), 'party_size:5');
+update Queues set ending_index=ending_index+1 where id=1;

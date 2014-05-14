@@ -161,7 +161,7 @@ def dequeue_debug(qid):
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['id']
    else:
-      uid = request.args['employee']
+      uid = int(request.args.get('employeeID'))
    if permissions.has_flag(uid, qid, permissions.EMPLOYEE):
       q_member = queue_server.dequeue(qid)
       if q_member is None:
