@@ -15,7 +15,7 @@ GET_QUEUE_SETTINGS_BY_ID = 'select * from qsettings where id=?'
 GET_TEMP_USER_BY_ID = 'select * from users where temp=1 and id=?'
 INSERT_MEMBER_INTO_QUEUE = 'insert into QIndex values(?, ?, (select ending_index from Queues where id=?), ?)'
 INSERT_PROFILED_USER = 'insert into users values(?, ?, ?, ?, ?, ?, ?)'
-INSERT_QUEUE = 'insert into queues values(?, 0)'
+INSERT_QUEUE = 'insert into queues values(?, 0, 0)'
 INSERT_QUEUE_SETTINGS = 'insert into qsettings values(?, ?, ?, ?, ?, ?)'
 INSERT_TEMP_USER = 'insert into users values(?, 1, ?, NULL, NULL, NULL, NULL)'
 REMOVE_MEMBER_FROM_QUEUE = 'delete from qindex where uid=? and qid=?'
@@ -180,7 +180,7 @@ def create_queue(q_settings):
   db.execute(INSERT_QUEUE, (q_settings['qid'],))
   db.execute(INSERT_QUEUE_SETTINGS, qsettings_dict_to_db_tuple(q_settings))
   db.commit()
-  return q_settings['id']
+  return q_settings['qid']
 
 def modify_queue_settings(q_settings):
   """Modifies the queue with the qid defined in q_settings to match the q_settings given.

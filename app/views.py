@@ -123,7 +123,7 @@ def get_queue_settings():
    Returns: example return value
       {
          "active": 1,
-         "id": 2789801433,
+         "qid": 2789801433,
          "keywords": "seattle",
          "location": "seattle",
          "max_size": 10,
@@ -193,7 +193,7 @@ def create_queue():
    """need to add validation"""
    q_settings = request.json
    try:
-      q_settings['id'] = queue_server.create(q_settings)
+      q_settings['qid'] = queue_server.create(q_settings)
       return jsonify(q_settings)
    except sqlite3.Error as e:
       return e.message
