@@ -17,9 +17,9 @@ config(['$routeProvider', function($routeProvider) {
     templateUrl: "partials/search.html",
     controller: "lineUpController"
   }).
-  when("/queue_info", {
-    templateUrl: "/index.html",
-    controller: "lineUpController"
+  when("/queue_info/:qid", {
+    templateUrl: "partials/queue_info.html",
+    controller: "queueInfoController"
   }).
   when("/create_queue", {
     templateUrl: "partials/create_queue.html",

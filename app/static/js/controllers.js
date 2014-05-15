@@ -22,23 +22,6 @@ angular.module('LineUpApp.controllers', []).
         });
     }
 
-    // Sends a request to the server to get the queue settings that match the
-    // provided ID.
-    // Upon success: Updates the current queue model to include the queue
-    // settings.
-    // Upon error: TODO: Do something smart to handle the error
-    $scope.getQueueSettings = function () {
-      lineUpAPIService.getQueueSettings($scope.queue.id).
-        success(function (data, status, headers, config) {
-          // set the local queue to be the newly created queue
-          $scope.queue = data;
-          //$scope.queue.qid = data.id;
-        }).
-        error(function (data, status, headers, config) {
-          alert("Something went wrong with the queue lookup request!\nStatus: " + status);
-        });
-    }
-
     // Sends a request to the server to get the information for the most popular
     // queues.
     // Upon success: Updates the current queueInfos array to store the results
@@ -118,4 +101,25 @@ angular.module('LineUpApp.controllers', []).
 
 
 
+  }).
+  controller('queueInfoController', function ($scope, lineUpAPIService, $routeParams) {
+
+    // Sends a request to the server to get the queue settings that match the
+    // provided ID.
+    // Upon success: Updates the current queue model to include the queue
+    // settings.
+    // Upon error: TODO: Do something smart to handle the error
+    $scope.getQueueSettings = function () {
+
+      alert("Not yet implemented.");
+      // lineUpAPIService.getQueueSettings($routeParams.qid).
+
+      //   success(function (data, status, headers, config) {
+      //     // set the local queue to be the newly created queue
+      //     console.log(data);
+      //   }).
+      //   error(function (data, status, headers, config) {
+      //     alert("Something went wrong with the queue lookup request!\nStatus: " + status);
+      //   });
+    }();
   });
