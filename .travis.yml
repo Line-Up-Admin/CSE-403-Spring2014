@@ -13,3 +13,7 @@ install:
 script: app/tests/flask_tests/run_flask_tests.sh
 
 
+notifications:
+  email:
+    recipients:
+      - cse403group@uw.edu
