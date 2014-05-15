@@ -11,7 +11,7 @@ config(['$routeProvider', function($routeProvider) {
   $routeProvider.
   when("/", {
     templateUrl: "partials/login.html",
-    controller: "lineUpController"
+    controller: "userAccountController"
   }).
   when("/search", {
     templateUrl: "partials/search.html",
@@ -35,7 +35,7 @@ config(['$routeProvider', function($routeProvider) {
   }).
   when("/create_account", {
     templateUrl: "partials/create_account.html",
-    controller: "lineUpController"
+    controller: "userAccountController"
   }).
   when("/debug_q", { //SHOULD BE REMOVED BEFORE BETA RELEASE
     templateUrl: "partials/debug_queue_settings.html",

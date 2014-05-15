@@ -36,7 +36,7 @@ def create_queue():
          qid:
          qname:
       }
-      
+
    """
    q_settings = request.json
    try:
@@ -73,7 +73,7 @@ def add_to_queue():
          "qid": 556035656,
          "size": 1
       }
-      
+
    """
    uid = None
    username = None
@@ -116,7 +116,7 @@ def dequeue():
          uid:
          uname:
       }
-      
+
    """
    uid=None
    if session.has_key('logged_in') and session['logged_in']:
@@ -151,7 +151,7 @@ def search():
       {
          "queue_info_list"= [
             {
-               "avg_wait_time": 
+               "avg_wait_time":
                "expected_wait":
                "member_position":
                "qid":
@@ -169,7 +169,7 @@ def search():
              etc...
          ]
       }
-      
+
    """
    q_info_list = queue_server.get_all_queues_info()
    return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
@@ -187,7 +187,7 @@ def get_popular_queues():
       {
          "queue_info_list"= [
             {
-               "avg_wait_time": 
+               "avg_wait_time":
                "expected_wait":
                "member_position":
                "qid":
@@ -205,7 +205,7 @@ def get_popular_queues():
              etc...
          ]
       }
-      
+
    """
    q_info_list = queue_server.get_all_queues_info()
    return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
@@ -224,31 +224,31 @@ def get_employee_queue(qid):
       {
         "member_list": [
           {
-            "optional_data": "party_size:3", 
-            "uid": 0, 
+            "optional_data": "party_size:3",
+            "uid": 0,
             "uname": "Creator"
-          }, 
+          },
           {
-            "optional_data": "party_size:5", 
-            "uid": 1, 
+            "optional_data": "party_size:5",
+            "uid": 1,
             "uname": "Jim"
-          }, 
+          },
           {
-            "optional_data": null, 
-            "uid": 2317776437, 
+            "optional_data": null,
+            "uid": 2317776437,
             "uname": "TheCreator"
           }
-        ], 
+        ],
         "queue_info": {
-          "avg_wait_time": null, 
-          "expected_wait": 10, 
-          "member_position": null, 
-          "qid": 0, 
-          "qname": "tgr4", 
+          "avg_wait_time": null,
+          "expected_wait": 10,
+          "member_position": null,
+          "qid": 0,
+          "qname": "tgr4",
           "size": 3
         }
       }
-   
+
    """
    uid = None
    if session.has_key('logged_in') and session['logged_in']:
@@ -280,7 +280,7 @@ def get_queue_settings():
          "max_size": 10,
          "qname": "bestqueueever"
       }
-      
+
    """
    queueID = request.json
    try:
@@ -304,7 +304,7 @@ def get_queue_status():
          "qid": 556035656,
          "size": 1
       }
-      
+
    """
    q_info = queue_server.get_info(None, qid)
    return jsonify(q_info.__dict__)
@@ -324,24 +324,24 @@ def get_my_queues():
       {
          "queue_info_list": [
             {
-               "avg_wait_time": null, 
-               "expected_wait": 10, 
-               "member_position": 3, 
-               "qid": 0, 
-               "qname": "tgr4", 
+               "avg_wait_time": null,
+               "expected_wait": 10,
+               "member_position": 3,
+               "qid": 0,
+               "qname": "tgr4",
                "size": 4
-            }, 
+            },
             {
-               "avg_wait_time": null, 
-               "expected_wait": 10, 
-               "member_position": 1, 
-               "qid": 2, 
-               "qname": "bestqueueever", 
+               "avg_wait_time": null,
+               "expected_wait": 10,
+               "member_position": 1,
+               "qid": 2,
+               "qname": "bestqueueever",
                "size": 2
             }
          ]
       }
-      
+
    """
    uid = None
    if session.has_key('logged_in') and session['logged_in']:
@@ -392,14 +392,14 @@ def create_user():
          temp:
          uname:
       }
-      
+
    """
    user_data = request.json
    try:
       user_data['id'] = db_util.create_user(user_data)
       return jsonify(user_data)
    except sqlite3.Error as e:
-      return e.message 
+      return e.message
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -421,7 +421,7 @@ def login():
          temp:
          uname:
       }
-      
+
    """
    if request.method == 'GET':
       return app.send_static_file('partials/login.html')
@@ -448,7 +448,7 @@ def logout():
 
    Args: none.
    Returns: a string describing what happened.
-   
+
    """
    if session.has_key('logged_in'):
       if session['logged_in']:
