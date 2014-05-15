@@ -4,6 +4,7 @@
 angular.module('LineUpApp.controllers', []).
   controller('lineUpController', function ($scope, lineUpAPIService, $location) {
     $scope.user = {};
+		$scope.userInfos = [];
     $scope.queue = {};
     $scope.queueInfos = [];
 
@@ -12,10 +13,13 @@ angular.module('LineUpApp.controllers', []).
     // Upon success: Updates the current queue model to include the new ID.
     // Upon error: TODO: Do something smart to handle the error
     $scope.createNewQueue = function () {
-      lineUpAPIService.createQueue($scope.queue).
+			//$scope.queue.active = document.getElementById("active").value;
+      $scope.queue.active = 1;
+			lineUpAPIService.createQueue($scope.queue).
         success(function (data, status, headers, config) {
           // set the local queue to be the newly created queue
           $scope.queue = data;
+					console.log($scope.queue);
         }).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the create request!\nStatus: " + status);
@@ -51,6 +55,20 @@ angular.module('LineUpApp.controllers', []).
           alert("Something went wrong with the join queue request! \nStatus: " + status);
         });
     }
+	
+	// Sends a request to the server to display user home page.
+	// Upon success: Updates the current userInfos array to store the results
+	// of the request.
+	// Upon error: TODO: Do something smart to handle the error
+	$scope.authUser = function () {
+		lineUpAPIService.authUser({ 'uname': $scope.user.uname, 'upass': $scope.user.upass }).
+			success(function (data, status, headers, config) {
+				$scope.userInfos = data.user_info_list;
+			}).
+			error(function (data, status, headers, config) {
+				alert("Login request error! \nStatus: " + status);
+			});
+	}
 
     // Sends a user accont login request to the server.
     // Upon success: ???

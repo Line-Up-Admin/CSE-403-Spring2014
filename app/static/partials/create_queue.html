@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link rel="shortcut icon" href="../../assets/ico/favicon.ico">
+
+		<title>LineUp</title>
+		<link href="../css/bootstrap.min.css" rel="stylesheet">
+		<link href="../css/bootstrap-theme.min.css" rel="stylesheet">
+
+		<!-- unique styles -->
+		<link href="theme.css" rel="stylesheet">
+		<link href="../css/line-up.css" rel="stylesheet">
+		
+		<!-- javascripts -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<script src="../js/app.js" type="text/javascript"></script>
+		<script src="../js/controllers.js" type="text/javascript"></script>
+		<!--
+		<script src="../../dist/js/bootstrap.min.js"></script>
+		<script src="../../assets/js/docs.min.js"></script>
+		-->
+	</head>
+
+	<body role="document">
+		<div id='content' ng-app='app.js' ng-controller='lineUpController'>
+		
+			<!-- header image -->
+			<div class="header-content">
+				<div class="line-up-banner">
+					<img class="img-responsive" src="images/LineUp_Icon.png"/>
+				</div>
+				<hr>
+			</div>
+			
+			<div class="container text-center main-page-content">
+				<div class="jumbotron info-box">
+					<h1>Basic Information</h1>
+					<form action="#">
+						<fieldset>
+							<form class="form-horizontal" role="form">
+								<div class="form-group">
+									<label class="col-sm-4 control-label text-right">Name</label>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" id="name" ng-model="queue.qname">
+									</div>
+								</div> <br /> <br />
+								
+								<div class="form-group">
+									<label class="col-sm-4 control-label text-right">Location</label>
+									<div class="col-sm-5">
+										<input type="text" class="form-control" id="location" ng-model="queue.location">
+									</div>
+								</div> <br /> <br />
+								
+								<div class="form-group">
+									<label class="col-sm-4 control-label text-right">Keywords</label>
+									<div class="col-sm-5">
+										<textarea  class="form-control" rows="3" id="keywords" ng-model="queue.keywords"></textarea> <br />
+									</div>
+								</div>
+							</form>
+						</fieldset>
+					</form>
+				</div>
+			</div>
+			
+			<div class="container text-center main-page-content">
+				<div class="jumbotron info-box">
+					<h1>Size Information</h1>
+					<form action="#">
+						<fieldset>
+							<form class="form-horizontal" role="form">
+								<div class="form-group">
+									<label class="col-sm-5 control-label text-right">Max Queue Size</label>
+									<div class="col-sm-3">
+										<input type="text" class="form-control" id="maxsize" ng-model="queue.max_size">
+									</div>
+								</div> <br /> <br />
+								
+								<div class="form-group">
+									<label class="col-sm-5 control-label text-right">5 Minute Wait Size</label>
+									<div class="col-sm-3">
+										<input type="text" ng-model='five_min_wait' class="form-control" id="fiveminwait">
+									</div>
+								</div> <br /> <br />
+								
+								<div class="form-group">
+									<label class="col-sm-5 control-label text-right">Minimum Wait to Re-Join Queue</label>
+									<div class="col-sm-3">
+										<input type="text" ng-model='min_wait_rejoin' class="form-control" id="minwait">
+									</div> <br /> <br />
+								</div>
+							</form>
+						</fieldset>
+					</form>
+				</div>
+			</div>
+			
+			<div class="container text-center main-page-content">
+				<div class="jumbotron info-box">
+					<h1>Personalization</h1>
+					<form action="#">
+						<fieldset>
+							<form class="form-horizontal" role="form">
+								<div class="form-group">
+									<label class="col-sm-4 control-label text-right">Website</label>
+									<div class="col-sm-6">
+										<input type="text" class="form-control" id="website">
+									</div>
+								</div> <br /> <br />
+								
+								<div class="form-group">
+									<label class="col-sm-4 control-label text-right">Organization</label>
+									<div class="col-sm-6">
+										<input type="text" class="form-control" id="organization">
+									</div>
+								</div> <br /> <br />
+								
+								<div class="form-group">
+									<label class="col-sm-4 control-label text-right">Queue Entry Disclaimer</label>
+									<div class="col-sm-6">
+										<textarea class="form-control" rows="3" id="minwait"></textarea> <br />
+									</div>
+								</div> <br /> <br /> <br /> <br />
+								
+								<div class="form-group">
+									<label class="col-sm-4 control-label text-right">Additional Information</label>
+									<div class="col-sm-6">
+										<textarea class="form-control" rows="3" id="addinfo"></textarea> <br />
+									</div>
+								</div>
+							</form>
+						</fieldset>
+					</form>
+				</div>
+			</div>
+			
+			<div class="container text-center main-page-content">
+				<div class="jumbotron info-box">
+					<h1>Security</h1>
+					<form action="#">
+						<fieldset>
+							<form class="form-horizontal" role="form">
+								<div class="form-group">
+									<label class="col-sm-4 control-label text-right">Administrators</label>
+									<div class="col-sm-5">
+										<textarea class="form-control" rows="3" id="admins"></textarea> <br />
+									</div>
+								</div> <br /> <br /> <br /> <br />
+								
+								<div class="form-group">
+									<label class="col-sm-4 control-label text-right">Managers</label>
+									<div class="col-sm-5">
+										<textarea class="form-control" rows="3" id="managers"></textarea> <br />
+									</div>
+								</div> <br /> <br /> <br /> <br />
+								
+								<div class="form-group">
+									<label class="col-sm-4 control-label text-right">Who Can Join</label>
+									
+									<div class="col-sm-3 form-group">
+										<div class="radio">
+											<label>
+												<input type="radio" name="whocanjoin" id="anylineup" value="anylineup" checked>
+												Any LineUp Member
+											</label>
+										</div>
+										
+										<div class="radio">
+											<label>
+												<input type="radio" name="whocanjoin" id="anylink" value="anylink">
+												Anyone with a Link
+											</label>
+										</div>
+										
+										<div class="radio">
+											<label>
+												<input type="radio" name="whocanjoin" id="both" value="both">
+												Both
+											</label>
+										</div>
+										
+									</div>
+									<!--
+										<label>
+											<input type="checkbox" id="active>
+											Active immediately?
+										</label>
+									-->
+								</div>
+							</form>
+						</fieldset>
+					</form>
+				</div>
+			</div>
+			
+			<div>
+				<button id="submit-acct-info" type="submit" class="btn btn-line-up btn-lg" ng-click='createNewQueue()'>Create Queue</button>
+			</div>
+		</div>
+	</body>
+</html>
