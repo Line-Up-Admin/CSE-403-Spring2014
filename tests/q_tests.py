@@ -9,9 +9,8 @@ import unittest
 import sys
 sys.path.insert(0, '../..')
 sys.path.insert(0, '..')
-sys.path.insert(0, '../app')
 from app import app
-from q_classes import *
+from app.q_classes import *
 
 class SomeTest(unittest.TestCase):
 
