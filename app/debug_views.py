@@ -8,6 +8,10 @@ import permissions
 from q_classes import QueueServer, QueueMember, QueueSettings
 
 # Temporary: debugging purposes only.
+@app.route('/helloworld', methods=['GET', 'POST'])
+def helloworld():
+    return 'Hello World!'
+
 @app.route('/debug/getUser', methods=['GET', 'POST'])
 def get_user_debug():
 	if not app.debug:

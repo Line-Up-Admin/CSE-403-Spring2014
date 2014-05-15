@@ -401,7 +401,7 @@ def create_user():
    except sqlite3.Error as e:
       return e.message 
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
    """
 
@@ -424,7 +424,7 @@ def login():
       
    """
    if request.method == 'GET':
-      return app.send_static_file('login.html')
+      return app.send_static_file('partials/login.html')
    else:
       # POST message
       if session.has_key('logged_in') and session['logged_in']:
@@ -435,6 +435,7 @@ def login():
          session['logged_in'] = True
          session['id'] = user['id']
          session['uname'] = user['uname']
+         return jsonify(user)
       except sqlite3.Error as e:
          return e.message
       except db_util.ValidationException as e:
