@@ -7,8 +7,11 @@ QueueMemeber.
 import os
 import unittest
 import sys
+sys.path.insert(0, '../..')
+sys.path.insert(0, '..')
+sys.path.insert(0, '../app')
+from app import app
 from q_classes import *
-
 
 class SomeTest(unittest.TestCase):
 
@@ -29,17 +32,18 @@ class SomeTest(unittest.TestCase):
       assert len(qq) == 2
       first_off = qq.dequeue()
       assert first_off != None
-      assert first_off.username == "bob"
-      assert first_off.ID == 123
+      assert first_off.uname == "bob"
+      assert first_off.uid == 123
       second_off = qq.dequeue()
       assert second_off != None
-      assert second_off.username == "carol"
-      assert second_off.ID == 125
+      assert second_off.uname == "carol"
+      assert second_off.uid == 125
  
    def test_max_size(self):
       """ Test that a queue has a maximum size """
       # Max size is 2, everything else empty
-      q_set = QueueSettings(2, None, None, None, None, None, None)
+      q_set = QueueSettings()
+      q_set.max_size = 2
       qq = Queue(100, q_set)
       m1 = QueueMember("alice", 44)
       m2 = QueueMember("bob", 123)
@@ -56,12 +60,10 @@ class SomeTest(unittest.TestCase):
 
 
    def test_queue_info(self):
-      """ Test making a queue and getting an info object about it. """
+      """ Test making a queue and getting an info object about it."""
       pass
 
 
 if __name__ == '__main__':
    unittest.main()
-
-
 
