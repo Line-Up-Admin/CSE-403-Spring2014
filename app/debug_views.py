@@ -7,13 +7,8 @@ import permissions
 
 from q_classes import QueueServer, QueueMember, QueueSettings
 
-# Takes the '/helloworld' route and returns "Hello, World!"
-@app.route('/helloworld')
-def hello_world():
-    return "Hello, World!"
-
 # Temporary: debugging purposes only.
-@app.route('/debug/getuser', methods=['GET', 'POST'])
+@app.route('/debug/getUser', methods=['GET', 'POST'])
 def get_user_debug():
 	if not app.debug:
 	    abort(404)
@@ -110,6 +105,15 @@ def login_debug():
       session['logged_in'] = False
       return e.message
 
+@app.route('/debug/logout', methods=['GET', 'POST'])
+def logout_debug():
+    if session.has_key('logged_in'):
+        if session['logged_in']:
+            for key in  session.keys():
+                session[key] = None
+            return 'Logged out.'
+    return 'You are not logged in!'
+
 @app.route('/debug/queueStatus/<int:qid>', methods=['GET', 'POST'])
 def get_queue_info_debug(qid):
    q_info = queue_server.get_info(None, qid)
@@ -125,6 +129,8 @@ def get_my_queues_debug():
    else:
       uid = int(request.args.get('uid'))
    q_info_list = queue_server.get_queue_info_list(uid)
+   if q_info_list is None:
+       return jsonify(queue_info_list={})
    return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
        
 @app.route('/debug/employeeView/<int:qid>', methods=['GET', 'POST'])
@@ -184,7 +190,7 @@ def dequeue_debug(qid):
    if permissions.has_flag(uid, qid, permissions.EMPLOYEE):
       q_member = queue_server.dequeue(qid)
       if q_member is None:
-         return 'The queue is empty.'
+         return jsonify({})
       return jsonify(q_member.__dict__)
    else:
       return 'You must be an employee to dequeue.'

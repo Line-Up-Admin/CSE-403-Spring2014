@@ -12,15 +12,49 @@ from q_classes import QueueServer, QueueMember, QueueSettings
 def root():
    return app.send_static_file('index.html')
 
+#############################################
+# Queue routes:
+#############################################
+
+@app.route('/createQueue', methods=['POST'])
+def create_queue():
+   """Creates a queue. If the user is logged in, they will become an admin for the queue.
+
+   Args: json format.
+      active:
+      keywords:
+      location:
+      max_size:
+      qname:
+
+   Returns:
+      {
+         active:
+         keywords:
+         location:
+         max_size:
+         qid:
+         qname:
+      }
+      
+   """
+   q_settings = request.json
+   try:
+      q_settings['qid'] = queue_server.create(q_settings)
+      return jsonify(q_settings)
+   except sqlite3.Error as e:
+      return e.message
+
 @app.route('/join', methods=['POST'])
 def add_to_queue():
-   """Joins a queue defined by the 'qid' passed as a parameter.
+   """Joins a queue.
 
-   If the session is not logged in, assumes that the user is a temporary user,
-   and looks for a 'uname' parameter as well. This will create a temporary
-   user.
+   Args:
+      qid: the id of the queue to join.
+      uname: the uname to create a temporary user. This is ignored if the user is logged in.
 
    Returns: example return value below
+   If user is a temporary user:
       {
          "avg_wait_time": null,
          "confirmation_number": 1472823387,
@@ -30,8 +64,17 @@ def add_to_queue():
          "qid": 556035656,
          "size": 1
       }
+   If user is logged in:
+      {
+         "avg_wait_time": null,
+         "expected_wait": null,
+         "member_position": 0,
+         "qname": "ohhey",
+         "qid": 556035656,
+         "size": 1
+      }
+      
    """
-   
    uid = None
    username = None
    qid = int(request.json['qid'])
@@ -60,40 +103,30 @@ def add_to_queue():
    else:
       return 'User is blocked from this queue.'
 
-@app.route('/login')
-def login():
-   if request.method == 'GET':
-      return app.send_static_file('login.html')
-   else:
-      # POST message
-      if session.has_key('logged_in') and session['logged_in']:
-          # user is already logged in
-          return 'User is already logged in.'
-      try:
-         user = db_util.get_user(request.json['uname'], request.json['pw'])
-         session['logged_in'] = True
-         session['id'] = user['id']
-         session['uname'] = user['uname']
-      except sqlite3.Error as e:
-         return e.message
-      except db_util.ValidationException as e:
-         session['logged_in'] = False
-         return 'Invalid username or password'
-
 @app.route('/dequeue/<int:qid>', methods=['POST'])
 def dequeue():
+   """Dequeues a member from the specified queue. If the queue is empty, returns an empty json object.
+
+   Args:
+      None. The route handles the argument. Example route: /dequeue/12345
+
+   Returns:
+      {
+         optional_data:
+         uid:
+         uname:
+      }
+      
+   """
    uid=None
    if session.has_key('logged_in') and session['logged_in']:
       uid=session['id']
    else:
-      if app.debug:
-         uid=int(request.json)
-      else:
-         return "You must be logged in as an employee to dequeue."
+      return "You must be logged in as an employee to dequeue."
    if permissions.has_flag(uid, qid, permissions.EMPLOYEE):
       q_member = queue_server.dequeue(qid)
       if q_member is None:
-         return 'The queue is empty.'
+         return jsonify({})
       return jsonify(q_member.__dict__)
    else:
       return 'You must be an employee to dequeue.'
@@ -104,11 +137,76 @@ def get_search_results():
 
 @app.route('/search', methods=['POST'])
 def search():
+   """Searches for relevant queues.
+
+   Right now, this ignores all arguments and returns all queues.
+   Improved search functionality is coming in the Feature Complete Release.
+
+   Args:
+      keywords:
+      location:
+      qname:
+
+   Returns:
+      {
+         "queue_info_list"= [
+            {
+               "avg_wait_time": 
+               "expected_wait":
+               "member_position":
+               "qid":
+               "qname":
+               "size":
+             },
+             {
+               "avg_wait_time":
+               "expected_wait":
+               "member_position":
+               "qid":
+               "qname":
+               "size":
+             }
+             etc...
+         ]
+      }
+      
+   """
    q_info_list = queue_server.get_all_queues_info()
    return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
 
 @app.route('/popular', methods=['GET'])
 def get_popular_queues():
+   """Searches for popular queues.
+
+   Right now, this does no logic and returns all queues.
+   Improved popularity logic is coming in the Feature Complete Release.
+
+   Args: none.
+
+   Returns:
+      {
+         "queue_info_list"= [
+            {
+               "avg_wait_time": 
+               "expected_wait":
+               "member_position":
+               "qid":
+               "qname":
+               "size":
+             },
+             {
+               "avg_wait_time":
+               "expected_wait":
+               "member_position":
+               "qid":
+               "qname":
+               "size":
+             }
+             etc...
+         ]
+      }
+      
+   """
    q_info_list = queue_server.get_all_queues_info()
    return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
 
@@ -116,8 +214,42 @@ def get_popular_queues():
 def get_member_queue():
    return 'Not implemented yet!'
 
-@app.route('/employeeView/<qid>', methods=['POST'])
+@app.route('/employeeView/<int:qid>', methods=['POST'])
 def get_employee_queue(qid):
+   """Allows the employee to view the queue info and the queue members.
+
+   Args: none. The qid should be included with the url. Example: /employeeView/12345
+
+   Returns: example return value
+      {
+        "member_list": [
+          {
+            "optional_data": "party_size:3", 
+            "uid": 0, 
+            "uname": "Creator"
+          }, 
+          {
+            "optional_data": "party_size:5", 
+            "uid": 1, 
+            "uname": "Jim"
+          }, 
+          {
+            "optional_data": null, 
+            "uid": 2317776437, 
+            "uname": "TheCreator"
+          }
+        ], 
+        "queue_info": {
+          "avg_wait_time": null, 
+          "expected_wait": 10, 
+          "member_position": null, 
+          "qid": 0, 
+          "qname": "tgr4", 
+          "size": 3
+        }
+      }
+   
+   """
    uid = None
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['id']
@@ -136,6 +268,9 @@ def get_admin_queue(qid):
 def get_queue_settings():
    """
 
+   Args:
+      qid:
+
    Returns: example return value
       {
          "active": 1,
@@ -145,6 +280,7 @@ def get_queue_settings():
          "max_size": 10,
          "qname": "bestqueueever"
       }
+      
    """
    queueID = request.json
    try:
@@ -168,12 +304,45 @@ def get_queue_status():
          "qid": 556035656,
          "size": 1
       }
+      
    """
    q_info = queue_server.get_info(None, qid)
    return jsonify(q_info.__dict__)
 
 @app.route('/myQueues', methods=['POST'])
 def get_my_queues():
+   """Gets the info about the queues you are in.
+
+   If you are logged in, no args are needed.
+   If you are a temp user, you can pass your confirmation number (temp uid) in
+   to get the queues you are in.
+
+   Args:
+      uid: the confirmation number given to a temporary user when they join a queue.
+
+   Returns: example return value.
+      {
+         "queue_info_list": [
+            {
+               "avg_wait_time": null, 
+               "expected_wait": 10, 
+               "member_position": 3, 
+               "qid": 0, 
+               "qname": "tgr4", 
+               "size": 4
+            }, 
+            {
+               "avg_wait_time": null, 
+               "expected_wait": 10, 
+               "member_position": 1, 
+               "qid": 2, 
+               "qname": "bestqueueever", 
+               "size": 2
+            }
+         ]
+      }
+      
+   """
    uid = None
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['id']
@@ -194,26 +363,95 @@ def queue_tracks():
 def queue_tracks_data():
 	return 'Not implemented yet!'
 
+
+###############################################
+# User routes:
+###############################################
+
 @app.route('/createUser', methods=['POST'])
 def create_user():
+   """
+
+   Args:
+      {
+         email:
+         fname:
+         lname:
+         pw:
+         temp:
+         uname:
+      }
+
+   Returns:
+      {
+         email:
+         fname:
+         id:
+         lname:
+         pw:
+         temp:
+         uname:
+      }
+      
+   """
    user_data = request.json
    try:
       user_data['id'] = db_util.create_user(user_data)
       return jsonify(user_data)
    except sqlite3.Error as e:
-      return e.message
+      return e.message 
 
-@app.route('/createQueue', methods=['POST'])
-def create_queue():
-   # q_settings = request.form.copy()
-   """need to add validation"""
-   q_settings = request.json
-   try:
-      q_settings['qid'] = queue_server.create(q_settings)
-      return jsonify(q_settings)
-   except sqlite3.Error as e:
-      return e.message
+@app.route('/login')
+def login():
+   """
+
+   Args:
+      {
+         uname:
+         pw:
+      }
+
+   Returns:
+      {
+         email:
+         fname:
+         id:
+         lname:
+         pw:
+         temp:
+         uname:
+      }
+      
+   """
+   if request.method == 'GET':
+      return app.send_static_file('login.html')
+   else:
+      # POST message
+      if session.has_key('logged_in') and session['logged_in']:
+          # user is already logged in
+          return 'User is already logged in.'
+      try:
+         user = db_util.get_user(request.json['uname'], request.json['pw'])
+         session['logged_in'] = True
+         session['id'] = user['id']
+         session['uname'] = user['uname']
+      except sqlite3.Error as e:
+         return e.message
+      except db_util.ValidationException as e:
+         session['logged_in'] = False
+         return 'Invalid username or password'
 
 @app.route('/logout')
 def logout():
-	return 'Not implemented yet!'
+   """
+
+   Args: none.
+   Returns: a string describing what happened.
+   
+   """
+   if session.has_key('logged_in'):
+      if session['logged_in']:
+         for key in  session.keys():
+            session[key] = None
+         return 'Logged out.'
+   return 'You are not logged in!'

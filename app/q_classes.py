@@ -195,7 +195,7 @@ class QueueServer(object):
                if q_member.uid not in self.index:
                   self.index[q_member.uid] = set()
                self.index[q_member.uid].add(qid)
-               print 'added', q_member.uname, ':', q_member.uid, type(q_member.uid), 'to queue', q_settings.qname
+               print 'added', q_member.uname, 'to queue', q_settings.qname
                j = j + 1
             print 'Loaded', j, 'members into queue', q_settings.qname
          i = i + 1
@@ -300,6 +300,8 @@ class QueueServer(object):
          a list of QueueInfo.
 
       """
+      if not self.index.has_key(userid):
+         return None
       queue_list = list()
       for qid in self.index[userid]:
          queue_list.append(self.get_info(QueueMember(uid=userid), qid))
