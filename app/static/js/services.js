@@ -27,5 +27,10 @@ angular.module('LineUpApp.services', []).
       return $http.post('/login', user);
     }
 
+    lineUpAPI.createUser = function (user) {
+      console.log(user);
+      return $http.post('/createUser', user);
+    }
+
     return lineUpAPI;
   });

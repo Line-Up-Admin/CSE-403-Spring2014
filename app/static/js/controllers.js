@@ -2,7 +2,7 @@
 
 /* Controllers */
 angular.module('LineUpApp.controllers', []).
-  controller('lineUpController', function ($scope, lineUpAPIService) {
+  controller('lineUpController', function ($scope, lineUpAPIService, $location) {
     $scope.user = {};
     $scope.queue = {};
     $scope.queueInfos = [];
@@ -69,19 +69,42 @@ angular.module('LineUpApp.controllers', []).
         });
     }
 
+    // Sends a user accont login request to the server.
+    // Upon success: ???
+    // Upon error: TODO: Do something smart to handle the error
     $scope.login = function () {
       lineUpAPIService.login($scope.user).
         success(function (data, status, headers, config) {
           // set the local queue to be the newly created queue
-          alert(data);
+          console.log(data);
         }).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the login request!\nStatus: " + status);
-          alert(data);
+          console.log(data);
         });
     }
 
+    // Sends a user accont creation request to the server.
+    // Upon success: Redirects the browser to the login page.
+    // Upon error: TODO: Do something smart to handle the error
+    $scope.createUser = function () {
+      if ($scope.user.pw !== $scope.user.pwx2) {
+        alert("Passwords do not match, please retype and try again.");
+        return;
+      }
 
+      // don't send the extra password to the server
+      delete $scope.user.pwx2;
+
+      lineUpAPIService.createUser($scope.user).
+        success(function (data, status, headers, config) {
+          // set the local queue to be the newly created queue
+          $location.path("/");
+        }).
+        error(function (data, status, headers, config) {
+          alert("Something went wrong with the create account request!\nStatus: " + status);
+        });
+    }
 
 
 
