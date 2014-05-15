@@ -64,14 +64,13 @@ angular.module('LineUpApp.controllers', []).
     $scope.login = function () {
       lineUpAPIService.login($scope.user).
         success(function (data, status, headers, config) {
-          // set the local queue to be the newly created queue
           if (data == 'Invalid username or password') {
-            // display error
+            // login unsucessfull, display error
             $scope.error = data;
             document.getElementById('error').classList.remove('hide');
             return;
           }
-          // a successful login
+          // successful login
           user = data;
           $location.path("www.google.com");
         }).
