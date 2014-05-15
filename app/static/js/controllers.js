@@ -6,7 +6,6 @@ angular.module('LineUpApp.controllers', []).
     $scope.user = {};
     $scope.queue = {};
     $scope.queueInfos = [];
-    $scope.user = {};
 
     // Sends a request to the server to create a new queue. The request
     // contains the new queue settings.
@@ -70,7 +69,17 @@ angular.module('LineUpApp.controllers', []).
         });
     }
 
-
+    $scope.login = function () {
+      lineUpAPIService.login($scope.user).
+        success(function (data, status, headers, config) {
+          // set the local queue to be the newly created queue
+          alert(data);
+        }).
+        error(function (data, status, headers, config) {
+          alert("Something went wrong with the login request!\nStatus: " + status);
+          alert(data);
+        });
+    }
 
 
 

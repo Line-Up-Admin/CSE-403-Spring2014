@@ -21,12 +21,12 @@ config(['$routeProvider', function($routeProvider) {
     templateUrl: "/index.html",
     controller: "lineUpController"
   }).
-  when("/create", {
-    templateUrl: "/index.html",
+  when("/create_queue", {
+    templateUrl: "partials/create_queue.html",
     controller: "lineUpController"
   }).
-  when("/queues", {
-    templateUrl: "/index.html",
+  when("/home", {
+    templateUrl: "partials/user_home.html",
     controller: "lineUpController"
   }).
   when("/anonymous", {

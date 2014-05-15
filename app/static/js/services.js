@@ -19,9 +19,12 @@ angular.module('LineUpApp.services', []).
     }
 
     lineUpAPI.joinQueue = function (data) {
-      console.log("BEFORE SENDING");
       return $http.post('/join', data);
-      console.log("AFTER SENDING");
+    }
+
+    lineUpAPI.login = function (user) {
+      console.log(user);
+      return $http.post('/login', user);
     }
 
     return lineUpAPI;
