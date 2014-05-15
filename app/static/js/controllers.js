@@ -51,6 +51,8 @@ angular.module('LineUpApp.controllers', []).
           alert("Something went wrong with the join queue request! \nStatus: " + status);
         });
     }
+  }).
+  controller('userAccountController', function ($scope, lineUpAPIService, $location) {
 
     // Sends a user accont login request to the server.
     // Upon success: ???
@@ -59,7 +61,15 @@ angular.module('LineUpApp.controllers', []).
       lineUpAPIService.login($scope.user).
         success(function (data, status, headers, config) {
           // set the local queue to be the newly created queue
-          console.log(data);
+          if (data == 'Invalid username or password') {
+            // display error
+            $scope.error = data;
+            document.getElementById('error').classList.remove('hide');
+            return;
+          }
+          // a successful login
+          user = data;
+          $location.path("www.google.com");
         }).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the login request!\nStatus: " + status);
@@ -71,7 +81,7 @@ angular.module('LineUpApp.controllers', []).
     // Upon success: Redirects the browser to the login page.
     // Upon error: TODO: Do something smart to handle the error
     $scope.createUser = function () {
-      if ($scope.user.pw !== $scope.user.pwx2) {
+      if ($scope.user.pw != $scope.user.pwx2) {
         alert("Passwords do not match, please retype and try again.");
         return;
       }
@@ -87,20 +97,7 @@ angular.module('LineUpApp.controllers', []).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the create account request!\nStatus: " + status);
         });
-    }
-
-
-
-
-
-
-
-    //HACK STARTS HERE - REMOVE BEFORE BETA
-    $scope.queueInfos = $scope.getPopularQueues();
-
-
-
-
+      }
   }).
   controller('queueInfoController', function ($scope, lineUpAPIService, $routeParams) {
 
