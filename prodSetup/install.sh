@@ -46,7 +46,10 @@ pip install flask
 # move configuration file into place
 cp lineup.config /etc/apache2/sites-enabled/
 
-#remove the default configuaration file
+# remove the default configuaration file
 rm /etc/apache2/sites-enabled/000-default.conf
+
+# set permissions for apache "user"
+chown www-data /var/www/lineup/app/
 
 
