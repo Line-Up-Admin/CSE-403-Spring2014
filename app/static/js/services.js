@@ -14,6 +14,10 @@ angular.module('LineUpApp.services', []).
       return $http.post('/getQueueSettings', qid);
     }
 
+		lineUpAPI.getDetailedQueueInfo = function (qid) {
+			return $http.post('/employeeView/' + qid);
+		}
+		
     lineUpAPI.getPopularQueues = function () {
       return $http.get('/popular');
     }

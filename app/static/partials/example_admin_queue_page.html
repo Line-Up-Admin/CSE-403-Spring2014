@@ -20,12 +20,12 @@
 
 		<div class="queue-face container text-center">
 			<img class="queue-portrait" src="images/CLUE_phys_large.png"/>
-			<h1 class="queue-page-header">{{test}}</h1>
+			<h1 class="queue-page-header">{{queueInfo.qname}}</h1>
 		</div>
 		<div class="control-list container text-center">
 			<div class="queue-status">
-				15 min wait</br>
-				18 people			
+				{{queueInfo.expected_wait}} min wait</br>
+				{{queueInfo.size}} people
 			</div>
 			<div class="queue-member-listing">
 				<ul class="list-group">
