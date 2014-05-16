@@ -12,6 +12,7 @@ from q_classes import QueueServer, QueueMember, QueueSettings
 def root():
    return app.send_static_file('index.html')
 
+
 #############################################
 # Queue routes:
 #############################################
