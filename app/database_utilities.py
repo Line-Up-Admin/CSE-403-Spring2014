@@ -62,17 +62,22 @@ def create_temp_user(user_dict):
   return user_dict['id']
 
 def create_user_profile(user_dict):
-  print 'enter db_util.create_user_profile'
-  db = get_db()
-  rows = query_db(GET_PROFILED_USER_BY_USERNAME, (user_dict['uname'],))
-  if (rows and (len(rows) > 0)):
-    raise ValidationException('The given username is already in use.')
-  user_dict['pw'] = validators.encrypt_password(user_dict['pw'])
-  user_dict['id'] = validators.get_unique_user_id()
-  db.execute(INSERT_PROFILED_USER, user_dict_to_db_tuple(user_dict))
-  db.commit()
-  print 'exit db_util.create_user_profile'
-  return user_dict['id']
+  try:
+    print 'enter db_util.create_user_profile'
+    db = get_db()
+    rows = query_db(GET_PROFILED_USER_BY_USERNAME, (user_dict['uname'],))
+    if (rows and (len(rows) > 0)):
+      raise ValidationException('The given username is already in use.')
+    user_dict['pw'] = validators.encrypt_password(user_dict['pw'])
+    user_dict['id'] = validators.get_unique_user_id()
+    db.execute(INSERT_PROFILED_USER, user_dict_to_db_tuple(user_dict))
+    db.commit()
+    print 'exit db_util.create_user_profile: success.'
+    return user_dict['id']
+  except sqlite3.Error as e:
+    print 'exit db_util.create_user_profile: failure. '
+    print e.message
+    raise e
 
 def create_user(user_dict):
   """Adds a user defined by user_data to the database.
