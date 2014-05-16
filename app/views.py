@@ -105,7 +105,7 @@ def add_to_queue():
       return 'User is blocked from this queue.'
 
 @app.route('/dequeue/<int:qid>', methods=['POST'])
-def dequeue():
+def dequeue(qid):
    """Dequeues a member from the specified queue. If the queue is empty, returns an empty json object.
 
    Args:
@@ -123,16 +123,14 @@ def dequeue():
    if session.has_key('logged_in') and session['logged_in']:
       uid=session['id']
    else:
-      return jsonify(Failure("You must be an employee to dequeue."));
+      return "You must be logged in as an employee to dequeue."
    if permissions.has_flag(uid, qid, permissions.EMPLOYEE):
       q_member = queue_server.dequeue(qid)
       if q_member is None:
          return jsonify({})
-      members = queue_server.get_members(qid)
-      q_info = queue_server.get_info(None, qid)
-      return jsonify(q_member.__dict__, queue_info=q_info.__dict__, member_list=[member.__dict__ for member in members])
+      return jsonify(q_member.__dict__)
    else:
-      return jsonify(Failure("You must be an employee to dequeue."));
+      return 'You must be an employee to dequeue.'
 
 @app.route('/searchResults')
 def get_search_results():
