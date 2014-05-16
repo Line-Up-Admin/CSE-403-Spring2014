@@ -19,16 +19,16 @@
 
 <div class="queue_face container text-center">
 	<img class="queue-portrait" src="img/default.png"/>
-	<h1 class="queue-page-header">CLUE - Physics</h1>
+	<h1 class="queue-page-header">{{ queue.qname }}</h1>
 </div>
-<div class="queue_control container text-center">
+<div id="enqueued" class="queue_control container text-center hide">
 	<div class="queue-status">
-		5 min</br>
+		{{ $scope.queue.expected_wait }} min</br>
 		<div class="progress queue-position">
 			<div class="progress-bar" style="width: 60%;">
 			</div>
 		</div>
-		12/19
+		test {{ queue.member_position }} of {{ queue.size }}
 	</div>
 	<p class="buttons_control">
 		<a href="#" id="btn-postpone" class="btn btn-line-up btn-lg" role="button">
@@ -40,4 +40,15 @@
 			Leave Queue
 		</a>
 	</p>
+</div>
+
+<div id="notEnqueued" class="queue-control container hide">
+	<p class="button-join"><buton id="btn-join" class="btn btn-line-up btn-lg btn-block" role="button" ng-click="joinQueue()">
+		<span class="glyphicon glyphicon-send"></span></br>
+		Join Queue
+	</button></p>
+	<div class="queue-status">
+		{{ queue.expected_wait }} min wait</br>
+		{{ queue.size }} people
+	</div>
 </div>
