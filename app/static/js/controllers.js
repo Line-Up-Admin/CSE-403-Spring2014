@@ -58,20 +58,19 @@ angular.module('LineUpApp.controllers', []).
   }).
   controller('userAccountController', function ($scope, lineUpAPIService, $location) {
 
-    // Sends a user accont login request to the server.
+    // Sends a user account login request to the server.
     // Upon success: ???
     // Upon error: TODO: Do something smart to handle the error
     $scope.login = function () {
       lineUpAPIService.login($scope.user).
         success(function (data, status, headers, config) {
-          // set the local queue to be the newly created queue
           if (data == 'Invalid username or password') {
-            // display error
+            // login unsuccessful, display error
             $scope.error = data;
             document.getElementById('error').classList.remove('hide');
             return;
           }
-          // a successful login
+          // successful login
           user = data;
           $location.path("www.google.com");
         }).
@@ -81,7 +80,7 @@ angular.module('LineUpApp.controllers', []).
         });
     }
 
-    // Sends a user accont creation request to the server.
+    // Sends a user account creation request to the server.
     // Upon success: Redirects the browser to the login page.
     // Upon error: TODO: Do something smart to handle the error
     $scope.createUser = function () {
@@ -95,7 +94,7 @@ angular.module('LineUpApp.controllers', []).
 
       lineUpAPIService.createUser($scope.user).
         success(function (data, status, headers, config) {
-          // set the local queue to be the newly created queue
+          // account created successfully, redirect to the login page
           $location.path("/");
         }).
         error(function (data, status, headers, config) {

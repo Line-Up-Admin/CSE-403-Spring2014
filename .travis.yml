@@ -8,10 +8,11 @@ python:
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install: 
-   - "pip install flask"
+  - "pip install flask"
 # command to run tests, e.g. python setup.py test
-script: app/tests/flask_tests/run_flask_tests.sh
-
+script: 
+#  - app/tests/flask_tests/run_flask_tests.sh
+  - app/tests/q_tests.py
 
 notifications:
   email:
