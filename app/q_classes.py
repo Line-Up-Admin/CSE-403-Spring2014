@@ -87,6 +87,8 @@ class Queue(object):
       """ Returns the current position in the queue of the Queue member
          being asked about. This is a 0-based index from the front
          of the line. """
+      if member is None:
+         return None
       for i, j in enumerate(self.my_q):
          if j.uid == member.uid:
             return i

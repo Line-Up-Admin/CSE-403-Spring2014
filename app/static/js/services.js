@@ -18,6 +18,10 @@ angular.module('LineUpApp.services', []).
 			return $http.post('/employeeView/' + qid);
 		}
 		
+		lineUpAPI.adminDequeue = function (qid) {
+			return $http.post('/dequeue/' + qid);
+		}
+		
     lineUpAPI.getPopularQueues = function () {
       return $http.get('/popular');
     }

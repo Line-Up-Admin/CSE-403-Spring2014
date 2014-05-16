@@ -29,24 +29,7 @@
 			</div>
 			<div class="queue-member-listing">
 				<ul class="list-group">
-					<li class="list-group-item">Andrew L.</li>
-					<li class="list-group-item">Mary P.</li>
-					<li class="list-group-item">Ronald H.</li>
-					<li class="list-group-item">Tracy G.</li>
-					<li class="list-group-item">Adam W.</li>
-					<li class="list-group-item">Heidi L.</li>
-					<li class="list-group-item">William H.</li>
-					<li class="list-group-item">Waldo S.</li>
-					<li class="list-group-item">Larry A.</li>
-					<li class="list-group-item">Martin F.</li>
-					<li class="list-group-item">David P.</li>
-					<li class="list-group-item">Smith W.</li>
-					<li class="list-group-item">Sara S.</li>
-					<li class="list-group-item">Liddia M.</li>
-					<li class="list-group-item">Polina D.</li>
-					<li class="list-group-item">David R.</li>
-					<li class="list-group-item">Jared F.</li>
-					<li class="list-group-item">Carmen S.</li>
+					<li class="list-group-item" ng-repeat='person in member_list'>{{person}}</li>
 				</ul>
 			</div>
 		</div>
@@ -56,10 +39,10 @@
 					<span class="glyphicon glyphicon-cog"></span></br>
 					Settings
 				</a>
-				<a href="#" id="btn-first-person" class="btn btn-line-up btn-lg" role="button">
+				<button id="btn-view-details" class="btn btn-line-up btn-lg" role="button" ng-click='dequeueFirstPerson()'>
 					<span class="glyphicon glyphicon-arrow-up"></span></br>
 					First Person
-				</a>
+				</button>
 				<a href="#" id="btn-view-details" class="btn btn-line-up btn-lg" role="button">
 					<span class="glyphicon glyphicon-zoom-in"></span></br>
 					View Details

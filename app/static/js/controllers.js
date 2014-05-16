@@ -147,18 +147,33 @@ angular.module('LineUpApp.controllers', []).
 	controller('adminViewController', function($scope, lineUpAPIService, $routeParams) {
 		$scope.queueInfo = {};
 		$scope.member_list = [];
-
+		
+		// Sends a employee view request to the server.
+    // Upon success: Shows the employee view for the given queue id.
+    // Upon error: TODO: Do something smart to handle the error
 		$scope.getDetailedQueueInfo = function () {
 			lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
 				success(function (data, status, headers, config) {
 					$scope.queueInfo = data.queue_info;
-					console.log($scope.queueInfo.qname);
-					console.log($scope.queueInfo.size);
-					console.log($scope.queueInfo.expected_wait);
 					$scope.member_list = data.member_list;
 				}).
 				error(function (data, status, headers, config) {
-					alert("Something went wrong with the queue lookup request!\nStatus: " + status);
+					alert("Are you logged in as an existing user? That might be an issue.\nStatus: " + status);
+					console.log(data);
+				})
+		}();
+		
+		// Sends a dequeue to the server.
+    // Upon success: Dequeues the first person in line.
+    // Upon error: TODO: Do something smart to handle the error
+		$scope.dequeueFirstPerson = function () {
+			lineUpAPIService.adminDequeue($routeParams.qid).
+				success(function (data, status, headers, config) {
+					$scope.queueInfo = data.queue_info;
+					$scope.member_list = data.member_list;
+				}).
+				error(function (data, status, headers, config) {
+					alert("Wow you suck at this.\nStatus: " + status);
 					console.log(data);
 				})
 		}();
