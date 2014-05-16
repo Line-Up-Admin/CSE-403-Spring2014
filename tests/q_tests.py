@@ -20,8 +20,8 @@ class SomeTest(unittest.TestCase):
    def tearDown(self):
       pass
 
-   def test_add_remove(self):
-      """ Add 2 people to a queue, and remove them both. """
+   def test_add_dequeue(self):
+      """ Add 2 people to a queue, and dequeue them both. """
       qq = Queue(112)
       m1 = QueueMember("bob", 123)
       m2 = QueueMember("carol", 125)
@@ -55,12 +55,39 @@ class SomeTest(unittest.TestCase):
    
    def test_postpone(self):
       """Test postponing in the queue """
-      pass
+      qq = Queue(112)
+      m1 = QueueMember("bob", 122)
+      m2 = QueueMember("carol", 123)
+      m3 = QueueMember("dave", 124)
+      m4 = QueueMember("evan", 125)
 
+      qq.add(m1)
+      qq.add(m2)
+      qq.add(m3)
+      qq.add(m4)
+      assert len(qq) == 4
+      # get_position is a zero based index from the front.
+      assert qq.get_position(m2) == 1
+      assert qq.get_position(m3) == 2
+      assert qq.get_position(m4) == 3
 
-   def test_queue_info(self):
-      """ Test making a queue and getting an info object about it."""
-      pass
+      qq.postpone(m2)
+      assert qq.get_position(m3) == 1
+      assert qq.get_position(m2) == 2
+      assert qq.get_position(m4) == 3
+      qq.postpone(m2)
+      assert qq.get_position(m3) == 1
+      assert qq.get_position(m4) == 2
+      assert qq.get_position(m2) == 3
+      # tests that the queue ignores someone being postponed
+      #    at the end of the line.
+      qq.postpone(m2)
+      qq.postpone(m2)
+      qq.postpone(m2)
+      assert qq.get_position(m3) == 1
+      assert qq.get_position(m4) == 2
+      assert qq.get_position(m2) == 3
+      assert len(qq) == 4
 
 
 if __name__ == '__main__':

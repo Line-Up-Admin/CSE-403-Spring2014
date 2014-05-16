@@ -19,7 +19,7 @@ class SomeTest(unittest.TestCase):
    def tearDown(self):
       pass
 
-   def test_everything(self):
+   def test_add_get_members(self):
       # This is set to false so the Server doesn't talk to the database
       qs = QueueServer(False)
       m1 = QueueMember("bob", 123)
@@ -60,6 +60,7 @@ class SomeTest(unittest.TestCase):
       qs2 = {"qname":"lunch_spot", "location":"Seattle"}
       qs3 = {"qname":"dragon_castle", "location":"Fire_Mountain"}
       qs4 = {"qname":"lunch_spot", "location":"Berlin"}
+
       # create 3 queues using the settings
       qid_1 = qs.create(qs1)
       qid_2 = qs.create(qs2)
@@ -81,6 +82,7 @@ class SomeTest(unittest.TestCase):
       res3 = qs.search("lunch_spot", "Seattle")
       assert len(res3) == 1
       assert qid_2 in res3
+
 
 if __name__ == '__main__':
    unittest.main()
