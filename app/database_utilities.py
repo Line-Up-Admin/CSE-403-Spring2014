@@ -28,7 +28,7 @@ def query_db(query, args=()):
   rows = cursor.fetchall()
   cursor.close()
   return rows
-  
+
 def user_dict_to_db_tuple(user_dict):
   return (user_dict['id'], user_dict['temp'], user_dict['uname'], user_dict['fname'], user_dict['lname'], user_dict['email'], user_dict['pw'])
 
@@ -43,7 +43,7 @@ class PermissionException(Exception):
 
 class ValidationException(Exception):
   pass
-  
+
 # Database Utilities
 import permissions
 import validators
@@ -60,8 +60,8 @@ def create_temp_user(user_dict):
   db.execute(INSERT_TEMP_USER, (user_dict['id'], user_dict['uname']))
   db.commit()
   return user_dict['id']
-  
-def create_user_profile(user_dict):  
+
+def create_user_profile(user_dict):
   db = get_db()
   rows = query_db(GET_PROFILED_USER_BY_USERNAME, (user_dict['uname'],))
   if (rows and (len(rows) > 0)):
@@ -85,12 +85,12 @@ def create_user(user_dict):
     sqlite3.Error: the database operation failed.
     ValidationError: the username is already in use (only applies if account isn't temporary).
   """
-  if not user_dict.has_key('temp') or not user_dict['temp']:
+  if not user_dict.has_key('temp') or user_dict['temp']:
     user_dict['id'] = create_temp_user(user_dict)
   else:
     user_dict['id'] = create_user_profile(user_dict)
   return user_dict['id']
-  
+
 
 
 def modify_user(user_data):
@@ -198,7 +198,7 @@ def modify_queue_settings(q_settings):
       (1) The queue doesn't exist.
       (2) The q_settings are invalid.
     PermissionException: the current session user does not have permission to modify this queue's settings.
-  """ 
+  """
   raise NotImplementedError()
 
 def delete_queue(qid):
