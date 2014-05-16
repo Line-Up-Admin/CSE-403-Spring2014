@@ -101,6 +101,7 @@ angular.module('LineUpApp.controllers', []).
         }).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the popular queue request! \nStatus: " + status);
+          console.log(data);
       });
     }();
   }).
