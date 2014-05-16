@@ -18,7 +18,7 @@ angular.module('LineUpApp.services', []).
 			return $http.post('/employeeView/' + qid);
 		}
 		
-		lineUpAPI.adminDequeue = function (qid) {
+		lineUpAPI.dequeueFirstPerson = function (qid) {
 			return $http.post('/dequeue/' + qid);
 		}
 		
