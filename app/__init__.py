@@ -25,11 +25,11 @@ def get_db():
     with app.app_context():
       if not hasattr(g, 'sqlite_db'):
         g.sqlite_db = connect_db()
-          return g.sqlite_db
+      return g.sqlite_db
   else:
     if not hasattr(g, 'sqlite_db'):
       g.sqlite_db = connect_db()
-  return g.sqlite_db
+    return g.sqlite_db
 
 def init_db():
   """Initializes the database."""
