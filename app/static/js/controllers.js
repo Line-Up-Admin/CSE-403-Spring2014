@@ -20,6 +20,7 @@ angular.module('LineUpApp.controllers', []).
           // set the local queue to be the newly created queue
           $scope.queue = data;
 					console.log($scope.queue);
+					$location.path('/admin');
         }).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the create request!\nStatus: " + status);

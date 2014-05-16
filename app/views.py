@@ -350,6 +350,8 @@ def get_my_queues():
    else:
       uid = int(request.json)
    q_info_list = queue_server.get_queue_info_list(uid)
+   if q_info_list is None:
+      return jsonify({})
    return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
 
 @app.route('/remove')
