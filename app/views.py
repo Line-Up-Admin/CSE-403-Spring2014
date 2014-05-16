@@ -384,22 +384,17 @@ def create_user():
 
    Returns:
       {
-         email:
-         fname:
-         id:
-         lname:
-         pw:
-         temp:
-         uname:
-      }
+        SUCCESS:
+        error_message: (only if failure)
+      } 
 
    """
    user_data = request.json
    try:
       user_data['id'] = db_util.create_user(user_data)
-      return jsonify(user_data)
+      return jsonify({'SUCCESS':True})
    except sqlite3.Error as e:
-      return e.message
+      return jsonify({'SUCCESS':False,'error_message':e.message})
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -413,13 +408,8 @@ def login():
 
    Returns:
       {
-         email:
-         fname:
-         id:
-         lname:
-         pw:
-         temp:
-         uname:
+         SUCCESS:
+         error_message: (only if failure)
       }
 
    """
@@ -429,18 +419,18 @@ def login():
       # POST message
       if session.has_key('logged_in') and session['logged_in']:
           # user is already logged in
-          return 'User is already logged in.'
+          return jsonify({'SUCCESS':False,'error_message':'User is already logged in.'})
       try:
          user = db_util.get_user(request.json['uname'], request.json['pw'])
          session['logged_in'] = True
          session['id'] = user['id']
          session['uname'] = user['uname']
-         return jsonify(user)
+         return jsonify({'SUCCESS':True})
       except sqlite3.Error as e:
-         return e.message
+         return jsonify({'SUCCESS':False,'error_message:'e.message})
       except db_util.ValidationException as e:
          session['logged_in'] = False
-         return 'Invalid username or password'
+         return jsonify({'SUCCESS':False,'error_message:':'Invalid username or password'})
 
 @app.route('/logout')
 def logout():
