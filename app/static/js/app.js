@@ -25,6 +25,10 @@ config(['$routeProvider', function($routeProvider) {
     templateUrl: "partials/create_queue.html",
     controller: "lineUpController"
   }).
+	when("/admin", {
+		templateUrl: "partials/example_admin_queue_page.html",
+		controller: "lineUpController"
+	}).
   when("/home", {
     templateUrl: "partials/user_home.html",
     controller: "lineUpController"
