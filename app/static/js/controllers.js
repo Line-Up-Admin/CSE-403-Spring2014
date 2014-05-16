@@ -91,6 +91,7 @@ angular.module('LineUpApp.controllers', []).
 
       // don't send the extra password to the server
       delete $scope.user.pwx2;
+      $scope.user.temp = 0;
 
       lineUpAPIService.createUser($scope.user).
         success(function (data, status, headers, config) {
