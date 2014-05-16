@@ -139,7 +139,7 @@ class QueueSettings(object):
       might want to set regarding a queue. """
    def __init__(self):
       self.max_size = 0
-      # keywords is a list of strings
+      # keywords may be a list of strings in the future
       self.keywords = ''
       # name is the name of the Queue, such as "Hall Health" 
       self.qname = ''
@@ -239,35 +239,40 @@ class QueueServer(object):
       return q_member
 
    def search(self, name, location):
-      """ Implementation here is not very efficient. """
+      """ Returns a list of  qids that match the parameters 
+         passed in.
+      Implementation here is not very efficient. """
       results = []
       name = name.lower()
       #for qid, q in self.table:
       #   if 
-
       return "Not yet implemented"
 
    def create(self, settings):
-      """ Given a settings dictionary, creates a queue, 
-         adds to the database, and 
+      """ Given a settings dictionary, or a QueueSettings object,
+         creates a queue, adds to the database, and 
          returns the id of the queue created. """
-      #save the queue to the database
       if self.sync_db:
+         #save the queue to the database, get id
          qid = db_util.create_queue(settings)
       else:
          qid = self.id_gen
          self.id_gen += 1
-      qsettings = QueueSettings.from_dict(settings)
-      new_q = Queue(qid, qsettings)
+      if not (type(settings) is QueueSettings):
+         #convert from dict if necessary
+         settings = QueueSettings.from_dict(settings)
+      new_q = Queue(qid, settings)
       self.table[qid] = new_q
       return qid
 
    def get_members(self, qid):
-      """ Returns a list of members of a specific queue """
+      """ Returns a list of members of a specific queue 
+      (not in UML)"""
       return self.table[qid].get_members()
 
    def get_member_queues(self, uid):
-      """ Returns a set of queues that a member is in """
+      """ Returns a set of queues that a member is in 
+         (not in UML)"""
       return self.index[uid]
 
    def postpone(self, member, qid):
@@ -298,6 +303,7 @@ class QueueServer(object):
       return QueueInfo(qname, qid, size, ex_wait, avg_wait, position)
 
    def get_all_queues_info(self):
+      """ (not in UML) """
       result = list()
       for queue in self.table.values():
          q_info = self.get_info(None, queue.id)
@@ -305,7 +311,7 @@ class QueueServer(object):
       return result
 
    def get_queue_info_list(self, userid):
-      """
+      """ UML
       Args:
          q_member: a QueueMember object. QueueMembers are defined by uid, 
          so if uname and optional_data is not known, just create a 

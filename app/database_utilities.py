@@ -91,8 +91,6 @@ def create_user(user_dict):
     user_dict['id'] = create_user_profile(user_dict)
   return user_dict['id']
 
-
-
 def modify_user(user_data):
   """Modfiy the user to match the user_data.
 
@@ -155,7 +153,7 @@ def get_temp_user(temp_uid):
   """
   rows = query_db(GET_TEMP_USER_BY_ID, (temp_uid,))
   if (not rows) or (len(rows) == 0):
-    raise ValidationException('The user could not be found.')
+    return None
   else:
     return rows[0]
 

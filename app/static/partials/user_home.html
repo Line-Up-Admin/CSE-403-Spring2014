@@ -39,8 +39,8 @@
 		<div ng-repeat="queue in queueInfos">
 		<a href="#/queue_info/{{ queue.qid }}"><div class="queue">
 			<img class="queue-img" src="img/default.png"/>
-			<div class="progress"><div class="progress-bar" style="width: 80%;"></div></div>
-			<p class="queue-name">{{ queue.qname }}</p>
+			<!-- <div class="progress"><div class="progress-bar" style="width: 80%;"></div></div> -->
+			<p class="queue-name">{{ queue.qname }}: Position {{queue.member_position + 1 }} of {{ queue.size }} </p>
 			<p class="time-left">{{ queue.expected_wait }} min</p>
 		</div></a>
 	</div>

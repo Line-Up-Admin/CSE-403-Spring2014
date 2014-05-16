@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('LineUpApp.controllers', []).
   controller('lineUpController', function ($scope, lineUpAPIService, $location) {
-    $scope.user = {};
+		$scope.user = {};
 		$scope.userInfos = [];
     $scope.queue = {};
     $scope.queueInfos = [];
@@ -19,8 +19,9 @@ angular.module('LineUpApp.controllers', []).
         success(function (data, status, headers, config) {
           // set the local queue to be the newly created queue
           $scope.queue = data;
-					console.log($scope.queue);
-					$location.path('/admin');
+					$location.path('/admin/' + $scope.queue.qid);
+					// console.log($scope.queue);
+					// console.log($scope.queue.qname);
         }).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the create request!\nStatus: " + status);
@@ -141,4 +142,23 @@ angular.module('LineUpApp.controllers', []).
           console.log(data);
         });
     }
-  });
+  }).
+	controller('adminViewController', function($scope, lineUpAPIService, $routeParams) {
+		$scope.queueInfo = {};
+		$scope.member_list = [];
+
+		$scope.getDetailedQueueInfo = function () {
+			lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
+				success(function (data, status, headers, config) {
+					$scope.queueInfo = data.queue_info;
+					console.log($scope.queueInfo.qname);
+					console.log($scope.queueInfo.size);
+					console.log($scope.queueInfo.expected_wait);
+					$scope.member_list = data.member_list;
+				}).
+				error(function (data, status, headers, config) {
+					alert("Something went wrong with the queue lookup request!\nStatus: " + status);
+					console.log(data);
+				})
+		}();
+	});
