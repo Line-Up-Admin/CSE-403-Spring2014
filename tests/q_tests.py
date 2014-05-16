@@ -54,7 +54,8 @@ class SomeTest(unittest.TestCase):
       self.assertRaises(QueueFullException, qq.add, m3)
    
    def test_postpone(self):
-      """Test postponing in the queue """
+      """Test postponing in the queue. 
+         Also tests the get_position method """
       qq = Queue(112)
       m1 = QueueMember("bob", 122)
       m2 = QueueMember("carol", 123)
@@ -89,6 +90,38 @@ class SomeTest(unittest.TestCase):
       assert qq.get_position(m2) == 3
       assert len(qq) == 4
 
+   def test_remove(self):
+      """ Tests that a specific member can be removed from the 
+         middle of the queue, and also tests getting
+         a queue member back, or getting back a list of
+         queue members"""
+      qq = Queue(112)
+      m1 = QueueMember("bob", 122)
+      m2 = QueueMember("carol", 123)
+      m3 = QueueMember("dave", 124)
+      m4 = QueueMember("evan", 125)
+      m5 = QueueMember("waldo", 987)
+
+      qq.add(m1)
+      qq.add(m2)
+      qq.add(m3)
+      qq.add(m4)
+      assert len(qq) == 4
+      b1 = qq.remove(m3)
+      assert b1
+      assert len(qq) == 3
+      #removing someone not in the queue should return false
+      b2 = qq.remove(m5)
+      assert not b2
+
+      # a queue can give back the user in it with a certain id
+      mm1 = qq.get_member(122)
+      print "mm1: ", mm1
+      assert mm1.uname == "bob"
+
+      lst = qq.get_members()
+      assert lst == [m1, m2, m4]
+      
 
 if __name__ == '__main__':
    unittest.main()
