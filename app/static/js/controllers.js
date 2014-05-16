@@ -3,7 +3,6 @@
 /* Controllers */
 angular.module('LineUpApp.controllers', []).
   controller('lineUpController', function ($scope, lineUpAPIService, $location) {
-    $scope.test = "Blue's Clues";
 		$scope.user = {};
 		$scope.userInfos = [];
     $scope.queue = {};
@@ -20,43 +19,12 @@ angular.module('LineUpApp.controllers', []).
         success(function (data, status, headers, config) {
           // set the local queue to be the newly created queue
           $scope.queue = data;
-					$location.path('/admin');
-					console.log($scope.queue);
-					console.log("test");
-					console.log($scope.test);
+					$location.path('/admin/' + $scope.queue.qid);
+					// console.log($scope.queue);
+					// console.log($scope.queue.qname);
         }).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the create request!\nStatus: " + status);
-        });
-    }
-
-    // Sends a request to the server to get the information for the most popular
-    // queues.
-    // Upon success: Updates the current queueInfos array to store the results
-    // of the request.
-    // Upon error: TODO: Do something smart to handle the error
-    $scope.getPopularQueues = function () {
-      lineUpAPIService.getPopularQueues().
-        success(function (data, status, headers, config) {
-          $scope.queueInfos = data.queue_info_list;
-        }).
-        error(function (data, status, headers, config) {
-          alert("Something went wrong with the popular queue request! \nStatus: " + status);
-      });
-    }
-
-    // Sends a request to the server to join the queue
-    // queues.
-    // Upon success: Updates the current queueInfos array to store the results
-    // of the request.
-    // Upon error: TODO: Do something smart to handle the error
-    $scope.joinQueue = function () {
-      lineUpAPIService.joinQueue({ 'qid': $scope.queue.id, 'uname': $scope.user.uname }).
-        success(function (data, status, headers, config) {
-          console.log(data);
-        }).
-        error(function (data, status, headers, config) {
-          alert("Something went wrong with the join queue request! \nStatus: " + status);
         });
     }
   }).
@@ -105,15 +73,92 @@ angular.module('LineUpApp.controllers', []).
         });
       }
   }).
-  controller('queueInfoController', function ($scope, lineUpAPIService, $routeParams) {
+
+  controller('userHomeController', function ($scope, lineUpAPIService) {
     $scope.getUsersQueues = function () {
       lineUpAPIService.getUsersQueues().
         success(function (data, status, headers, config) {
-
+          $scope.queueInfos = data.queue_info_list;
+          console.log(data);
         }).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the queue lookup request!\nStatus: " + status);
           console.log(data);
         });
     }();
-  });
+  }).
+
+  controller('searchController', function ($scope, lineUpAPIService) {
+    // Sends a request to the server to get the information for the most popular
+    // queues.
+    // Upon success: Updates the current queueInfos array to store the results
+    // of the request.
+    // Upon error: TODO: Do something smart to handle the error
+    $scope.getPopularQueues = function () {
+      lineUpAPIService.getPopularQueues().
+        success(function (data, status, headers, config) {
+          $scope.queueInfos = data.queue_info_list;
+        }).
+        error(function (data, status, headers, config) {
+          alert("Something went wrong with the popular queue request! \nStatus: " + status);
+      });
+    }();
+  }).
+
+  controller('queueInfoController', function ($scope, lineUpAPIService, $routeParams) {
+    $scope.queueStatus = function () {
+      lineUpAPIService.queueStatus($routeParams.qid).
+        success(function (data, status, headers, config) {
+          $scope.queue = data;
+          console.log(data);
+          document.getElementById('enqueued').classList.add('hide');
+          document.getElementById('notEnqueued').classList.add('hide');
+          if (data.member_position == null) {
+            document.getElementById('notEnqueued').classList.remove('hide');
+          } else {
+            document.getElementById('enqueued').classList.remove('hide');
+          }
+        }).
+        error(function (data, status, headers, config) {
+          alert("Something went wrong with the queue lookup request!\nStatus: " + status);
+          console.log(data);
+        });
+    }();
+
+    // Sends a request to the server to join the queue
+    // queues.
+    // Upon success: Updates the current queueInfos array to store the results
+    // of the request.
+    // Upon error: TODO: Do something smart to handle the error
+    $scope.joinQueue = function () {
+      lineUpAPIService.joinQueue({ 'qid': $scope.queue.qid, 'uname': "temp" }).
+        success(function (data, status, headers, config) {
+          console.log(data);
+          document.getElementById('notEnqueued').classList.add('hide');
+          document.getElementById('enqueued').classList.remove('hide');
+        }).
+        error(function (data, status, headers, config) {
+          alert("Something went wrong with the join queue request! \nStatus: " + status);
+          console.log(data);
+        });
+    }
+  }).
+	controller('adminViewController', function($scope, lineUpAPIService, $routeParams) {
+		$scope.queueInfo = {};
+		$scope.member_list = [];
+
+		$scope.getDetailedQueueInfo = function () {
+			lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
+				success(function (data, status, headers, config) {
+					$scope.queueInfo = data.queue_info;
+					console.log($scope.queueInfo.qname);
+					console.log($scope.queueInfo.size);
+					console.log($scope.queueInfo.expected_wait);
+					$scope.member_list = data.member_list;
+				}).
+				error(function (data, status, headers, config) {
+					alert("Something went wrong with the queue lookup request!\nStatus: " + status);
+					console.log(data);
+				})
+		}();
+	});

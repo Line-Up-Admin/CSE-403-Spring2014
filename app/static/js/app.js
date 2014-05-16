@@ -15,7 +15,7 @@ config(['$routeProvider', function($routeProvider) {
   }).
   when("/search", {
     templateUrl: "partials/search.html",
-    controller: "lineUpController"
+    controller: "searchController"
   }).
   when("/queue_info/:qid", {
     templateUrl: "partials/queue_info.html",
@@ -25,13 +25,13 @@ config(['$routeProvider', function($routeProvider) {
     templateUrl: "partials/create_queue.html",
     controller: "lineUpController"
   }).
-	when("/admin", {
+	when("/admin/:qid", {
 		templateUrl: "partials/example_admin_queue_page.html",
-		controller: "lineUpController"
+		controller: "adminViewController"
 	}).
   when("/home", {
     templateUrl: "partials/user_home.html",
-    controller: "queueInfoController"
+    controller: "userHomeController"
   }).
   when("/anonymous", {
     templateUrl: "/index.html",
