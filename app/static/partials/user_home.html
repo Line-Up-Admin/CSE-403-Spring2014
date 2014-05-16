@@ -36,12 +36,14 @@
 	</div> -->
 	<div class="current-queues">
 		<h2>Queues You're In</h2>
-		<a href="#"><div class="queue" ng-repeat="queue in queueInfos">
+		<div ng-repeat="queue in queueInfos">
+		<a href="#/queue_info/{{ queue.qid }}"><div class="queue">
 			<img class="queue-img" src="img/default.png"/>
-			<div class="progress"><div class="progress-bar" style="width: 80%;"></div></div>
-			<p class="queue-name">{{ queue.qname }}</p>
-			<p class="time-left">{{ queue.expected_wait }}</p>
+			<!-- <div class="progress"><div class="progress-bar" style="width: 80%;"></div></div> -->
+			<p class="queue-name">{{ queue.qname }}: Position {{queue.member_position + 1 }} of {{ queue.size }} </p>
+			<p class="time-left">{{ queue.expected_wait }} min</p>
 		</div></a>
+	</div>
 	</div>
 	<!-- <div class="recent-queues">
 		<h2>Recent</h2>
@@ -51,5 +53,5 @@
 			<p class="time-left">3 hours</p>
 		</div></a>
 	</div> -->
-	<p><a href="#" class="btn btn-line-up btn-lg btn-block" role="button">Join a New Queue</a></p>
+	<p><a href="#/search" class="btn btn-line-up btn-lg btn-block" role="button">Join a New Queue</a></p>
 </div>

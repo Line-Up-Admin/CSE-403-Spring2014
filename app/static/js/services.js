@@ -18,11 +18,16 @@ angular.module('LineUpApp.services', []).
 			return $http.post('/employeeView/' + qid);
 		}
 		
+		lineUpAPI.adminDequeue = function (qid) {
+			return $http.post('/dequeue/' + qid);
+		}
+		
     lineUpAPI.getPopularQueues = function () {
       return $http.get('/popular');
     }
 
     lineUpAPI.joinQueue = function (data) {
+      console.log(data);
       return $http.post('/join', data);
     }
 
@@ -36,6 +41,10 @@ angular.module('LineUpApp.services', []).
 
     lineUpAPI.getUsersQueues = function () {
       return $http.post('/myQueues');
+    }
+
+    lineUpAPI.queueStatus = function (qid) {
+      return $http.get('/queueStatus/' + qid);
     }
 
     return lineUpAPI;
