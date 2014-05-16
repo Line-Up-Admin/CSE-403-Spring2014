@@ -21,8 +21,14 @@ def get_db():
   """Opens a new database connection if there is none yet for the
   current application context.
   """
-  if not hasattr(g, 'sqlite_db'):
-    g.sqlite_db = connect_db()
+  if g is None:
+    with app.app_context():
+      if not hasattr(g, 'sqlite_db'):
+        g.sqlite_db = connect_db()
+          return g.sqlite_db
+  else:
+    if not hasattr(g, 'sqlite_db'):
+      g.sqlite_db = connect_db()
   return g.sqlite_db
 
 def init_db():
