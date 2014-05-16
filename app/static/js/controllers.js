@@ -71,12 +71,10 @@ angular.module('LineUpApp.controllers', []).
             return;
           }
           // successful login
-          user = data;
-          $location.path("www.google.com");
+          $location.path("/home");
         }).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the login request!\nStatus: " + status);
-          console.log(data);
         });
     }
 
