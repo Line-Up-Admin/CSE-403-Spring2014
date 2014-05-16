@@ -386,7 +386,7 @@ def create_user():
       {
         SUCCESS:
         error_message: (only if failure)
-      } 
+      }
 
    """
    user_data = request.json
@@ -427,7 +427,7 @@ def login():
          session['uname'] = user['uname']
          return jsonify({'SUCCESS':True})
       except sqlite3.Error as e:
-         return jsonify({'SUCCESS':False,'error_message:'e.message})
+         return jsonify({'SUCCESS':False,'error_message': e.message})
       except db_util.ValidationException as e:
          session['logged_in'] = False
          return jsonify({'SUCCESS':False,'error_message:':'Invalid username or password'})
