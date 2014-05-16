@@ -42,30 +42,48 @@
 			<hr>
 		</div>
 		
-		<div class="container text-center">
+		<div class="container text-center image-center">
 			<h1>Your Queues</h1>
-			<div class="current-queues"> <!-- currently not used in css -->
+			
+			<div class="userqueues" > <!-- currently not used in css -->
 				<h2>Current</h2>
 				<a href="#"><div class="queue">
-					<img class="queue-img" src="images/CLUE_phys.png"/>
-					<div class="progress"><div class="progress-bar" style="width: 80%;"></div></div>
-					<p class="queue-name">CLUE - Physics</p>
-					<p class="time-left">10 min</p>
+					<div class="userEditOff">
+						<p class="time-left">10 min</p>
+					</div>
+					<div class="stationary">
+						<img class="queue-img" src="images/CLUE_phys.png"/>
+						<div class="progress"><div class="progress-bar" style="width: 80%;"></div></div>
+						<p class="queue-name">CLUE - Physics</p>
+					</div>
 				</div></a>
+				
 				<a href="#"><div class="queue">
-					<img class="queue-img" src="images/hall_health.png"/>
-					<div class="progress"><div class="progress-bar" style="width: 30%;"></div></div>
-					<p class="queue-name">Hall Health</p>
-					<p class="time-left">3 hours</p>
+					<div class="userEditOff">
+						<p class="time-left">3 hours</p>
+					</div>
+					<div class="stationary">
+						<img class="queue-img" src="images/hall_health.png"/>
+						<div class="progress"><div class="progress-bar" style="width: 30%;"></div></div>
+						<p class="queue-name">Hall Health</p>
+					</div>
 				</div></a>
+				
 			</div>
+			
 			<div class="recent-queues">
 				<h2>Recent</h2>
+				
 				<a href="#"><div class="queue">
-					<img class="queue-img" src="images/hall_health.png"/>
-					<p class="queue-name">Hall Health</p>
-					<p class="time-left">3 hours</p>
+					<div class="userEditOff">
+						<p class="time-left">3 hours</p>
+					</div>
+					<div class="stationary">
+						<img class="queue-img" src="images/hall_health.png"/>
+						<p class="queue-name">Hall Health</p>
+					</div>
 				</div></a>
+				
 			</div>
 			<p><a href="#" class="btn btn-line-up btn-lg btn-block" role="button">Join a New Queue</a></p>
 		</div>
