@@ -19,7 +19,7 @@ angular.module('LineUpApp.services', []).
 		}
 		
 		lineUpAPI.dequeueFirstPerson = function (qid) {
-			return $http.post('/dequeue/' + qid);
+			return $http.post('/dequeue/', qid);
 		}
 		
     lineUpAPI.getPopularQueues = function () {
