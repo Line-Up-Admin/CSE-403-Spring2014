@@ -307,7 +307,14 @@ def get_queue_status():
       }
 
    """
-   q_info = queue_server.get_info(None, qid)
+   userid = None
+   q_member = None
+   if session.has_key('logged_in') and session['logged_in']:
+      userid = session['id']
+      q_member = QueueMember(uid=userid)
+   q_info = queue_server.get_info(q_member, qid)
+   if q_info is None:
+      return Failure('The queue does not exist.')
    return jsonify(q_info.__dict__)
 
 @app.route('/myQueues', methods=['POST'])
