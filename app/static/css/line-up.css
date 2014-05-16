@@ -1,0 +1,191 @@
+/* shared css */
+.header-content { /* login_home, create_account, user_home, search_queues, found_queues, example_admin_queue_page */
+	background-color: white;
+}
+
+.line-up-banner { /* login_home, create_account */
+	width: 180px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.info-box { /* login_home, create_account, search_queues */
+	background: linear-gradient(#E7CDFC, #C0A0DC);
+	border: 5px solid black;
+	padding: 10px;
+	margin-top: 80px;
+}
+
+.login-input { /* login_home, create_account, search_queues */
+	height: 20px;
+	width: 70px;
+}
+
+.btn-line-up { /* login_home, create_account, user_home, example_admin_queue_page */
+	color: #000;
+	background: linear-gradient(#E7CDFC, #C0A0DC);
+	border: 2px solid black;
+	font-size: small;
+	width: 60%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.line-up-icon { /* user_home, search_queues, found_queues, example_admin_queue_page */
+	width: 86px;
+}
+
+h2.page-content-header { /* (no h2 found yet) */
+	font-size: x-large;
+}
+
+h1.page-content-header { /* login_home, search_queues, found_queues */
+	margin-bottom: 0px;
+}
+
+.queue { /* user_home, search_queues, found_queues */
+	border: 2px solid black;
+	margin-top: 8px;
+	margin-bottom: 8px;
+	background: linear-gradient(#E7CDFC, #C0A0DC);
+	text-align: left;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	padding-left: 15px;
+}
+
+.queue-img { /* user_home, search_queues, found_queues */
+	margin-right: 10px;
+}
+
+.progress { /* user_home */
+	width: 20%;
+	display: inline-block;
+	margin: 0px;
+}
+
+.queue-name, .time-left { /* user_home, search_queues, found_queues */
+	display: inline-block;
+}
+
+/* log_home, create_account, search_queues, found_queues have no unique css */
+/* user_home css */
+.recent-queues {
+	margin-bottom: 20px;
+}
+
+/* example_admin_queue_page css */
+.queue-face, .queue-control, .control-options {
+	margin-top: 25px;
+	margin-bottom: 25px;
+	margin-left: 10px;
+}
+
+.queue-portrait, .button-join {
+	float: left;
+	margin: 10px;
+}
+
+h1.queue-page-header {
+	padding: 12px;
+	font-size: x-large;
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+.control-buttons a {
+	width: 100%;
+	margin: 5px;
+	min-width: 80px;
+	font-size: x-small;
+}
+
+.control-buttons a span {
+	font-size: x-large;
+}
+
+.control-list, .control-options {
+	display: inline-block;
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.control-list {
+	min-width: 160px;
+	max-width: 300px;
+	float: right;
+}
+
+.queue-status {
+	text-align: center;
+	font-size: large;
+	font-weight: bold;
+	padding: 25px;
+}
+
+/* extra css ids */
+.glyphicon-send, .glyphicon-time, .glyphicon-remove-sign {
+	font-size: xx-large;
+}
+
+.control-options {
+	width: 120px;
+	padding-right: 15px;
+}
+
+.button-join {
+	width: 120px;
+}
+
+#btn-join {
+	width: 100%;
+}
+
+#btn-postpone, #btn-leave {
+	width: 30%;
+	margin: 10px;
+	min-width: 100px;
+}
+
+hr {
+	border: 1px solid black;
+	height: 4px;
+	background-color: #4C116D;
+	color: #4C116D;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+body {
+	background: linear-gradient(#C5A7DF, #814BB3);
+	background-attachment: fixed;
+}
+
+#create-account  {
+	width: 55%;
+}
+
+.time-left {
+	float: right;
+	margin-top: 8px;
+	margin-right: 10px;
+}
+
+#submit-login, #submit-acct-info  {
+	width: 35%;
+}
+
+#create-account, #submit-login  {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.queue-position {
+	width: 50%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
