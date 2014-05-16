@@ -19,7 +19,7 @@
 
 <div class="container text-center main-page-content">
 	<h1>Your Queues</h1>
-	<div class="owned-queues">
+	<!-- <div class="owned-queues">
 		<h2>Queues You Own</h2>
 		<a href="#"><div class="queue">
 			<img class="queue-img" src="img/CLUE_phys.png"/>
@@ -33,29 +33,23 @@
 			<p class="queue-name">Hall Health</p>
 			<p class="time-left">3 hours</p>
 		</div></a>
-	</div>
+	</div> -->
 	<div class="current-queues">
 		<h2>Queues You're In</h2>
-		<a href="#"><div class="queue">
-			<img class="queue-img" src="img/CLUE_phys.png"/>
+		<a href="#"><div class="queue" ng-repeat="queue in queueInfos">
+			<img class="queue-img" src="img/default.png"/>
 			<div class="progress"><div class="progress-bar" style="width: 80%;"></div></div>
-			<p class="queue-name">CLUE - Physics</p>
-			<p class="time-left">10 min</p>
-		</div></a>
-		<a href="#"><div class="queue">
-			<img class="queue-img" src="img/hall_health.png"/>
-			<div class="progress"><div class="progress-bar" style="width: 30%;"></div></div>
-			<p class="queue-name">Hall Health</p>
-			<p class="time-left">3 hours</p>
+			<p class="queue-name">{{ queue.qname }}</p>
+			<p class="time-left">{{ queue.expected_wait }}</p>
 		</div></a>
 	</div>
-	<div class="recent-queues">
+	<!-- <div class="recent-queues">
 		<h2>Recent</h2>
 		<a href="#"><div class="queue">
 			<img class="queue-img" src="img/hall_health.png"/>
 			<p class="queue-name">Hall Health</p>
 			<p class="time-left">3 hours</p>
 		</div></a>
-	</div>
+	</div> -->
 	<p><a href="#" class="btn btn-line-up btn-lg btn-block" role="button">Join a New Queue</a></p>
 </div>

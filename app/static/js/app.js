@@ -27,7 +27,7 @@ config(['$routeProvider', function($routeProvider) {
   }).
   when("/home", {
     templateUrl: "partials/user_home.html",
-    controller: "lineUpController"
+    controller: "queueInfoController"
   }).
   when("/anonymous", {
     templateUrl: "/index.html",

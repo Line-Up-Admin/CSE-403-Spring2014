@@ -102,23 +102,14 @@ angular.module('LineUpApp.controllers', []).
       }
   }).
   controller('queueInfoController', function ($scope, lineUpAPIService, $routeParams) {
+    $scope.getUsersQueues = function () {
+      lineUpAPIService.getUsersQueues().
+        success(function (data, status, headers, config) {
 
-    // Sends a request to the server to get the queue settings that match the
-    // provided ID.
-    // Upon success: Updates the current queue model to include the queue
-    // settings.
-    // Upon error: TODO: Do something smart to handle the error
-    $scope.getQueueSettings = function () {
-
-      alert("Not yet implemented.");
-      // lineUpAPIService.getQueueSettings($routeParams.qid).
-
-      //   success(function (data, status, headers, config) {
-      //     // set the local queue to be the newly created queue
-      //     console.log(data);
-      //   }).
-      //   error(function (data, status, headers, config) {
-      //     alert("Something went wrong with the queue lookup request!\nStatus: " + status);
-      //   });
+        }).
+        error(function (data, status, headers, config) {
+          alert("Something went wrong with the queue lookup request!\nStatus: " + status);
+          console.log(data);
+        });
     }();
   });

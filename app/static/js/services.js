@@ -23,13 +23,15 @@ angular.module('LineUpApp.services', []).
     }
 
     lineUpAPI.login = function (user) {
-      console.log(user);
       return $http.post('/login', user);
     }
 
     lineUpAPI.createUser = function (user) {
-      console.log(user);
       return $http.post('/createUser', user);
+    }
+
+    lineUpAPI.getUsersQueues = function () {
+      return $http.post('/myQueues');
     }
 
     return lineUpAPI;
