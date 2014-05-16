@@ -160,23 +160,27 @@ class QueueServer(object):
    """ This is a Queue Server object, which is responsible
    for keeping track of all the queues in the system. 
    The table field is a table of the Queues in the system, 
-   and index is a reverse index that maps from memberID to QID.
+   and index is a reverse index that maps from uid to 
+   a set of qid.
    Current behavior is to raise an exception when a client
    tries to modify a non-existent queue."""
    
-   def __init__(self):
-      # table from q_ID to Queue
+   def __init__(self, sync_db = True):
+      # the sync_db parameters is for testing purposes.
+      #  By setting this parameter to False, you can create a QueueServer
+      #  that does not try to talk to the database.
+      
+      # table from qid to Queue
       self.table = {}
-      # reverse index from QueueMember to a set of q_IDs
+      # reverse index from uid to a set of qids
       self.index = {}
+      self.sync_db = sync_db
+      if not sync_db:
+         self.id_gen = 500
+         return
       # read all the queues from the database, and put them into the tables
-      # get_all_queues returns a list of tuples of q_IDs to QueueSettings 
+      # get_all_queues returns a list of tuples of qids to QueueSettings 
       #  objects
-      """" This will be turned on once the method is written in db_util 
-      all_qs = db_util.get_all_queues()
-      for q_id, q_set in all_qs:
-         table[q_id] = Queue(q_id, q_set)
-      """
       (q_settings_rows, q_rows) = db_util.get_all_queues()
       print 'Loading queues from db...'
       i = 0
@@ -211,13 +215,15 @@ class QueueServer(object):
       if member.uid not in self.index:
          self.index[member.uid] = set()
       self.index[member.uid].add(qid)
-      db_util.add_to_queue(member.uid, qid, member.optional_data)
+      if self.sync_db:
+         db_util.add_to_queue(member.uid, qid, member.optional_data)
 
    def remove(self, member, qid):
       """ This could raise a KeyError, which we are currently
          passing on the to caller. """
       q = self.table[qid]
       self.index[member.uid].remove(qid)
+      # TODO: update database state
       return q.remove(member)
 
    def dequeue(self, qid):
@@ -228,32 +234,41 @@ class QueueServer(object):
       if q_member is None:
          return None
       self.index[q_member.uid].remove(qid)
-      db_util.remove_by_uid_qid(q_member.uid, qid)
+      if self.sync_db:
+         db_util.remove_by_uid_qid(q_member.uid, qid)
       return q_member
 
    def search(self, name, location):
       """ Implementation here is not very efficient. """
       results = []
       name = name.lower()
-      #for q_ID, q in self.table:
+      #for qid, q in self.table:
       #   if 
 
       return "Not yet implemented"
 
    def create(self, settings):
-      """ Creates a queue, adds to the database, and 
+      """ Given a settings dictionary, creates a queue, 
+         adds to the database, and 
          returns the id of the queue created. """
       #save the queue to the database
-      q_ID = db_util.create_queue(settings)
+      if self.sync_db:
+         qid = db_util.create_queue(settings)
+      else:
+         qid = self.id_gen
+         self.id_gen += 1
       qsettings = QueueSettings.from_dict(settings)
-      new_q = Queue(q_ID, qsettings)
-      self.table[q_ID] = new_q
-      return q_ID
+      new_q = Queue(qid, qsettings)
+      self.table[qid] = new_q
+      return qid
 
    def get_members(self, qid):
-      """ I'm not sure this method is necessary if all Queue 
-         modification is done through the QueueServer object. """
+      """ Returns a list of members of a specific queue """
       return self.table[qid].get_members()
+
+   def get_member_queues(self, uid):
+      """ Returns a set of queues that a member is in """
+      return self.index[uid]
 
    def postpone(self, member, qid):
       if qid not in self.table:
@@ -291,14 +306,13 @@ class QueueServer(object):
 
    def get_queue_info_list(self, userid):
       """
-
       Args:
-         q_member: a QueueMember object. QueueMembers are defined by uid, so if uname and optional_data is
-         not known, just create a QueueMember and assign it the uid.
+         q_member: a QueueMember object. QueueMembers are defined by uid, 
+         so if uname and optional_data is not known, just create a 
+         QueueMember and assign it the uid.
 
       Returns:
          a list of QueueInfo.
-
       """
       if not self.index.has_key(userid):
          return None
