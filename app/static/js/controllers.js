@@ -144,7 +144,9 @@ angular.module('LineUpApp.controllers', []).
         });
     }
   }).
-	controller('adminViewController', function($scope, lineUpAPIService, $routeParams) {
+	
+	controller('adminViewController', function($scope, lineUpAPIService, $routeParams, $route) {
+		$scope.user = {};
 		$scope.queueInfo = {};
 		$scope.member_list = [];
 		
@@ -154,20 +156,22 @@ angular.module('LineUpApp.controllers', []).
 		$scope.getDetailedQueueInfo = function () {
 			lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
 				success(function (data, status, headers, config) {
+					console.log(data.queue_info);
 					$scope.queueInfo = data.queue_info;
 					$scope.member_list = data.member_list;
+					console.log(queueInfo.qname);
 				}).
 				error(function (data, status, headers, config) {
-					alert("Are you logged in as an existing user? That might be an issue.\nStatus: " + status);
+					alert("Are you logged in as an existing user? If not, that might be an issue.\nStatus: " + status);
 					console.log(data);
-				})
+				});
 		}();
 		
 		// Sends a dequeue to the server.
     // Upon success: Dequeues the first person in line.
     // Upon error: TODO: Do something smart to handle the error
 		$scope.dequeueFirstPerson = function () {
-			lineUpAPIService.adminDequeue($routeParams.qid).
+			lineUpAPIService.dequeueFirstPerson($routeParams.qid).
 				success(function (data, status, headers, config) {
 					$scope.queueInfo = data.queue_info;
 					$scope.member_list = data.member_list;
@@ -175,6 +179,31 @@ angular.module('LineUpApp.controllers', []).
 				error(function (data, status, headers, config) {
 					alert("Wow you suck at this.\nStatus: " + status);
 					console.log(data);
-				})
-		}();
+				});
+		}
+		
+		// Sends an enqueue request to the server.
+    // Upon success: Enqueues the specified user and updates the admin view.
+    // Upon error: TODO: Do something smart to handle the error
+		$scope.adminAdd = function () {
+			lineUpAPIService.joinQueue({ 'qid': $routeParams.qid, 'uname': $scope.user.uname }).
+        success(function (data, status, headers, config) {
+          console.log(data);
+					lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
+						success(function (data, status, headers, config) {
+							$scope.queueInfo = data.queue_info;
+							$scope.member_list = data.member_list;
+							$route.reload();
+							console.log(member_list);
+						}).
+						error(function (data, status, headers, config) {
+							alert("Bug! Bug! Bug!\nStatus: " + status);
+							console.log(data);
+						});
+				}).
+        error(function (data, status, headers, config) {
+          alert("Something went wrong with the join queue request! \nStatus: " + status);
+          console.log(data);
+        });
+		}
 	});
