@@ -88,7 +88,7 @@ class Queue(object):
          being asked about. This is a 0-based index from the front
          of the line. """
       for i, j in enumerate(self.my_q):
-         if j == member:
+         if j.uid == member.uid:
             return i
       return None
 
