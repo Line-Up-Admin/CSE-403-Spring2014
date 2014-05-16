@@ -255,14 +255,12 @@ def get_employee_queue(qid):
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['id']
    else:
-      return jsonify(Failure("You must be logged in as an employee to dequeue."))
+      return "You must be logged in as an employee to dequeue."
    if permissions.has_flag(uid, qid, permissions.EMPLOYEE):
       members = queue_server.get_members(qid)
       q_info = queue_server.get_info(None, qid)
       return jsonify(queue_info=q_info.__dict__, member_list=[member.__dict__ for member in members])
-   else:
-			return jsonify(Failure("You must be logged in as an employee to dequeue."))
-			
+
 @app.route('/adminQueue/<qid>')
 def get_admin_queue(qid):
 	return
@@ -408,11 +406,14 @@ def create_user():
       }
 
    """
+   print 'enter createUser route'
    user_data = request.json
    try:
       user_data['id'] = db_util.create_user(user_data)
+      print 'exit create user route sucess.'
       return jsonify({'SUCCESS':True})
    except sqlite3.Error as e:
+      print 'exit create user route failure.'
       return jsonify({'SUCCESS':False,'error_message':e.message})
 
 @app.route('/login', methods=['GET', 'POST'])

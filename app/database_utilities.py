@@ -62,6 +62,7 @@ def create_temp_user(user_dict):
   return user_dict['id']
 
 def create_user_profile(user_dict):
+  print 'enter db_util.create_user_profile'
   db = get_db()
   rows = query_db(GET_PROFILED_USER_BY_USERNAME, (user_dict['uname'],))
   if (rows and (len(rows) > 0)):
@@ -70,6 +71,7 @@ def create_user_profile(user_dict):
   user_dict['id'] = validators.get_unique_user_id()
   db.execute(INSERT_PROFILED_USER, user_dict_to_db_tuple(user_dict))
   db.commit()
+  print 'exit db_util.create_user_profile'
   return user_dict['id']
 
 def create_user(user_dict):
