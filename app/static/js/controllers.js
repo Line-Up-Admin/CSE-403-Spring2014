@@ -145,7 +145,7 @@ angular.module('LineUpApp.controllers', []).
     }
   }).
 	
-	controller('adminViewController', function($scope, lineUpAPIService, $routeParams) {
+	controller('adminViewController', function($scope, lineUpAPIService, $routeParams, $route) {
 		$scope.user = {};
 		$scope.queueInfo = {};
 		$scope.member_list = [];
@@ -156,13 +156,15 @@ angular.module('LineUpApp.controllers', []).
 		$scope.getDetailedQueueInfo = function () {
 			lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
 				success(function (data, status, headers, config) {
+					console.log(data.queue_info);
 					$scope.queueInfo = data.queue_info;
 					$scope.member_list = data.member_list;
+					console.log(queueInfo.qname);
 				}).
 				error(function (data, status, headers, config) {
 					alert("Are you logged in as an existing user? If not, that might be an issue.\nStatus: " + status);
 					console.log(data);
-				})
+				});
 		}();
 		
 		// Sends a dequeue to the server.
@@ -177,7 +179,7 @@ angular.module('LineUpApp.controllers', []).
 				error(function (data, status, headers, config) {
 					alert("Wow you suck at this.\nStatus: " + status);
 					console.log(data);
-				})
+				});
 		}
 		
 		// Sends an enqueue request to the server.
@@ -189,13 +191,15 @@ angular.module('LineUpApp.controllers', []).
           console.log(data);
 					lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
 						success(function (data, status, headers, config) {
-						$scope.queueInfo = data.queue_info;
-						$scope.member_list = data.member_list;
-					}).
-					error(function (data, status, headers, config) {
-						alert("Bug! Bug! Bug!\nStatus: " + status);
-						console.log(data);
-					});
+							$scope.queueInfo = data.queue_info;
+							$scope.member_list = data.member_list;
+							$route.reload();
+							console.log(member_list);
+						}).
+						error(function (data, status, headers, config) {
+							alert("Bug! Bug! Bug!\nStatus: " + status);
+							console.log(data);
+						});
 				}).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the join queue request! \nStatus: " + status);

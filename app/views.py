@@ -257,12 +257,14 @@ def get_employee_queue(qid):
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['id']
    else:
-      return "You must be logged in as an employee to dequeue."
+      return jsonify(Failure("You must be logged in as an employee to dequeue."))
    if permissions.has_flag(uid, qid, permissions.EMPLOYEE):
       members = queue_server.get_members(qid)
       q_info = queue_server.get_info(None, qid)
       return jsonify(queue_info=q_info.__dict__, member_list=[member.__dict__ for member in members])
-
+   else:
+			return jsonify(Failure("You must be logged in as an employee to dequeue."))
+			
 @app.route('/adminQueue/<qid>')
 def get_admin_queue(qid):
 	return
