@@ -54,3 +54,4 @@ with app.app_context():
   queue_server = QueueServer()
 
 from app import views
+from app import debug_views

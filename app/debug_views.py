@@ -123,7 +123,7 @@ def get_queue_info_debug(qid):
    q_info = queue_server.get_info(None, qid)
    return jsonify(q_info.__dict__)
 
-@app.route('/debug/myqueues', methods=['GET'])
+@app.route('/debug/myqueues', methods=['GET', 'POST'])
 def get_my_queues_debug():
    if not app.debug:
       abort(404)
