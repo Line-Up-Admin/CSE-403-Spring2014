@@ -3,7 +3,8 @@
 /* Controllers */
 angular.module('LineUpApp.controllers', []).
   controller('lineUpController', function ($scope, lineUpAPIService, $location) {
-    $scope.user = {};
+    $scope.test = "Blue's Clues";
+		$scope.user = {};
 		$scope.userInfos = [];
     $scope.queue = {};
     $scope.queueInfos = [];
@@ -19,8 +20,10 @@ angular.module('LineUpApp.controllers', []).
         success(function (data, status, headers, config) {
           // set the local queue to be the newly created queue
           $scope.queue = data;
-					console.log($scope.queue);
 					$location.path('/admin');
+					console.log($scope.queue);
+					console.log("test");
+					console.log($scope.test);
         }).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the create request!\nStatus: " + status);
