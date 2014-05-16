@@ -1,19 +1,110 @@
-.glyphicon-send, .glyphicon-time, .glyphicon-remove-sign {
-	font-size: xx-large;
+/* shared css */
+.header-content { /* login_home, create_account, user_home, search_queues, found_queues, example_admin_queue_page */
+	background-color: white;
 }
 
-.control_list {
-	min-width: 160px;
-	max-width: 300px;
-	float: right;
+.line-up-banner { /* login_home, create_account */
+	width: 180px;
+	margin-left: auto;
+	margin-right: auto;
 }
 
-.control_options {
-	width: 120px;
-	padding-right: 15px;
+.info-box { /* login_home, create_account, search_queues */
+	background: linear-gradient(#E7CDFC, #C0A0DC);
+	border: 5px solid black;
+	padding: 10px;
+	margin-top: 80px;
 }
 
-.control_list, .control_options {
+.login-input { /* login_home, create_account, search_queues */
+	height: 20px;
+	width: 70px;
+}
+
+.btn-line-up { /* login_home, create_account, user_home, example_admin_queue_page */
+	color: #000;
+	background: linear-gradient(#E7CDFC, #C0A0DC);
+	border: 2px solid black;
+	font-size: small;
+	width: 60%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.line-up-icon { /* user_home, search_queues, found_queues, example_admin_queue_page */
+	width: 86px;
+}
+
+h2.page-content-header { /* (no h2 found yet) */
+	font-size: x-large;
+}
+
+h1.page-content-header { /* login_home, search_queues, found_queues */
+	margin-bottom: 0px;
+}
+
+.queue { /* user_home, search_queues, found_queues */
+	border: 2px solid black;
+	margin-top: 8px;
+	margin-bottom: 8px;
+	background: linear-gradient(#E7CDFC, #C0A0DC);
+	text-align: left;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	padding-left: 15px;
+}
+
+.queue-img { /* user_home, search_queues, found_queues */
+	margin-right: 10px;
+}
+
+.progress { /* user_home */
+	width: 20%;
+	display: inline-block;
+	margin: 0px;
+}
+
+.queue-name, .time-left { /* user_home, search_queues, found_queues */
+	display: inline-block;
+}
+
+/* log_home, create_account, search_queues, found_queues have no unique css */
+/* user_home css */
+.recent-queues {
+	margin-bottom: 20px;
+}
+
+/* example_admin_queue_page css */
+.queue-face, .queue-control, .control-options {
+	margin-top: 25px;
+	margin-bottom: 25px;
+	margin-left: 10px;
+}
+
+.queue-portrait, .button-join {
+	float: left;
+	margin: 10px;
+}
+
+h1.queue-page-header {
+	padding: 12px;
+	font-size: x-large;
+	text-decoration: underline;
+	font-weight: bold;
+}
+
+.control-buttons a {
+	width: 100%;
+	margin: 5px;
+	min-width: 80px;
+	font-size: x-small;
+}
+
+.control-buttons a span {
+	font-size: x-large;
+}
+
+.control-list, .control-options {
 	display: inline-block;
 	margin-left: auto;
 	margin-right: auto;
@@ -21,29 +112,10 @@
 	padding-right: 10px;
 }
 
-.control_buttons a {
-	width: 100%;
-	margin: 5px;
-	min-width: 80px;
-	font-size: x-small;
-}
-
-.control_buttons a span {
-	font-size: x-large;
-}
-
-.button_join {
-	width: 120px;
-}
-
-.line-up-icon {
-	width: 86px;
-}
-
-.queue_face, .queue_control, .control_options {
-	margin-top: 25px;
-	margin-bottom: 25px;
-	margin-left: 10px;
+.control-list {
+	min-width: 160px;
+	max-width: 300px;
+	float: right;
 }
 
 .queue-status {
@@ -51,6 +123,20 @@
 	font-size: large;
 	font-weight: bold;
 	padding: 25px;
+}
+
+/* extra css ids */
+.glyphicon-send, .glyphicon-time, .glyphicon-remove-sign {
+	font-size: xx-large;
+}
+
+.control-options {
+	width: 120px;
+	padding-right: 15px;
+}
+
+.button-join {
+	width: 120px;
 }
 
 #btn-join {
@@ -63,16 +149,6 @@
 	min-width: 100px;
 }
 
-.line-up-banner {
-	width: 180px;
-	margin-left: auto;
-	margin-right: auto;
-}
-
-.header-content {
-	background-color: white;
-}
-
 hr {
 	border: 1px solid black;
 	height: 4px;
@@ -82,71 +158,19 @@ hr {
 	margin-bottom: 0px;
 }
 
-.queue {
-	border: 2px solid black;
-	margin-top: 8px;
-	margin-bottom: 8px;
-}
-
 body {
 	background: linear-gradient(#C5A7DF, #814BB3);
 	background-attachment: fixed;
-}
-
-h2.page-content-header {
-	font-size: x-large;
-}
-
-h1.page-content-header {
-	margin-bottom: 0px;
-}
-
-.queue {
-	background: linear-gradient(#E7CDFC, #C0A0DC);
-	text-align: left;
-	padding-top: 15px;
-	padding-bottom: 15px;
-	padding-left: 15px;
-}
-
-.recent-queues {
-	margin-bottom: 20px;
 }
 
 #create-account  {
 	width: 55%;
 }
 
-.queue-name, .time-left {
-	display: inline-block;
-}
-
-.queue-img {
-	margin-right: 10px;
-}
-
 .time-left {
 	float: right;
 	margin-top: 8px;
 	margin-right: 10px;
-}
-
-h1.queue-page-header {
-	padding: 12px;
-	font-size: x-large;
-	text-decoration: underline;
-	font-weight: bold;
-}
-
-.progress {
-	width: 20%;
-	display: inline-block;
-	margin: 0px;
-}
-
-.queue-portrait, .button_join {
-	float: left;
-	margin: 10px;
 }
 
 #submit-login, #submit-acct-info  {
@@ -158,29 +182,7 @@ h1.queue-page-header {
 	margin-right: auto;
 }
 
-.login-input {
-	height: 20px;
-	width: 70px;
-}
-
-.info-box {
-	background: linear-gradient(#E7CDFC, #C0A0DC);
-	border: 5px solid black;
-	padding: 10px;
-	margin-top: 80px;
-}
-
-.btn-line-up {
-	color: #000;
-	background: linear-gradient(#E7CDFC, #C0A0DC);
-	border: 2px solid black;
-	font-size: small;
-	width: 60%;
-	margin-left: auto;
-	margin-right: auto;
-}
-
-.queue_position {
+.queue-position {
 	width: 50%;
 	margin-left: auto;
 	margin-right: auto;
