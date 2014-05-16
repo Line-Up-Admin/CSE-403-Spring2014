@@ -291,8 +291,8 @@ def get_queue_settings():
    except sqlite3.Error as e:
       return e.message
 
-@app.route('/queueStatus/<qid>')
-def get_queue_status():
+@app.route('/queueStatus/<int:qid>')
+def get_queue_status(qid):
    """View the queue with the given qid.
 
    Returns: example return value below
@@ -307,7 +307,19 @@ def get_queue_status():
       }
 
    """
-   q_info = queue_server.get_info(None, qid)
+   userid = None
+   q_member = None
+   if session.has_key('logged_in') and session['logged_in']:
+      userid = session['id']
+      q_member = QueueMember(uid=userid)
+   elif request.json is not None:
+      userid = int(request.json)
+      rows = db_util.get_temp_user(userid)
+      if rows:
+         q_member = QueueMember(uid=userid)
+   q_info = queue_server.get_info(q_member, qid)
+   if q_info is None:
+      return Failure('The queue does not exist.')
    return jsonify(q_info.__dict__)
 
 @app.route('/myQueues', methods=['POST'])
@@ -347,8 +359,10 @@ def get_my_queues():
    uid = None
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['id']
+   elif (request.json is not None) and db_util.get_temp_user(request.json):
+      uid = request.json
    else:
-      uid = int(request.json)
+      return Failure('User is not logged in, and no uid was provided.')
    q_info_list = queue_server.get_queue_info_list(uid)
    if q_info_list is None:
       return jsonify({})
