@@ -15,7 +15,7 @@ config(['$routeProvider', function($routeProvider) {
   }).
   when("/search", {
     templateUrl: "partials/search.html",
-    controller: "lineUpController"
+    controller: "searchController"
   }).
   when("/queue_info/:qid", {
     templateUrl: "partials/queue_info.html",
@@ -31,7 +31,7 @@ config(['$routeProvider', function($routeProvider) {
 	}).
   when("/home", {
     templateUrl: "partials/user_home.html",
-    controller: "queueInfoController"
+    controller: "userHomeController"
   }).
   when("/anonymous", {
     templateUrl: "/index.html",

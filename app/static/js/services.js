@@ -19,6 +19,7 @@ angular.module('LineUpApp.services', []).
     }
 
     lineUpAPI.joinQueue = function (data) {
+      console.log(data);
       return $http.post('/join', data);
     }
 
@@ -32,6 +33,10 @@ angular.module('LineUpApp.services', []).
 
     lineUpAPI.getUsersQueues = function () {
       return $http.post('/myQueues');
+    }
+
+    lineUpAPI.queueStatus = function (qid) {
+      return $http.get('/queueStatus/' + qid);
     }
 
     return lineUpAPI;

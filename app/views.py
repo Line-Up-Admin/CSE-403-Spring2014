@@ -291,8 +291,8 @@ def get_queue_settings():
    except sqlite3.Error as e:
       return e.message
 
-@app.route('/queueStatus/<qid>')
-def get_queue_status():
+@app.route('/queueStatus/<int:qid>')
+def get_queue_status(qid):
    """View the queue with the given qid.
 
    Returns: example return value below
