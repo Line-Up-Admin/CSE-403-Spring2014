@@ -10,7 +10,6 @@ actual data structures involved.
 #   the other direction.)
 from collections import deque
 
-#Might use this in the future
 import database_utilities as db_util
 
 # Custom Exception
@@ -59,7 +58,7 @@ class Queue(object):
       """ Postpones a Queue Member's position in a Queue.
          If a user attempt to postpone past the end of the line,
          the position is not affected."""
-      pos = self.my_q.getPosition(member)
+      pos = self.get_position(member)
       if pos == None:
          raise Exception("Member is not in queue.")
       elif pos + 1 < len(self.my_q):
@@ -100,11 +99,14 @@ class Queue(object):
          the saved QueueMember object associated with the uid."""
       q_member = QueueMember(uid=userid)
       for i, j in enumerate(self.my_q):
+         # QueueMember equality is defined by having the same id.
          if j == q_member:
             return j
       return None
 
    def get_members(self):
+      """ 
+      Returns: a list of copies of all of the members of the queue """
       members = list()
       for member in self.my_q:
          members.append(member)
