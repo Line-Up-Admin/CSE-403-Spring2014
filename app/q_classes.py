@@ -99,13 +99,14 @@ class Queue(object):
          the saved QueueMember object associated with the uid."""
       q_member = QueueMember(uid=userid)
       for i, j in enumerate(self.my_q):
+         # QueueMember equality is defined by having the same id.
          if j == q_member:
             return j
       return None
 
    def get_members(self):
       """ 
-      Returns: a list of copies of all of the member of the queue """
+      Returns: a list of copies of all of the members of the queue """
       members = list()
       for member in self.my_q:
          members.append(member)

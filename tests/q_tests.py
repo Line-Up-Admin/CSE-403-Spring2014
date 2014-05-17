@@ -2,6 +2,9 @@
 This file creates a Queue and a QueueMember and tests 
 some basic functionality associated with the Queue and the
 QueueMemeber.
+
+These tests can be run at the command line by typing: 
+      python q_tests.py
 """
 
 import os
@@ -39,7 +42,8 @@ class SomeTest(unittest.TestCase):
       assert second_off.uid == 125
  
    def test_max_size(self):
-      """ Test that a queue has a maximum size """
+      """ Test that a queue has a maximum size, and that an
+         exception is raised when the max size is reached."""
       # Max size is 2, everything else empty
       q_set = QueueSettings()
       q_set.max_size = 2
@@ -121,7 +125,6 @@ class SomeTest(unittest.TestCase):
 
       lst = qq.get_members()
       assert lst == [m1, m2, m4]
-      
 
 if __name__ == '__main__':
    unittest.main()
