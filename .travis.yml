@@ -12,7 +12,7 @@ install:
 # command to run tests, e.g. python setup.py test
 script: 
 #  - app/tests/flask_tests/run_flask_tests.sh
-  - /tests/q_tests.py
+  - tests/q_tests.py
 
 notifications:
   email:
