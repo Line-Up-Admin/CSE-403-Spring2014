@@ -93,14 +93,14 @@ h1.queue-page-header {
 	font-weight: bold;
 }
 
-.control-buttons a {
+.control-buttons a, .control-buttons button {
 	width: 100%;
 	margin: 5px;
 	min-width: 80px;
 	font-size: x-small;
 }
 
-.control-buttons a span {
+.control-buttons a span, .control-buttons button span {
 	font-size: x-large;
 }
 

@@ -44,7 +44,7 @@ def create_queue():
       q_settings['qid'] = queue_server.create(q_settings)
       return jsonify(q_settings)
    except sqlite3.Error as e:
-      return e.message
+      return jsonify(Failure(e.message));
 
 @app.route('/join', methods=['POST'])
 def add_to_queue():
@@ -354,7 +354,6 @@ def get_my_queues():
             }
          ]
       }
-
    """
    uid = None
    if session.has_key('logged_in') and session['logged_in']:
@@ -370,15 +369,15 @@ def get_my_queues():
 
 @app.route('/remove')
 def remove_queue_member():
-	return 'Not implemented yet!'
+	return Failure('Not implemented yet!')
 
 @app.route('/qtracks')
 def queue_tracks():
-	return 'Not implemented yet!'
+	return Failure('Not implemented yet!')
 
 @app.route('/qtracksData')
 def queue_tracks_data():
-	return 'Not implemented yet!'
+	return Failure('Not implemented yet!')
 
 
 ###############################################
@@ -436,10 +435,10 @@ def login():
    if request.method == 'GET':
       return app.send_static_file('partials/login.html')
    else:
-      # POST message
-      if session.has_key('logged_in') and session['logged_in']:
+      # If user is already logged in, let them log in again.
+      # if session.has_key('logged_in') and session['logged_in']:
           # user is already logged in
-          return jsonify({'SUCCESS':False,'error_message':'User is already logged in.'})
+          # return jsonify({'SUCCESS':True})
       try:
          user = db_util.get_user(request.json['uname'], request.json['pw'])
          session['logged_in'] = True
@@ -450,7 +449,7 @@ def login():
          return jsonify({'SUCCESS':False,'error_message': e.message})
       except db_util.ValidationException as e:
          session['logged_in'] = False
-         return jsonify({'SUCCESS':False,'error_message:':'Invalid username or password'})
+         return jsonify({'SUCCESS':False,'error_message':'Invalid username or password'})
 
 @app.route('/logout')
 def logout():
