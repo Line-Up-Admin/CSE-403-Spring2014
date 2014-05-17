@@ -109,7 +109,6 @@ angular.module('LineUpApp.controllers', []).
       lineUpAPIService.queueStatus($routeParams.qid).
         success(function (data, status, headers, config) {
           $scope.queue = data;
-          console.log(data);
           document.getElementById('enqueued').classList.add('hide');
           document.getElementById('notEnqueued').classList.add('hide');
           if (data.member_position == null) {
@@ -132,22 +131,21 @@ angular.module('LineUpApp.controllers', []).
     $scope.joinQueue = function () {
       lineUpAPIService.joinQueue({ 'qid': $scope.queue.qid, 'uname': "temp" }).
         success(function (data, status, headers, config) {
-          console.log(data);
+          $scope.queue = data;
           document.getElementById('notEnqueued').classList.add('hide');
           document.getElementById('enqueued').classList.remove('hide');
         }).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the join queue request! \nStatus: " + status);
-          console.log(data);
         });
     }
   }).
-	
+
 	controller('adminViewController', function($scope, lineUpAPIService, $routeParams, $route) {
 		$scope.user = {};
 		$scope.queueInfo = {};
 		$scope.member_list = [];
-		
+
 		// Sends a employee view request to the server.
     // Upon success: Shows the employee view for the given queue id.
     // Upon error: TODO: Do something smart to handle the error
@@ -164,7 +162,7 @@ angular.module('LineUpApp.controllers', []).
 					console.log(data);
 				});
 		}();
-		
+
 		// Sends a dequeue to the server.
     // Upon success: Dequeues the first person in line.
     // Upon error: TODO: Do something smart to handle the error
@@ -179,7 +177,7 @@ angular.module('LineUpApp.controllers', []).
 					console.log(data);
 				});
 		}
-		
+
 		// Sends an enqueue request to the server.
     // Upon success: currently, enqueues the admin and updates the admin view.
     // Upon error: TODO: Do something smart to handle the error
@@ -187,7 +185,7 @@ angular.module('LineUpApp.controllers', []).
 			lineUpAPIService.joinQueue({ 'qid': $routeParams.qid, 'uname': $scope.user.uname }).
         success(function (data, status, headers, config) {
           console.log(data);
-					
+
 					// loads the latest queue info, then reloads the page
 					lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
 						success(function (data, status, headers, config) {
