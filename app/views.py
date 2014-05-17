@@ -10,7 +10,11 @@ from q_classes import QueueServer, QueueMember, QueueSettings
 # This procedure picks up the default route and returns index.html.
 @app.route('/')
 def root():
-   return app.send_static_file('index.html')
+	# If user is already logged in, let them log in again.
+  # if session.has_key('logged_in') and session['logged_in']:
+		# user is already logged in
+		# return app.send_static_file('index.html')
+	return app.send_static_file('index.html')
 
 
 #############################################

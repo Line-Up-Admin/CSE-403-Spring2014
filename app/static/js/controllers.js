@@ -73,6 +73,10 @@ angular.module('LineUpApp.controllers', []).
   }).
 
   controller('userHomeController', function ($scope, lineUpAPIService) {
+		
+		// Sends a user queue request to the server.
+    // Upon success: Loads the user queues to the requisite scope fields.
+    // Upon error: TODO: Do something smart to handle the error
     $scope.getUsersQueues = function () {
       lineUpAPIService.getUsersQueues().
         success(function (data, status, headers, config) {
