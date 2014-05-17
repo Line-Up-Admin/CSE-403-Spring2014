@@ -23,12 +23,12 @@
 </div>
 <div id="enqueued" class="queue_control container text-center hide">
 	<div class="queue-status">
-		{{ $scope.queue.expected_wait }} min</br>
+		{{ queue.expected_wait }} min</br>
 		<div class="progress queue-position">
 			<div class="progress-bar" style="width: 60%;">
 			</div>
 		</div>
-		test {{ queue.member_position }} of {{ queue.size }}
+		Position {{ queue.member_position + 1 }} of {{ queue.size }}
 	</div>
 	<p class="buttons_control">
 		<a href="#" id="btn-postpone" class="btn btn-line-up btn-lg" role="button">

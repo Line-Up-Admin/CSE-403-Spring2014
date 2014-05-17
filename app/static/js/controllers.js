@@ -20,11 +20,9 @@ angular.module('LineUpApp.controllers', []).
           // set the local queue to be the newly created queue
           $scope.queue = data;
 					$location.path('/admin/' + $scope.queue.qid);
-					// console.log($scope.queue);
-					// console.log($scope.queue.qname);
         }).
         error(function (data, status, headers, config) {
-          alert("Something went wrong with the create request!\nStatus: " + status);
+          alert("Database error: could not create queue.\nStatus: " + status);
         });
     }
   }).
@@ -36,14 +34,14 @@ angular.module('LineUpApp.controllers', []).
     $scope.login = function () {
       lineUpAPIService.login($scope.user).
         success(function (data, status, headers, config) {
-          if (data == 'Invalid username or password') {
+          if (data.SUCCESS == false) {
             // login unsuccessful, display error
-            $scope.error = data;
+						$scope.error = data.error_message;
             document.getElementById('error').classList.remove('hide');
-            return;
-          }
-          // successful login
-          $location.path("/home");
+          } else {
+						// successful login
+						$location.path("/home");
+					}
         }).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the login request!\nStatus: " + status);
@@ -183,21 +181,24 @@ angular.module('LineUpApp.controllers', []).
 		}
 		
 		// Sends an enqueue request to the server.
-    // Upon success: Enqueues the specified user and updates the admin view.
+    // Upon success: currently, enqueues the admin and updates the admin view.
     // Upon error: TODO: Do something smart to handle the error
 		$scope.adminAdd = function () {
 			lineUpAPIService.joinQueue({ 'qid': $routeParams.qid, 'uname': $scope.user.uname }).
         success(function (data, status, headers, config) {
           console.log(data);
+					
+					// loads the latest queue info, then reloads the page
 					lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
 						success(function (data, status, headers, config) {
 							$scope.queueInfo = data.queue_info;
 							$scope.member_list = data.member_list;
+							console.log(member_list);
 							$route.reload();
 							console.log(member_list);
 						}).
 						error(function (data, status, headers, config) {
-							alert("Bug! Bug! Bug!\nStatus: " + status);
+							alert("Could not load latest queue information from server.\nStatus: " + status);
 							console.log(data);
 						});
 				}).
