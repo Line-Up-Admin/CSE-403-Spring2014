@@ -29,7 +29,7 @@ angular.module('LineUpApp.controllers', []).
   controller('userAccountController', function ($scope, lineUpAPIService, $location) {
 
     // Sends a user account login request to the server.
-    // Upon success: ???
+    // Upon success: displays the user home page with queue information
     // Upon error: TODO: Do something smart to handle the error
     $scope.login = function () {
       lineUpAPIService.login($scope.user).
