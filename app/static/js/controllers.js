@@ -27,6 +27,15 @@ angular.module('LineUpApp.controllers', []).
     }
   }).
   controller('userAccountController', function ($scope, lineUpAPIService, $location) {
+    // listen for the form submit
+    document.getElementById('login-form').submit(function(event){
+      // prevent default browser behaviour
+      event.preventDefault();
+
+      // perform login
+      $scope.login();
+    });
+
 
     // Sends a user account login request to the server.
     // Upon success: displays the user home page with queue information
@@ -73,7 +82,7 @@ angular.module('LineUpApp.controllers', []).
   }).
 
   controller('userHomeController', function ($scope, lineUpAPIService) {
-		
+
 		// Sends a user queue request to the server.
     // Upon success: Loads the user queues to the requisite scope fields.
     // Upon error: TODO: Do something smart to handle the error
@@ -81,11 +90,9 @@ angular.module('LineUpApp.controllers', []).
       lineUpAPIService.getUsersQueues().
         success(function (data, status, headers, config) {
           $scope.queueInfos = data.queue_info_list;
-          console.log(data);
         }).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the queue lookup request!\nStatus: " + status);
-          console.log(data);
         });
     }();
   }).
@@ -103,7 +110,6 @@ angular.module('LineUpApp.controllers', []).
         }).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the popular queue request! \nStatus: " + status);
-          console.log(data);
       });
     }();
   }).
@@ -123,7 +129,6 @@ angular.module('LineUpApp.controllers', []).
         }).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the queue lookup request!\nStatus: " + status);
-          console.log(data);
         });
     }();
 
@@ -156,14 +161,11 @@ angular.module('LineUpApp.controllers', []).
 		$scope.getDetailedQueueInfo = function () {
 			lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
 				success(function (data, status, headers, config) {
-					console.log(data.queue_info);
 					$scope.queueInfo = data.queue_info;
 					$scope.member_list = data.member_list;
-					console.log(queueInfo.qname);
 				}).
 				error(function (data, status, headers, config) {
 					alert("Are you logged in as an existing user? If not, that might be an issue.\nStatus: " + status);
-					console.log(data);
 				});
 		}();
 
@@ -178,7 +180,6 @@ angular.module('LineUpApp.controllers', []).
 				}).
 				error(function (data, status, headers, config) {
 					alert("Wow you suck at this.\nStatus: " + status);
-					console.log(data);
 				});
 		}
 
@@ -188,25 +189,20 @@ angular.module('LineUpApp.controllers', []).
 		$scope.adminAdd = function () {
 			lineUpAPIService.joinQueue({ 'qid': $routeParams.qid, 'uname': $scope.user.uname }).
         success(function (data, status, headers, config) {
-          console.log(data);
 
 					// loads the latest queue info, then reloads the page
 					lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
 						success(function (data, status, headers, config) {
 							$scope.queueInfo = data.queue_info;
 							$scope.member_list = data.member_list;
-							console.log(member_list);
 							$route.reload();
-							console.log(member_list);
 						}).
 						error(function (data, status, headers, config) {
 							alert("Could not load latest queue information from server.\nStatus: " + status);
-							console.log(data);
 						});
 				}).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the join queue request! \nStatus: " + status);
-          console.log(data);
         });
 		}
 	});
