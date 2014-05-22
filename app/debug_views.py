@@ -67,11 +67,21 @@ def get_queue_settings_debug():
 @app.route('/debug/createqueue', methods=['GET', 'POST'])
 def create_queue_debug():
    queueSettings = copy_request_args(request)
-   try:
-      queueSettings['qid'] = queue_server.create(queueSettings)
-      return jsonify(queueSettings)
-   except sqlite3.Error as e:
-      return e.message
+   if not session.has_key('logged_in') or not session['logged_in']:
+      return 'You are not logged in.'
+   if queueSettings.has_key('admins'):
+      queueSettings['admins'] = [admin.strip() for admin in queueSettings['admins'].split(',')]
+   else:
+      queueSettings['admins'] = list()
+   if not session['uname'] in queueSettings['admins']:
+      queueSettings['admins'].append(session['uname'])
+   if queueSettings.has_key('employees'):
+      queueSettings['employees'] = [e.strip() for e in queueSettings['employees'].split(',')]
+   if queueSettings.has_key('blocked_users'):
+      queueSettings['blocked_users'] = [b.strip() for b in queueSettings['blocked_users'].split(',')]
+   print queueSettings
+   queueSettings['qid'] = queue_server.create(queueSettings)
+   return jsonify(queueSettings)
 
 @app.route('/debug/createtempuser', methods=['GET', 'POST'])
 def create_temp_user_debug():
