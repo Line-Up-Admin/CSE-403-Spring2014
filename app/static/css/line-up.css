@@ -1,6 +1,62 @@
+/*
+--sand: #E6DDBC;
+--light-teal: #99D1C6;
+--dark-teal: #76ADA9;
+--dark-grey: #3C3940;
+--middle-grey: #6B6777;
+--light-grey: #A6A6AF;
+*/
+
 /* shared css */
+.btn-default {
+  text-shadow: 0 1px 0 #fff;
+  background-image: -webkit-linear-gradient(top, #E6DDBC 0%, #CEBB7B 100%);
+  background-image:         linear-gradient(to bottom, #E6DDBC 0%, #CEBB7B 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffe0e0e0', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+  background-repeat: repeat-x;
+  border-color: #dbdbdb;
+  border-color: #ccc;
+}
+
+.btn-default:hover,
+.btn-default:focus {
+  background-color: #CEBB7B;
+  background-position: 0 -15px;
+}
+
+.btn-default:active,
+.btn-default.active {
+  background-color: #CEBB7B;
+  border-color: #dbdbdb;
+}
+
+hr {
+	height: 4px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+hr.bar2 {
+	border: 1px solid #E6DDBC;
+	background-color: #E6DDBC;
+	color: #3C3940;
+}
+
+hr.bar3{
+	border: 1px solid #3C3940;
+	background-color: #3C3940;
+	color: #3C3940;
+}
+
+hr.bar1 {
+	border: 1px solid #99D1C6;
+	background-color: #99D1C6;
+	color: #99D1C6;
+}
+
 .header-content { /* login_home, create_account, user_home, search_queues, found_queues, example_admin_queue_page */
-	background-color: white;
+	background-color: #76ADA9;
 }
 
 .line-up-banner { /* login_home, create_account */
@@ -10,10 +66,11 @@
 }
 
 .info-box { /* login_home, create_account, search_queues */
-	background: linear-gradient(#E7CDFC, #C0A0DC);
-	border: 5px solid black;
-	padding: 10px;
-	margin-top: 80px;
+	background-color: #76ADA9;
+	border: 0px solid black;
+	padding: 0px;
+	margin-top: 20px;
+	margin-bottom: 15px;
 }
 
 .login-input { /* login_home, create_account, search_queues */
@@ -23,7 +80,7 @@
 
 .btn-line-up { /* login_home, create_account, user_home, example_admin_queue_page */
 	color: #000;
-	background: linear-gradient(#E7CDFC, #C0A0DC);
+	background: linear-gradient(#E6DDBC, #CEBB7B);
 	border: 2px solid black;
 	font-size: small;
 	width: 60%;
@@ -47,7 +104,7 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 	border: 2px solid black;
 	margin-top: 8px;
 	margin-bottom: 8px;
-	background: linear-gradient(#E7CDFC, #C0A0DC);
+	background: linear-gradient(#BCE0D9, #99D1C6);
 	text-align: left;
 	padding-top: 15px;
 	padding-bottom: 15px;
@@ -68,10 +125,27 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 	display: inline-block;
 }
 
-/* log_home, create_account, search_queues, found_queues have no unique css */
+/* create_account, search_queues, found_queues have no unique css */
+
+/* log_home css */
+.about a {
+	color: #3C3940;
+}
+
+.main-page-content {
+	margin-top: 40px;
+	background-color: #76ADA9;
+	border: 4px solid #3C3940;
+	border-radius:25px;
+}
+
 /* user_home css */
 .recent-queues {
 	margin-bottom: 20px;
+}
+
+.queue-list-header {
+	background-color: #E6DDBC;
 }
 
 /* example_admin_queue_page css */
@@ -81,6 +155,10 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 	margin-left: 10px;
 }
 
+.queue-portrait {
+	border: 3px solid #3C3940;
+}
+
 .queue-portrait, .button-join {
 	float: left;
 	margin: 10px;
@@ -88,8 +166,7 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 
 h1.queue-page-header {
 	padding: 12px;
-	font-size: x-large;
-	text-decoration: underline;
+	font-size: 40pt;
 	font-weight: bold;
 }
 
@@ -125,6 +202,44 @@ h1.queue-page-header {
 	padding: 25px;
 }
 
+/* create_queue css */
+.panel {
+	background-color: #99D1C6;
+}
+
+.panel-default {
+  border: 3px solid #3C3940;
+}
+.panel-default > .panel-heading {
+  color: #333;
+  background-color: #f5f5f5;
+  border-bottom: 3px solid #3C3940;
+}
+.panel-default > .panel-heading + .panel-collapse .panel-body {
+  border-top-color: #3C3940;
+}
+.panel-default > .panel-footer + .panel-collapse .panel-body {
+  border-bottom-color: #E6DDBC;
+}
+
+.panel-default > .panel-heading {
+  background-image: -webkit-linear-gradient(top, #E6DDBC 0%, #E6DDBC 100%);
+  background-image:         linear-gradient(to bottom, #E6DDBC 0%, #E6DDBC 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff5f5f5', endColorstr='#ffe8e8e8', GradientType=0);
+  background-repeat: repeat-x;
+}
+
+.form-control:focus {
+  border-color: #76ADA9;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(230, 221, 188, .6);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(230, 221, 188, .6);
+}
+
+.create-queue-button {
+	margin-bottom: 15px;
+}
+
 /* extra css ids */
 .glyphicon-send, .glyphicon-time, .glyphicon-remove-sign {
 	font-size: xx-large;
@@ -149,17 +264,8 @@ h1.queue-page-header {
 	min-width: 100px;
 }
 
-hr {
-	border: 1px solid black;
-	height: 4px;
-	background-color: #4C116D;
-	color: #4C116D;
-	margin-top: 0px;
-	margin-bottom: 0px;
-}
-
 body {
-	background: linear-gradient(#C5A7DF, #814BB3);
+	background-color: #A6A6AF;
 	background-attachment: fixed;
 }
 

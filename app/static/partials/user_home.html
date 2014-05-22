@@ -14,7 +14,7 @@
 			<span class="glyphicon glyphicon-log-out"></span>
 		</button>
 	</div>
-	<hr>
+	<hr class="bar3">
 </div>
 
 <div class="container text-center main-page-content">
@@ -35,7 +35,9 @@
 		</div></a>
 	</div> -->
 	<div class="current-queues">
-		<h2>Queues You're In</h2>
+		<div class="queue-list-header">
+			<h2>Queues You're In</h2>
+		</div>
 		<div ng-repeat="queue in queueInfos">
 		<a href="#/queue_info/{{ queue.qid }}"><div class="queue">
 			<img class="queue-img" src="img/default.png"/>
