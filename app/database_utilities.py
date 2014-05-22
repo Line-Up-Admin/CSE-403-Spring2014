@@ -70,6 +70,7 @@ def create_user_profile(user_dict):
       raise ValidationException('The given username is already in use.')
     user_dict['pw'] = validators.encrypt_password(user_dict['pw'])
     user_dict['id'] = validators.get_unique_user_id()
+    user_dict['temp'] = 0
     db.execute(INSERT_PROFILED_USER, user_dict_to_db_tuple(user_dict))
     db.commit()
     print 'exit db_util.create_user_profile: success.'
@@ -92,10 +93,10 @@ def create_user(user_dict):
     sqlite3.Error: the database operation failed.
     ValidationError: the username is already in use (only applies if account isn't temporary).
   """
-  if not user_dict.has_key('temp') or user_dict['temp']:
-    user_dict['id'] = create_temp_user(user_dict)
-  else:
+  if not user_dict.has_key('temp') or not user_dict['temp']:
     user_dict['id'] = create_user_profile(user_dict)
+  else:
+    user_dict['id'] = create_temp_user(user_dict)
   return user_dict['id']
 
 def modify_user(user_data):
