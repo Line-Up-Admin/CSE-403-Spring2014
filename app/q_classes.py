@@ -149,7 +149,7 @@ class QueueSettings(object):
       self.qname = ''
       self.employees = None
       self.admins = None
-      self.blockedUsers = None
+      self.blocked_users = None
       self.location = ''
 
    @staticmethod

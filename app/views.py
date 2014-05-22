@@ -7,6 +7,9 @@ import permissions
 
 from q_classes import QueueServer, QueueMember, QueueSettings
 
+def Failure(message):
+   return {'SUCCESS':False, 'error_message':message}
+
 # This procedure picks up the default route and returns index.html.
 @app.route('/')
 def root():
@@ -25,12 +28,17 @@ def root():
 def create_queue():
    """Creates a queue. If the user is logged in, they will become an admin for the queue.
 
-   Args: json format.
-      active:
+   Args:
+   {
+      active: 0 or 1
+      admins: [] (optional)
+      blocked_users: [] (optional)
+      employees: [] (optional)
       keywords:
       location:
       max_size:
       qname:
+   }
 
    Returns:
       {
@@ -44,11 +52,19 @@ def create_queue():
 
    """
    q_settings = request.json
+   if not session.has_key('logged_in') or not session['logged_in']:
+      return jsonify(Failure('You cannot create a queue if you are not logged in!'))
+   if not q_settings['admins']:
+      q_settings=list()
+   if not session['uname'] in q_settings['admins']:
+      q_settings['admins'].append(session['uname'])
    try:
       q_settings['qid'] = queue_server.create(q_settings)
       return jsonify(q_settings)
    except sqlite3.Error as e:
       return jsonify(Failure(e.message));
+   except ValidationException as e:
+      return jsonify(Failure(e.message))
 
 @app.route('/join', methods=['POST'])
 def add_to_queue():
@@ -323,7 +339,7 @@ def get_queue_status(qid):
          q_member = QueueMember(uid=userid)
    q_info = queue_server.get_info(q_member, qid)
    if q_info is None:
-      return Failure('The queue does not exist.')
+      return jsonify(Failure('The queue does not exist.'))
    return jsonify(q_info.__dict__)
 
 @app.route('/myQueues', methods=['POST'])
@@ -365,7 +381,7 @@ def get_my_queues():
    elif (request.json is not None) and db_util.get_temp_user(request.json):
       uid = request.json
    else:
-      return Failure('User is not logged in, and no uid was provided.')
+      return jsonify(Failure('User is not logged in, and no uid was provided.'))
    q_info_list = queue_server.get_queue_info_list(uid)
    if q_info_list is None:
       return jsonify({})
@@ -373,15 +389,15 @@ def get_my_queues():
 
 @app.route('/remove')
 def remove_queue_member():
-	return Failure('Not implemented yet!')
+	return jsonify(Failure('Not implemented yet!'))
 
 @app.route('/qtracks')
 def queue_tracks():
-	return Failure('Not implemented yet!')
+	return jsonify(Failure('Not implemented yet!'))
 
 @app.route('/qtracksData')
 def queue_tracks_data():
-	return Failure('Not implemented yet!')
+	return jsonify(Failure('Not implemented yet!'))
 
 
 ###############################################
@@ -417,7 +433,7 @@ def create_user():
       return jsonify({'SUCCESS':True})
    except sqlite3.Error as e:
       print 'exit create user route failure.'
-      return jsonify({'SUCCESS':False,'error_message':e.message})
+      return jsonify(Failure('Failed to create user.'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -450,10 +466,10 @@ def login():
          session['uname'] = user['uname']
          return jsonify({'SUCCESS':True})
       except sqlite3.Error as e:
-         return jsonify({'SUCCESS':False,'error_message': e.message})
+         return jsonify(Failure('login failed.'))
       except db_util.ValidationException as e:
          session['logged_in'] = False
-         return jsonify({'SUCCESS':False,'error_message':'Invalid username or password'})
+         return jsonify(Failure('Invalid username or password'))
 
 @app.route('/logout')
 def logout():

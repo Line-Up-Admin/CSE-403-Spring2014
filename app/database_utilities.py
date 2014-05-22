@@ -129,6 +129,25 @@ def delete_user():
   """
   raise NotImplementedError()
 
+def get_user_by_uname(username):
+  rows = query_db(GET_PROFILED_USER_BY_USERNAME, (username,))
+  if (not rows) or (len(rows) == 0):
+    raise ValidationException('The username', username, 'was not found.')
+  else:
+    return rows[0]
+
+def check_usernames(usernames):
+  result = {'SUCCESS': False, 'uids':list()}
+  for username in usernames:
+    rows = query_db(GET_PROFILED_USER_BY_USERNAME, (username,))
+    if (not rows) or (len(rows) == 0):
+      result['username'] = username
+      return result
+    else:
+      result['uids'].append(rows[0]['id'])
+  result['SUCCESS'] = True
+  return result
+
 def get_user(username, given_password):
   """Retrieves the User associated with this user.
 
@@ -180,8 +199,23 @@ def create_queue(q_settings):
   Raises:
     DatabaseException: the q_settings are invalid.
   """
-  db = get_db()
   q_settings['qid'] = validators.get_unique_queue_id()
+  if q_settings.has_key('admins'):
+    result = check_usernames(q_settings['admins'])
+    if not result['SUCCESS']:
+      raise ValidationException('The username', result['username'], 'was not found.')
+    permissions.add_permission_list(result['uids'], q_settings['qid'], permissions.ADMIN)
+  if q_settings.has_key('employees'):
+    result = check_usernames(q_settings['employees'])
+    if not result['SUCCESS']:
+      raise ValidationException('The username', result['username'], 'was not found.')
+    permissions.add_permission_list(result['uids'], q_settings['qid'], permissions.EMPLOYEE)
+  if q_settings.has_key('blocked_users'):
+    result = check_usernames(q_settings['blocked_users'])
+    if not result['SUCCESS']:
+      raise ValidationException('The username', result['username'], 'was not found.')
+    permissions.add_permission_list(result['uids'], q_settings['qid'], permissions.BLOCKED_USER)
+  db = get_db()
   db.execute(INSERT_QUEUE, (q_settings['qid'],))
   db.execute(INSERT_QUEUE_SETTINGS, qsettings_dict_to_db_tuple(q_settings))
   db.commit()
