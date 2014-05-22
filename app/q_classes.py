@@ -11,7 +11,7 @@ actual data structures involved.
 from collections import deque
 
 #Used for analytics of wait times
-from time import time
+from datetime import datetime
 
 import database_utilities as db_util
 
@@ -61,7 +61,7 @@ class Queue(object):
          for waits in self.wait_times.values():
             for wait in waits:
                total_num += 1
-               total_time += wait[1] - wait[0]
+               total_time += (wait[1] - wait[0]).total_seconds()
          # divide by 60 because time() is in seconds.
          return total_time / float(total_num * 60)
 
@@ -70,7 +70,7 @@ class Queue(object):
       if self.q_settings and len(self.my_q) >= self.q_settings.max_size:
          raise QueueFullException("Queue is already at maximum size")
       else:
-         self.my_q.append( (member, time()) )
+         self.my_q.append( (member, datetime.now()) )
 
    def remove(self, member):
       """ Removes a Queue Member from a Queue """
@@ -124,7 +124,7 @@ class Queue(object):
          # Record the wait time of the person dequeued.
          member = item[0]
          in_time = item[1]
-         out_time = time()
+         out_time = datetime.now()
          if member not in self.wait_times:
             self.wait_times[member] = []
          self.wait_times[member].append( (in_time, out_time) )
