@@ -10,6 +10,9 @@ actual data structures involved.
 #   the other direction.)
 from collections import deque
 
+#Used for analytics of wait times
+from time import time
+
 import database_utilities as db_util
 
 # Custom Exception
@@ -21,7 +24,9 @@ class Queue(object):
       of a Queue. """
 
    def __init__(self, qid, q_settings = None):
-      # This is the actual Queue field of the object
+      # This is the actual Queue field of the object. It stores the
+      # QueueMemeber as well as the time the Queue was entered. 
+      # (Time entered is for the purposes of analytics.)
       self.my_q = deque()
 
       # This q_settings object defaults to None if it is not
@@ -31,28 +36,52 @@ class Queue(object):
       self.q_settings = q_settings
       self.id = qid
 
-      # Avg wait is initially undefined, and is not passed in.
-      self.avg_wait = None
+      # A queue keeps track of the wait times of every person
+      # that has been in the queue. This is currently a dictionary from
+      # QueueMember to list of tuple pairs. Each tuple is an in time and
+      # out time. Ex: {qm:[(101.1,300.4),(50.3,79.2)]}
+      self.wait_times = {}
+
+      # A Queue also has an average wait, but this is recalculated
+      # on the fly every time it is asked for.
 
    def __len__(self):
       """ This allows the size of the queue object 'q' to be
          obtained by calling len(q) """
       return len(self.my_q)
 
+   def get_avg_wait(self):
+      """ This currently returns the average wait time in minutes 
+      of everyone who has ever been in the queue. """
+      if len(self.wait_times) == 0:
+         return None
+      else:
+         total_num = 0
+         total_time = 0.0
+         for waits in self.wait_times.values():
+            for wait in waits:
+               total_num += 1
+               total_time += wait[1] - wait[0]
+         # divide by 60 because time() is in seconds.
+         return total_time / float(total_num * 60)
+
    def add(self, member):
       """ Adds a Queue Member to a Queue. (If there is room.) """
       if self.q_settings and len(self.my_q) >= self.q_settings.max_size:
          raise QueueFullException("Queue is already at maximum size")
       else:
-         self.my_q.append(member)
+         self.my_q.append( (member, time()) )
 
    def remove(self, member):
       """ Removes a Queue Member from a Queue """
-      if member not in self.my_q:
+      pos = self.get_position(member)
+      if pos == None:
          return False
-      else:
-         self.my_q.remove(member)
-         return True
+      # if someone is removed from the middle, we do not take their
+      # wait time into account for analytics.
+      q = self.my_q
+      del q[pos]
+      return True
 
    def postpone(self, member):
       """ Postpones a Queue Member's position in a Queue.
@@ -63,22 +92,43 @@ class Queue(object):
          raise Exception("Member is not in queue.")
       elif pos + 1 < len(self.my_q):
          #There is room to move the user back a position in the queue.
-         temp = member
+         temp = self.my_q[pos]
          self.my_q[pos] = self.my_q[pos + 1]
          self.my_q[pos + 1] = temp
       #else: member is already at the end of the queue
 
-   def get_wait_time(self, member):
-      """ Returns the estimated wait time of a user in a Queue, using
-      intelligent heuristics based on their current position and 
-      previous line information. """
-      return "Not yet implemented"
+   def get_expected_wait(self, member):
+      """ Returns the estimated wait time of a user in a Queue in minutes
+         (not in UML)"""
+
+      # the expected wait time here could be improved to be something
+      #  more intelligent. Currently, it is average wait time of the queue
+      #  times the proportion of the queue remaining.
+      avg_wait = self.get_avg_wait()
+      position = self.get_position(member)
+
+      if position == 0:
+         return 0
+      if avg_wait and position:
+         #avg_wait is already in minutes
+         ex_wait = avg_wait * (position + 0.5)/float(size) 
+         return ex_wait
+      else:
+         # This is currently fake data for demoing purposes.
+         return 10
 
    def dequeue(self):
-      """ Dequeues the next QueueMember from the Queue. 
-          Note: return type here differs from UML diagram """
+      """ Dequeues the next QueueMember from the Queue. """
       if len(self.my_q) > 0:
-         return self.my_q.popleft()
+         item = self.my_q.popleft()
+         # Record the wait time of the person dequeued.
+         member = item[0]
+         in_time = item[1]
+         out_time = time()
+         if member not in self.wait_times:
+            self.wait_times[member] = []
+         self.wait_times[member].append( (in_time, out_time) )
+         return member
       else:
          return None
 
@@ -89,7 +139,7 @@ class Queue(object):
       if member is None:
          return None
       for i, j in enumerate(self.my_q):
-         if j.uid == member.uid:
+         if j[0].uid == member.uid:
             return i
       return None
 
@@ -98,10 +148,10 @@ class Queue(object):
       Returns:
          the saved QueueMember object associated with the uid."""
       q_member = QueueMember(uid=userid)
-      for i, j in enumerate(self.my_q):
+      for item in self.my_q:
          # QueueMember equality is defined by having the same id.
-         if j == q_member:
-            return j
+         if item[0] == q_member:
+            return item[0]
       return None
 
    def get_members(self):
@@ -109,7 +159,8 @@ class Queue(object):
       Returns: a list of copies of all of the members of the queue """
       members = list()
       for member in self.my_q:
-         members.append(member)
+         # remove the time from result
+         members.append(member[0])
       return members
 
 
@@ -294,16 +345,10 @@ class QueueServer(object):
       else:
          name = None
       size = len(q)
-      avg_wait = q.avg_wait
+      avg_wait = q.get_avg_wait()
+      ex_wait = q.get_ex_wait(member)
       #this is a zero-based index
       position = q.get_position(member)
-      # the expected wait time here could be improved to be something
-      #  more intelligent. Currently, it is average wait time of the queue
-      #  times the proportion of the queue remaining.
-      if avg_wait and position:
-         ex_wait = avg_wait * (position + 0.5)/float(size) 
-      else:
-         ex_wait = 10
       return QueueInfo(qname, qid, size, ex_wait, avg_wait, position)
 
    def get_all_queues_info(self):

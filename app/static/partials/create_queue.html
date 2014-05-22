@@ -17,128 +17,138 @@
 			<hr>
 		</div>
 
-			<div class="container text-center main-page-content">
-				<div class="jumbotron info-box">
-					<h1>Basic Information</h1>
-					<form action="#">
-						<fieldset>
+		<div class="container text-center main-page-content">
+			<div id="title" class="text-center pagination-centered">
+				<h1>Create a Queue</h1>
+			</div>
+			<div class="panel-group col-md-10 col-md-offset-1">
+			  <div class="panel panel-default">
+			    <div class="panel-heading">
+			      <h4 class="panel-title">
+			        <a data-toggle="collapse" data-target="#collapseBasic" href="">Basic Information</a>
+			      </h4>
+			    </div>
+			    <div id="collapseBasic" class="panel-collapse collapse in">
+			      <div class="panel-body">
 							<form class="form-horizontal" role="form">
 								<div class="form-group">
 									<label class="col-sm-4 control-label text-right">Name</label>
 									<div class="col-sm-5">
-										<input type="text" class="form-control" id="name" ng-model="queue.qname">
+										<input type="text" class="form-control" id="name" placeholder="LineUp Queue" ng-model="queue.qname">
 									</div>
-								</div> <br /> <br />
+								</div>
 
 								<div class="form-group">
 									<label class="col-sm-4 control-label text-right">Location</label>
 									<div class="col-sm-5">
-										<input type="text" class="form-control" id="location" ng-model="queue.location">
+										<input type="text" class="form-control" id="location" placeholder="CSE Atrium" ng-model="queue.location">
 									</div>
-								</div> <br /> <br />
+								</div>
 
 								<div class="form-group">
 									<label class="col-sm-4 control-label text-right">Keywords</label>
 									<div class="col-sm-5">
-										<textarea  class="form-control" rows="3" id="keywords" ng-model="queue.keywords"></textarea> <br />
+										<textarea  class="form-control" rows="3" id="keywords" placeholder="CSE403, Project, Aphrodite" ng-model="queue.keywords"></textarea>
 									</div>
 								</div>
 							</form>
-						</fieldset>
-					</form>
-				</div>
-			</div>
-
-			<div class="container text-center main-page-content">
-				<div class="jumbotron info-box">
-					<h1>Size Information</h1>
-					<form action="#">
-						<fieldset>
+			      </div>
+			    </div>
+			  </div>
+			  <div class="panel panel-default">
+			    <div class="panel-heading">
+			      <h4 class="panel-title">
+			        <a data-toggle="collapse" href="" data-target="#collapseSize">Size Information</a>
+			      </h4>
+			    </div>
+			    <div id="collapseSize" class="panel-collapse collapse">
+			      <div class="panel-body">
 							<form class="form-horizontal" role="form">
 								<div class="form-group">
 									<label class="col-sm-5 control-label text-right">Max Queue Size</label>
 									<div class="col-sm-3">
-										<input type="text" class="form-control" id="maxsize" ng-model="queue.max_size">
+										<input type="text" class="form-control" id="maxsize" placeholder="42" ng-model="queue.max_size">
 									</div>
-								</div> <br /> <br />
+								</div>
 
 								<div class="form-group">
 									<label class="col-sm-5 control-label text-right">5 Minute Wait Size</label>
 									<div class="col-sm-3">
-										<input type="text" ng-model='five_min_wait' class="form-control" id="fiveminwait">
+										<input type="text" ng-model='five_min_wait' class="form-control" id="fiveminwait" placeholder="5">
 									</div>
-								</div> <br /> <br />
+								</div>
 
 								<div class="form-group">
 									<label class="col-sm-5 control-label text-right">Minimum Wait to Re-Join Queue</label>
 									<div class="col-sm-3">
-										<input type="text" ng-model='min_wait_rejoin' class="form-control" id="minwait">
-									</div> <br /> <br />
+										<input type="text" ng-model='min_wait_rejoin' class="form-control" id="minwait" placeholder="10">
+									</div>
 								</div>
 							</form>
-						</fieldset>
-					</form>
-				</div>
-			</div>
-
-			<div class="container text-center main-page-content">
-				<div class="jumbotron info-box">
-					<h1>Personalization</h1>
-					<form action="#">
-						<fieldset>
+			      </div>
+			    </div>
+			  </div>
+			  <div class="panel panel-default">
+			    <div class="panel-heading">
+			      <h4 class="panel-title">
+			        <a data-toggle="collapse" data-target="#collapsePersonalization" href="">Personalization</a>
+			      </h4>
+			    </div>
+			    <div id="collapsePersonalization" class="panel-collapse collapse">
+			      <div class="panel-body">
 							<form class="form-horizontal" role="form">
 								<div class="form-group">
 									<label class="col-sm-4 control-label text-right">Website</label>
 									<div class="col-sm-6">
-										<input type="text" class="form-control" id="website">
+										<input type="text" class="form-control" id="website" placeholder="https://courses.cs.washington.edu/courses/cse403/14sp/">
 									</div>
-								</div> <br /> <br />
+								</div>
 
 								<div class="form-group">
 									<label class="col-sm-4 control-label text-right">Organization</label>
 									<div class="col-sm-6">
-										<input type="text" class="form-control" id="organization">
+										<input type="text" class="form-control" id="organization" placeholder="UW Computer Science and Engineering">
 									</div>
-								</div> <br /> <br />
+								</div>
 
 								<div class="form-group">
 									<label class="col-sm-4 control-label text-right">Queue Entry Disclaimer</label>
 									<div class="col-sm-6">
-										<textarea class="form-control" rows="3" id="minwait"></textarea> <br />
+										<textarea class="form-control" rows="3" id="minwait" placeholder="If something happens, it is not our fault."></textarea>
 									</div>
-								</div> <br /> <br /> <br /> <br />
-
+								</div>
 								<div class="form-group">
 									<label class="col-sm-4 control-label text-right">Additional Information</label>
 									<div class="col-sm-6">
-										<textarea class="form-control" rows="3" id="addinfo"></textarea> <br />
+										<textarea class="form-control" rows="3" id="addinfo" placeholder="Anything else?"></textarea>
 									</div>
 								</div>
 							</form>
-						</fieldset>
-					</form>
-				</div>
-			</div>
-
-			<div class="container text-center main-page-content">
-				<div class="jumbotron info-box">
-					<h1>Security</h1>
-					<form action="#">
-						<fieldset>
-							<form class="form-horizontal" role="form">
+			      </div>
+			    </div>
+			  </div>
+			  <div class="panel panel-default">
+			    <div class="panel-heading">
+			      <h4 class="panel-title">
+			        <a data-toggle="collapse" data-target="#collapseSecurity" href="">Security</a>
+			      </h4>
+			    </div>
+			    <div id="collapseSecurity" class="panel-collapse collapse">
+			      <div class="panel-body">
+			        <form class="form-horizontal" role="form">
 								<div class="form-group">
 									<label class="col-sm-4 control-label text-right">Administrators</label>
 									<div class="col-sm-5">
-										<textarea class="form-control" rows="3" id="admins"></textarea> <br />
+										<textarea class="form-control" rows="3" id="admins" placeholder="Cleopatra"></textarea>
 									</div>
-								</div> <br /> <br /> <br /> <br />
+								</div>
 
 								<div class="form-group">
 									<label class="col-sm-4 control-label text-right">Managers</label>
 									<div class="col-sm-5">
-										<textarea class="form-control" rows="3" id="managers"></textarea> <br />
+										<textarea class="form-control" rows="3" id="managers" placeholder="Ramesses"></textarea>
 									</div>
-								</div> <br /> <br /> <br /> <br />
+								</div>
 
 								<div class="form-group">
 									<label class="col-sm-4 control-label text-right">Who Can Join</label>
@@ -150,38 +160,32 @@
 												Any LineUp Member
 											</label>
 										</div>
-
 										<div class="radio">
 											<label>
 												<input type="radio" name="whocanjoin" id="anylink" value="anylink">
 												Anyone with a Link
 											</label>
 										</div>
-
 										<div class="radio">
 											<label>
 												<input type="radio" name="whocanjoin" id="both" value="both">
 												Both
 											</label>
 										</div>
-
 									</div>
-									<!--
-									<div>
+									<!-- <div>
 										<label>
-											<input type="checkbox" id="active>
+											<input type="checkbox" id="active">
 											Active immediately?
 										</label>
-									</div>
-									-->
+									</div> -->
 								</div>
 							</form>
-						</fieldset>
-					</form>
-				</div>
+			      </div>
+			    </div>
+			  </div>
 			</div>
-
-			<div>
+			<div class="text-center pagination-centered">
 				<button id="submit-acct-info" type="submit" class="btn btn-line-up btn-lg" ng-click='createNewQueue()'>Create Queue</button>
 			</div>
 		</div>
