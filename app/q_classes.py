@@ -346,7 +346,7 @@ class QueueServer(object):
          name = None
       size = len(q)
       avg_wait = q.get_avg_wait()
-      ex_wait = q.get_ex_wait(member)
+      ex_wait = q.get_expected_wait(member)
       #this is a zero-based index
       position = q.get_position(member)
       return QueueInfo(qname, qid, size, ex_wait, avg_wait, position)
