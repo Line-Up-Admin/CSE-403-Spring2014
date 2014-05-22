@@ -31,9 +31,9 @@ def create_queue():
    Args:
    {
       active: 0 or 1
-      admins: [] (optional)
-      blocked_users: [] (optional)
-      employees: [] (optional)
+      admins: [] (optional, a list of usernames)
+      blocked_users: [] (optional, a list of usernames)
+      employees: [] (optional, a list of usernames)
       keywords:
       location:
       max_size:
@@ -43,6 +43,9 @@ def create_queue():
    Returns:
       {
          active:
+         admins: [] (optional, a list of usernames)
+         blocked_users: [] (optional, a list of usernames)
+         employees: [] (optional, a list of usernames)
          keywords:
          location:
          max_size:
