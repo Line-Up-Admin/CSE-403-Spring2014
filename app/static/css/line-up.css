@@ -125,6 +125,30 @@ h1.queue-page-header {
 	padding: 25px;
 }
 
+/* create_queue css */
+
+.panel-default {
+  border-color: #DBBFF2;
+}
+.panel-default > .panel-heading {
+  color: #333;
+  background-color: #f5f5f5;
+  border-color: #DBBFF2;
+}
+.panel-default > .panel-heading + .panel-collapse .panel-body {
+  border-top-color: #DBBFF2;
+}
+.panel-default > .panel-footer + .panel-collapse .panel-body {
+  border-bottom-color: #DBBFF2;
+}
+
+.panel-default > .panel-heading {
+  background-image: -webkit-linear-gradient(top, #DBBFF2 0%, #DBBFF2 100%);
+  background-image:         linear-gradient(to bottom, #DBBFF2 0%, #DBBFF2 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff5f5f5', endColorstr='#ffe8e8e8', GradientType=0);
+  background-repeat: repeat-x;
+}
+
 /* extra css ids */
 .glyphicon-send, .glyphicon-time, .glyphicon-remove-sign {
 	font-size: xx-large;
