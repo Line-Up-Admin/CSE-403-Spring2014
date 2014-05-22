@@ -26,22 +26,26 @@ angular.module('LineUpApp.controllers', []).
         });
     }
   }).
-  controller('userAccountController', function ($scope, lineUpAPIService, $location) {
-    // listen for the form submit
-    document.getElementById('login-form').submit(function(event){
-      // prevent default browser behaviour
-      event.preventDefault();
 
-      // perform login
-      $scope.login();
-    });
+  controller('userLoginController', function ($scope, lineUpUserService, $location) {
+    $scope.user = lineUpUserService.getUser();
+
+    // never prepopulate the password field
+    $scope.user.pw = "";
+    lineUpUserService.saveUser($scope.user);
+
+    $scope.signUp = function () {
+      // save the username and password to populate the create user form
+      //lineUpUserService.saveUser($scope.user);
+      $location.path("/create_account");
+    };
 
 
     // Sends a user account login request to the server.
     // Upon success: displays the user home page with queue information
     // Upon error: TODO: Do something smart to handle the error
     $scope.login = function () {
-      lineUpAPIService.login($scope.user).
+      lineUpUserService.login($scope.user).
         success(function (data, status, headers, config) {
           if (data.SUCCESS == false) {
             // login unsuccessful, display error
@@ -55,7 +59,11 @@ angular.module('LineUpApp.controllers', []).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the login request!\nStatus: " + status);
         });
-    }
+    };
+  }).
+
+  controller('userCreateController', function ($scope, lineUpUserService, $location) {
+    $scope.user = lineUpUserService.getUser();
 
     // Sends a user account creation request to the server.
     // Upon success: Redirects the browser to the login page.
@@ -68,10 +76,12 @@ angular.module('LineUpApp.controllers', []).
 
       // don't send the extra password to the server
       delete $scope.user.pwx2;
-      $scope.user.temp = 0;
+      lineUpUserService.saveUser($scope.user);
 
-      lineUpAPIService.createUser($scope.user).
+      console.log($scope.user);
+      lineUpUserService.createUser($scope.user).
         success(function (data, status, headers, config) {
+          console.log(data);
           // account created successfully, redirect to the login page
           $location.path("/");
         }).
