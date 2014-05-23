@@ -60,13 +60,13 @@ def create_queue():
    if not q_settings.has_key('admins'):
       q_settings['admins']=list()
    else:
-      queueSettings['admins'] = [admin.strip() for admin in queueSettings['admins'].split(',')]
+      q_settings['admins'] = [admin.strip() for admin in q_settings['admins'].split(',')]
    if not session['uname'] in q_settings['admins']:
       q_settings['admins'].append(session['uname'])
-   if queueSettings.has_key('managers'):
-      queueSettings['managers'] = [e.strip() for e in queueSettings['managers'].split(',')]
-   if queueSettings.has_key('blocked_users'):
-      queueSettings['blocked_users'] = [b.strip() for b in queueSettings['blocked_users'].split(',')]
+   if q_settings.has_key('managers'):
+      q_settings['managers'] = [e.strip() for e in q_settings['managers'].split(',')]
+   if q_settings.has_key('blocked_users'):
+      q_settings['blocked_users'] = [b.strip() for b in q_settings['blocked_users'].split(',')]
    try:
       q_settings['qid'] = queue_server.create(q_settings)
       return jsonify(q_settings)
@@ -175,7 +175,9 @@ def search():
    Improved search functionality is coming in the Feature Complete Release.
 
    Args:
-      search_string:
+      keywords:
+      location:
+      qname:
 
    Returns:
       {
@@ -201,9 +203,7 @@ def search():
       }
 
    """
-   search_string = request.json
-   q_ids = queue_server.search(search_string)
-   q_info_list = [queue_server.get_info(None, q_id) for q_id in q_ids]
+   q_info_list = queue_server.get_all_queues_info()
    return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
 
 @app.route('/popular', methods=['GET'])
@@ -396,6 +396,8 @@ def get_my_queues():
    else:
       return jsonify(Failure('User is not logged in, and no uid was provided.'))
    queues_in_info_list = queue_server.get_queue_info_list(uid)
+   if queues_in_info_list is None:
+      queues_in_info_list = list()
    qids_admin_rows = db_util.get_permissioned_qids(uid, permissions.ADMIN)
    if qids_admin_rows is None:
       queues_admin_info_list = list()
