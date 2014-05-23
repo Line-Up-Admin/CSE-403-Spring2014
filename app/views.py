@@ -240,14 +240,14 @@ def get_popular_queues():
       }
 
    """
-   #Filter the top 5
-   qids = queue_server.get_popular()[:4]
-   q_info_list = [queue_server.get_info(None, qid) for qid in qids]
+   q_info_list = queue_server.get_all_queues_info()
    return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
 
 @app.route('/memberQueue', methods=['POST'])
 def get_member_queue():
    return 'Not implemented yet!'
+
+
 
 @app.route('/managerView/<int:qid>', methods=['POST'])
 def get_manager_queue(qid):
@@ -289,11 +289,13 @@ def get_manager_queue(qid):
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['id']
    else:
-      return "You must be logged in as an manager to dequeue."
+      return jsonify(Failure("You must be logged in as an manager to dequeue."))
    if permissions.has_flag(uid, qid, permissions.MANAGER):
       members = queue_server.get_members(qid)
       q_info = queue_server.get_info(None, qid)
       return jsonify(queue_info=q_info.__dict__, member_list=[member.__dict__ for member in members])
+   else:
+      return jsonify(Failure('You must be a manager of the queue to view queue members.'))
 
 @app.route('/getQueueSettings', methods=['POST'])
 def get_queue_settings():
@@ -325,7 +327,7 @@ def get_queue_settings():
       else:
          return jsonify(Failure('You must be an admin of the queue to see queue settings.'))
    except sqlite3.Error as e:
-      return e.message
+      return jsonify(Failure(e.message))
 
 @app.route('/queueStatus/<int:qid>')
 def get_queue_status(qid):
@@ -463,6 +465,8 @@ def create_user():
    except sqlite3.Error as e:
       print 'exit create user route failure.'
       return jsonify(Failure('Failed to create user.'))
+   except db_util.ValidationException as e:
+      return jsonify(Failure(e.message))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

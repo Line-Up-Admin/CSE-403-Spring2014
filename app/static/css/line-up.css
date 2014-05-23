@@ -105,10 +105,10 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 	margin-top: 8px;
 	margin-bottom: 8px;
 	background: linear-gradient(#BCE0D9, #99D1C6);
-	text-align: left;
 	padding-top: 15px;
 	padding-bottom: 15px;
 	padding-left: 15px;
+	color: #555;
 }
 
 .queue-img { /* user_home, search_queues, found_queues */

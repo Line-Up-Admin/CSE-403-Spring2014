@@ -5,7 +5,7 @@ import sqlite3
 from flask import request, session, g, redirect, url_for, abort, jsonify
 import permissions
 
-from q_classes import QueueServer, QueueMember, QueueSettings
+from q_classes import QueueServer, QueueMember, QueueSettings, QueueNotFoundException
 
 # Temporary: debugging purposes only.
 @app.route('/helloworld', methods=['GET', 'POST'])
@@ -220,6 +220,18 @@ def dequeue_debug(qid):
       return jsonify(q_member.__dict__)
    else:
       return 'You must be an manager to dequeue.'
+
+@app.route('/debug/postpone', methods=['GET', 'POST'])
+def dequeue_postpone():
+   if not app.debug:
+      abort(404)
+   if session.has_key('logged_in') and session['logged_in']:
+      uid = session['id']
+   else:
+      raise Exception('You are not logged in!')
+   qid=int(request.args.get('qid'))
+   queue_server.postpone(QueueMember(uid=uid), qid)
+   return jsonify({'SUCCESS':True})
 
 def copy_request_args(origRequest):
    res = dict()

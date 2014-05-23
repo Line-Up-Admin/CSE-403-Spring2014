@@ -17,9 +17,7 @@
 		<div ng-repeat="queueInfo in queueInfos">
 			<a href="#/queue_info/{{ queueInfo.qid }}">
 			<div class="queue">
-				<img class="queue-img" src="img/CLUE_phys.png"/>
-				<p class="queue-name">{{ queueInfo.qname }} </p>
-				<p class="time-left">{{ queueInfo.expected_wait }} min</p>
+				<img class="queue-img" src="img/CLUE_phys.png"/>{{ queueInfo.qname }}: {{ queueInfo.expected_wait }} min
 			</div>
 			</a>
 		</div>

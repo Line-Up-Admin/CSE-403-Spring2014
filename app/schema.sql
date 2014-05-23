@@ -22,6 +22,11 @@ CREATE TABLE QSettings (
 	keywords varchar(256),
 	location varchar(64),
 	active int,
+        min_wait_rejoin int,
+        website varchar(128),
+        organization varchar(128),
+        disclaimer varchar(512),
+        prompt varchar(512),
 	FOREIGN KEY (qid) REFERENCES Queues(id)
 );
 
