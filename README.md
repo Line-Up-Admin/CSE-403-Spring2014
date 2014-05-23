@@ -6,6 +6,7 @@ CSE 403 Spring 2014 -- Team Aphrodite
 
 
 Current Version Number: Feature-Complete Release 
+
 For infomation regarding the development and depoloyment of our project, 
 view the [development website](https://github.com/Line-Up-Admin/CSE-403-Spring2014/wiki).
 
