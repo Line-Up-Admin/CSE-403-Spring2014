@@ -99,7 +99,9 @@ angular.module('LineUpApp.controllers', []).
           $location.path("/");
         }).
         error(function (data, status, headers, config) {
-          alert("Something went wrong with the create account request!\nStatus: " + status);
+					$scope.error = "User name already taken!";
+          document.getElementById('error').classList.remove('hide');
+					//alert("Something went wrong with the create account request!\nStatus: " + status);
         });
       }
   }).
@@ -226,6 +228,7 @@ angular.module('LineUpApp.controllers', []).
 			lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
 				success(function (data, status, headers, config) {
 					$scope.queueInfo = data.queue_info;
+					console.log($scope.queueInfo.expected_wait);
 					$scope.member_list = data.member_list;
 				}).
 				error(function (data, status, headers, config) {
