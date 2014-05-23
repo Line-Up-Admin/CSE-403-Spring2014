@@ -148,6 +148,12 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 	background-color: #E6DDBC;
 }
 
+.list-group-item {
+	background: linear-gradient(#BCE0D9, #99D1C6);
+	border: 3px solid #3C3940;
+	margin-top: 20px;
+}
+
 /* example_admin_queue_page css */
 .queue-face, .queue-control, .control-options {
 	margin-top: 25px;
