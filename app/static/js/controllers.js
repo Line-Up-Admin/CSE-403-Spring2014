@@ -4,19 +4,31 @@
 angular.module('LineUpApp.controllers', []).
 
   // Controller for the #/create_queue route
-  controller('createQueueController', function ($scope, lineUpAPIService, $location) {
+  controller('createQueueController', function ($scope, lineUpAPIService, $location, $route) {
+
+    // hide the edit button if we are on the create queue page
+    // call on page load with ng-init="init()"
+    $scope.init = function () {
+      if ($route.current.loadedTemplateUrl == "partials/create_queue.html") {
+        document.getElementById("edit-button").classList.add("hide");
+      }
+    };
+
     // Sends a request to the server to create a new queue. The request
     // contains the new queue settings.
     // Upon success: Updates the current queue model to include the new ID.
     // Upon error: TODO: Do something smart to handle the error
     $scope.createNewQueue = function () {
-			//$scope.queue.active = document.getElementById("active").value;
       $scope.queue.active = 1;
 			lineUpAPIService.createQueue($scope.queue).
         success(function (data, status, headers, config) {
-          // set the local queue to be the newly created queue
-          $scope.queue = data;
-					$location.path('/admin/' + $scope.queue.qid);
+
+          if (data.error_message) {
+            alert(data.error_message);
+          } else {
+            // load the queue admin page
+            $location.path('/admin/' + $scope.queue.qid);
+          }
         }).
         error(function (data, status, headers, config) {
           alert("Database error: could not create queue.\nStatus: " + status);
@@ -79,7 +91,6 @@ angular.module('LineUpApp.controllers', []).
       console.log($scope.user);
       lineUpUserService.createUser($scope.user).
         success(function (data, status, headers, config) {
-          console.log(data);
           // account created successfully, redirect to the login page
           $location.path("/");
         }).
@@ -110,10 +121,12 @@ angular.module('LineUpApp.controllers', []).
           if (data.SUCCESS) {
             $scope.queueInfos = data;
           } else {
+            console.log(data);
             $location.path("/");
           }
         }).
         error(function (data, status, headers, config) {
+          console.log(data);
           $location.path("/error");
         });
     }();
