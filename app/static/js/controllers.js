@@ -2,12 +2,9 @@
 
 /* Controllers */
 angular.module('LineUpApp.controllers', []).
-  controller('lineUpController', function ($scope, lineUpAPIService, $location) {
-		$scope.user = {};
-		$scope.userInfos = [];
-    $scope.queue = {};
-    $scope.queueInfos = [];
 
+  // Controller for the #/create_queue route
+  controller('createQueueController', function ($scope, lineUpAPIService, $location) {
     // Sends a request to the server to create a new queue. The request
     // contains the new queue settings.
     // Upon success: Updates the current queue model to include the new ID.
@@ -41,7 +38,6 @@ angular.module('LineUpApp.controllers', []).
       $location.path("/create_account");
     };
 
-
     // Sends a user account login request to the server.
     // Upon success: displays the user home page with queue information
     // Upon error: TODO: Do something smart to handle the error
@@ -63,6 +59,7 @@ angular.module('LineUpApp.controllers', []).
     };
   }).
 
+  // Controller for the #/create_account route
   controller('userCreateController', function ($scope, lineUpUserService, $location) {
     $scope.user = lineUpUserService.getUser();
 
@@ -113,12 +110,11 @@ angular.module('LineUpApp.controllers', []).
           if (data.SUCCESS) {
             $scope.queueInfos = data;
           } else {
-            console.log("ELSE REDIRECT TO LOGIN");
             $location.path("/");
           }
         }).
         error(function (data, status, headers, config) {
-          alert("Something went wrong with the queue lookup request!\nStatus: " + status);
+          $location.path("/error");
         });
     }();
   }).
