@@ -26,7 +26,7 @@ config(['$routeProvider', function($routeProvider) {
     controller: "lineUpController"
   }).
 	when("/admin/:qid", {
-		templateUrl: "partials/example_admin_queue_page.html",
+		templateUrl: "partials/queue_admin.html",
 		controller: "adminViewController"
 	}).
   when("/home", {
