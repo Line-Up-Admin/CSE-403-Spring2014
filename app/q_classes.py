@@ -88,7 +88,7 @@ class Queue(object):
       del q[pos]
       return True
 
-   def postpone(self, member):
+   def postpone(self, member, sync_db):
       """ Postpones a Queue Member's position in a Queue.
          If a user attempt to postpone past the end of the line,
          the position is not affected."""
@@ -99,7 +99,8 @@ class Queue(object):
          #There is room to move the user back a position in the queue.
          temp = self.my_q[pos]
          next_member = self.my_q[pos + 1]
-         db_util.swap(temp[0].uid, next_member[0].uid, self.id)
+         if sync_db:
+            db_util.swap(temp[0].uid, next_member[0].uid, self.id)
          self.my_q[pos] = self.my_q[pos + 1]
          self.my_q[pos + 1] = temp
       #else: member is already at the end of the queue
@@ -346,7 +347,7 @@ class QueueServer(object):
    def postpone(self, member, qid):
       if qid not in self.table:
          raise QueueNotFoundException('Queue not found')
-      return self.table[qid].postpone(member)
+      return self.table[qid].postpone(member, self.sync_db)
 
    def get_info(self, member, qid):
       """ This method gets the info associated with a queue."""
