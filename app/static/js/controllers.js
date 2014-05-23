@@ -92,7 +92,18 @@ angular.module('LineUpApp.controllers', []).
       }
   }).
 
-  controller('userHomeController', function ($scope, lineUpAPIService) {
+  controller('userHomeController', function ($scope, lineUpAPIService, $route) {
+
+
+    $scope.init = function () {
+      // hide the home button if we are on the home page
+      // console.log($route.current);
+      //console.log($route.current.loadedTemplateUrl);
+      if ($route.current.loadedTemplateUrl == "partials/user_home.html") {
+        document.getElementById("home-button").classList.add("hide");
+      }
+    };
+
 
 		// Sends a user queue request to the server.
     // Upon success: Loads the user queues to the requisite scope fields.
