@@ -15,13 +15,13 @@
 	<h1 id="results">Popular Queues</h1>
 	<div class="popular-queues">
 		<div ng-repeat="queueInfo in queueInfos">
-		<a href="#/queue_info/{{ queueInfo.qid }}">
-		<div class="queue">
-			<img class="queue-img" src="img/CLUE_phys.png"/>
-			<p class="queue-name">{{ queueInfo.qname }} </p>
-			<p class="time-left">{{ queueInfo.expected_wait }} min</p>
+			<a href="#/queue_info/{{ queueInfo.qid }}">
+			<div class="queue">
+				<img class="queue-img" src="img/CLUE_phys.png"/>
+				<p class="queue-name">{{ queueInfo.qname }} </p>
+				<p class="time-left">{{ queueInfo.expected_wait }} min</p>
+			</div>
+			</a>
 		</div>
-	</a>
-</div>
 	</div>
 </div>

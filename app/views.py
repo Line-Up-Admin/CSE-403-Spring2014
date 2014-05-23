@@ -510,5 +510,5 @@ def logout():
       if session['logged_in']:
          for key in  session.keys():
             session[key] = None
-         return 'Logged out.'
+         return '<meta http-equiv="refresh" content="0; url=/" />'
    return 'You are not logged in!'
