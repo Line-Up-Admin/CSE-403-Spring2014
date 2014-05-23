@@ -167,9 +167,7 @@ def search():
    Improved search functionality is coming in the Feature Complete Release.
 
    Args:
-      keywords:
-      location:
-      qname:
+      search_string:
 
    Returns:
       {
@@ -195,7 +193,9 @@ def search():
       }
 
    """
-   q_info_list = queue_server.get_all_queues_info()
+   search_string = request.json
+   q_ids = queue_server.search(search_string)
+   q_info_list = [queue_server.get_info(None, q_id) for q_id in q_ids]
    return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
 
 @app.route('/popular', methods=['GET'])
