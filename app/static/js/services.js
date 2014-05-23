@@ -26,6 +26,10 @@ angular.module('LineUpApp.services', []).
       return $http.get('/popular');
     }
 
+    lineUpAPI.search = function () {
+      return $http.post('/search');
+    }
+
     lineUpAPI.joinQueue = function (data) {
       console.log(data);
       return $http.post('/join', data);

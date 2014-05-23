@@ -132,7 +132,29 @@ angular.module('LineUpApp.controllers', []).
     }();
   }).
 
-  controller('searchController', function ($scope, lineUpAPIService) {
+  // Controller for the #/search route
+  controller('searchController', function ($scope, $route, lineUpAPIService) {
+    // hide the edit button if we are on the create queue page
+    // call on page load with ng-init="init()"
+    $scope.init = function () {
+      if ($route.current.loadedTemplateUrl == "partials/search.html") {
+        document.getElementById("edit-button").classList.add("hide");
+      }
+    };
+
+    $scope.search = function () {
+      lineUpAPIService.search().
+        success(function (data, status, headers, config) {
+            document.getElementById("results").innerHTML="Search Results";
+            $scope.queueInfos = data.queue_info_list;
+          }).
+          error(function (data, status, headers, config) {
+            console.log(data);
+            alert("Something went wrong with the search request! \nStatus: " + status);
+        });
+    }
+
+
     // Sends a request to the server to get the information for the most popular
     // queues.
     // Upon success: Updates the current queueInfos array to store the results
