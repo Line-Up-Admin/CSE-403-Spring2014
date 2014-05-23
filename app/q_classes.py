@@ -14,11 +14,12 @@ from collections import deque
 from datetime import datetime
 
 import database_utilities as db_util
-import re
-from operator import itemgetter
 
 # Custom Exception
 class QueueFullException(Exception):
+   pass
+
+class QueueNotFoundException(Exception):
    pass
 
 class Queue(object):
@@ -56,7 +57,9 @@ class Queue(object):
       """ This currently returns the average wait time in minutes 
       of everyone who has ever been in the queue. """
       if len(self.wait_times) == 0:
-         return None
+         # This shouldn't really be 0, but the users might not 
+         #  like a display of 'undefined'
+         return 0
       else:
          total_num = 0
          total_time = 0.0
@@ -64,7 +67,7 @@ class Queue(object):
             for wait in waits:
                total_num += 1
                total_time += (wait[1] - wait[0]).total_seconds()
-         # divide by 60 because total_seconds() is in seconds.
+         # divide by 60 because time() is in seconds.
          return total_time / float(total_num * 60)
 
    def add(self, member):
@@ -95,6 +98,8 @@ class Queue(object):
       elif pos + 1 < len(self.my_q):
          #There is room to move the user back a position in the queue.
          temp = self.my_q[pos]
+         next_member = self.my_q[pos + 1]
+         db_util.swap(temp[0].uid, next_member[0].uid, self.id)
          self.my_q[pos] = self.my_q[pos + 1]
          self.my_q[pos + 1] = temp
       #else: member is already at the end of the queue
@@ -107,9 +112,6 @@ class Queue(object):
       #  more intelligent. Currently, it is average wait time of the queue
       #  times the proportion of the queue remaining.
       avg_wait = self.get_avg_wait()
-      if member == None:
-         #this allows the method to also be used more generically
-         return avg_wait
       position = self.get_position(member)
 
       if position == 0:
@@ -167,15 +169,6 @@ class Queue(object):
          # remove the time from result
          members.append(member[0])
       return members
-
-   def get_popularity(self):
-      """
-      Returns the number of people who have been enqued and dequed
-      from this queue"""
-      total = 0
-      for item in self.wait_times.values():
-         total += len(item)
-      return total
 
 
 class QueueMember(object):
@@ -252,7 +245,6 @@ class QueueServer(object):
       self.sync_db = sync_db
       if not sync_db:
          self.id_gen = 500
-         print "###"
          return
       # read all the queues from the database, and put them into the tables
       # get_all_queues returns a list of tuples of qids to QueueSettings 
@@ -314,51 +306,15 @@ class QueueServer(object):
          db_util.remove_by_uid_qid(q_member.uid, qid)
       return q_member
 
-   def search(self, search_string):
+   def search(self, name, location):
       """ Returns a list of  qids that match the parameters 
-         passed in. Currently, search returns all the queues
-         that match any of the keywords, with the ones that match
-         the most at the top. Implementation is not that efficient. """
-      def remove_duplicates(lst):
-         return list(set(lst))
-      def to_list(st):
-         #split string on comma, space, or semicolon, and make everything lower case
-         return [ s.lower() for s in re.split('[:;, ]+', st)]
-      def match_score(str1, str2):
-         words1 = remove_duplicates(to_list(str1))
-         words2 = remove_duplicates(to_list(str2))
-         score = 0
-         for word1 in words1:
-            for word2 in words2:
-               if word1 == word2:
-                  score += 1
-         return score
+         passed in.
+      Implementation here is not very efficient. """
       results = []
-      for qid, queue in self.table.items():
-         qset = queue.q_settings
-         if qset == None:
-            continue
-         score = 0
-         if qset.qname:
-            score += match_score(search_string, qset.qname)
-         if qset.location:
-            score += match_score(search_string, qset.location)
-         if qset.keywords:
-            score += match_score(search_string, qset.keywords)
-         if score > 0:
-            results.append( (qid, score) )
-      results = sorted(results, key=itemgetter(1), reverse=True)
-      results = [item[0] for item in results]
-      return results
-
-   def get_popular(self):
-      """ Returns a list of queues, sorted by their popularity """
-      results = []
-      for (qid, queue) in self.table.items():
-         results.append( (qid, queue.get_popularity()) )
-      results = sorted(results, key=itemgetter(1), reverse=True)
-      results = [item[0] for item in results]
-      return results
+      name = name.lower()
+      #for qid, q in self.table:
+      #   if 
+      return "Not yet implemented"
 
    def create(self, settings):
       """ Given a settings dictionary, or a QueueSettings object,
@@ -389,7 +345,7 @@ class QueueServer(object):
 
    def postpone(self, member, qid):
       if qid not in self.table:
-         raise Exception('Queue not found')
+         raise QueueNotFoundException('Queue not found')
       return self.table[qid].postpone(member)
 
    def get_info(self, member, qid):
@@ -410,7 +366,7 @@ class QueueServer(object):
 
    def get_all_queues_info(self):
       """ (not in UML) """
-      result = []
+      result = list()
       for queue in self.table.values():
          q_info = self.get_info(None, queue.id)
          result.append(q_info)

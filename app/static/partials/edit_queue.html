@@ -1,0 +1,137 @@
+<!-- Header -->
+<div class="header-content" ng-include src="'partials/header.html'"></div>
+
+<div class="container text-center main-page-content">
+  <div id="title" class="text-center pagination-centered">
+    <h1>Edit Queue</h1>
+  </div>
+  <div class="panel-group col-md-10 col-md-offset-1">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" data-target="#collapseBasic" href="">Basic Information</a>
+        </h4>
+      </div>
+      <div id="collapseBasic" class="panel-collapse collapse in">
+        <div class="panel-body">
+          <form class="form-horizontal" role="form">
+            <div class="form-group">
+              <label class="col-sm-4 control-label text-right">Name</label>
+              <div class="col-sm-5">
+                <input type="text" class="form-control" id="name" placeholder="LineUp Queue" ng-model="queue.qname">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-4 control-label text-right">Location</label>
+              <div class="col-sm-5">
+                <input type="text" class="form-control" id="location" placeholder="CSE Atrium" ng-model="queue.location">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-4 control-label text-right">Keywords</label>
+              <div class="col-sm-5">
+                <textarea  class="form-control" rows="3" id="keywords" placeholder="CSE403, Project, Aphrodite" ng-model="queue.keywords"></textarea>Enter as a list seperated by commas.
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" href="" data-target="#collapseSize">Size Information</a>
+        </h4>
+      </div>
+      <div id="collapseSize" class="panel-collapse collapse">
+        <div class="panel-body">
+          <form class="form-horizontal" role="form">
+            <div class="form-group">
+              <label class="col-sm-5 control-label text-right">Max Queue Size</label>
+              <div class="col-sm-3">
+                <input type="text" class="form-control" id="maxsize" placeholder="42" ng-model="queue.max_size">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-5 control-label text-right">Minimum Time Before Re-Join Queue</label>
+              <div class="col-sm-3">
+                <input type="text" ng-model='min_wait_rejoin' class="form-control" id="minwait" placeholder="10"> In Minutes.
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" data-target="#collapsePersonalization" href="">Personalization</a>
+        </h4>
+      </div>
+      <div id="collapsePersonalization" class="panel-collapse collapse">
+        <div class="panel-body">
+          <form class="form-horizontal" role="form">
+            <div class="form-group">
+              <label class="col-sm-4 control-label text-right">Website</label>
+              <div class="col-sm-6">
+                <input type="text" class="form-control" id="website" placeholder="https://courses.cs.washington.edu/courses/cse403/14sp/" ng-model="queue.website">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-4 control-label text-right">Organization</label>
+              <div class="col-sm-6">
+                <input type="text" class="form-control" id="organization" placeholder="UW Computer Science and Engineering" ng-model="queue.organization">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-4 control-label text-right">Queue Entry Disclaimer</label>
+              <div class="col-sm-6">
+                <textarea class="form-control" rows="3" id="minwait" placeholder="If something happens, it is not our fault." ng-model="queue.disclaimer"></textarea>Will be displayed when users view your queue.
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-4 control-label text-right">Prompt For Information</label>
+              <div class="col-sm-6">
+                <textarea class="form-control" rows="3" id="addinfo" placeholder="Anything else?" ng-model="queue.prompt"></textarea>Will be displayed when users join your queue.
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" data-target="#collapseSecurity" href="">Security</a>
+        </h4>
+      </div>
+      <div id="collapseSecurity" class="panel-collapse collapse">
+        <div class="panel-body">
+          <form class="form-horizontal" role="form">
+            <div class="form-group">
+              <label class="col-sm-4 control-label text-right">Administrators</label>
+              <div class="col-sm-5">
+                <textarea class="form-control" rows="3" id="admins" placeholder="Cleopatra" ng-model="queue.admins"></textarea>Enter as a list seperated by commas.
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="col-sm-4 control-label text-right">Managers</label>
+              <div class="col-sm-5">
+                <textarea class="form-control" rows="3" id="managers" placeholder="Ramesses" ng-model="queue.managers"></textarea>Enter as a list seperated by commas.
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="text-center pagination-centered create-queue-button">
+    <a href="#/admin/{{ queue.qid }}"><button id="submit-acct-info" type="submit" class="btn btn-line-up btn-lg" ng-click='createNewQueue()'>Cancel</button></a>
+    <button id="submit-acct-info" type="submit" class="btn btn-line-up btn-lg" ng-click='createNewQueue()'>Save</button>
+  </div>
+</div>
