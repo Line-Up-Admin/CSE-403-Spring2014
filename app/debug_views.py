@@ -64,6 +64,16 @@ def get_queue_settings_debug():
    except sqlite3.Error as e:
       return e.message
 
+@app.route('/debug/search', methods=['GET'])
+def search_debug():
+   search_string = request.args["search_string"]
+   qids = queue_server.search(search_string)
+   print qids
+   q_info_list = [queue_server.get_info(None, qid) for qid in qids]
+   return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
+
+
+
 @app.route('/debug/createqueue', methods=['GET', 'POST'])
 def create_queue_debug():
    queueSettings = copy_request_args(request)
