@@ -13,8 +13,10 @@ import sys
 sys.path.insert(0, '../..') 
 sys.path.insert(0, '..') # the tests folder 
 sys.path.insert(0, '.') # CSE-403-Spring2014 level
+sys.path.insert(0, '../app')
+
 #sys.path.insert(0, )
-from app import app
+#from app import app
 from app.q_classes import *
 
 class SomeTest(unittest.TestCase):
