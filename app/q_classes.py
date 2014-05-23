@@ -168,6 +168,15 @@ class Queue(object):
          members.append(member[0])
       return members
 
+   def get_popularity(self):
+      """
+      Returns the number of people who have been enqued and dequed
+      from this queue"""
+      total = 0
+      for item in self.wait_times.values():
+         total += len(item)
+      return total
+
 
 class QueueMember(object):
       """  This is a person / anonymous user in a queue. More
@@ -337,6 +346,15 @@ class QueueServer(object):
       results = [item[0] for item in results]
       return results
 
+   def get_popular(self):
+      """ Returns a list of queues, sorted by their popularity """
+      results = []
+      for (qid, queue) in self.table.items():
+         results.append( (qid, queue.get_popularity()) )
+      results = sorted(results, key=itemgetter(1), reverse=True)
+      results = [item[0] for item in results]
+      return results
+
    def create(self, settings):
       """ Given a settings dictionary, or a QueueSettings object,
          creates a queue, adds to the database, and 
@@ -387,7 +405,7 @@ class QueueServer(object):
 
    def get_all_queues_info(self):
       """ (not in UML) """
-      result = list()
+      result = []
       for queue in self.table.values():
          q_info = self.get_info(None, queue.id)
          result.append(q_info)

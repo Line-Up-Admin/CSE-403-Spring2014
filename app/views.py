@@ -239,7 +239,9 @@ def get_popular_queues():
       }
 
    """
-   q_info_list = queue_server.get_all_queues_info()
+   #Filter the top 5
+   qids = queue_server.get_popular()[:4]
+   q_info_list = [queue_server.get_info(None, qid) for qid in qids]
    return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
 
 @app.route('/memberQueue', methods=['POST'])
