@@ -10,6 +10,7 @@ GET_ALL_QUEUES = 'select * from queues'
 GET_ALL_QUEUE_SETTINGS = 'select * from qsettings'
 GET_MEMBER_DATA_BY_QID = 'select qi.uid, u.uname, qi.relative_position, qi.optional_data from qindex as qi join users as u on qi.qid=? and qi.uid=u.id order by qi.relative_position'
 GET_PERMISSIONED_QIDS_BY_UID = 'select qid from permissions where pid=? and permission_level=?'
+GET_POSITION = 'select relative_position from qindex where uid=? and qid=?'
 GET_PROFILED_USER_BY_USERNAME = 'select * from users where temp=0 and uname=?'
 GET_QUEUES_BY_UID = 'select * from qindex where uid=?'
 GET_QUEUE_SETTINGS_BY_ID = 'select * from qsettings where id=?'
@@ -20,6 +21,7 @@ INSERT_QUEUE = 'insert into queues values(?, 0, 0)'
 INSERT_QUEUE_SETTINGS = 'insert into qsettings values(?, ?, ?, ?, ?, ?)'
 INSERT_TEMP_USER = 'insert into users values(?, 1, ?, NULL, NULL, NULL, NULL)'
 REMOVE_MEMBER_FROM_QUEUE = 'delete from qindex where uid=? and qid=?'
+UPDATE_POSITION = 'update qindex set relative_position=? where uid=? and qid=?'
 UPDATE_QUEUE_FOR_ADD = 'update Queues set ending_index=ending_index+1 where id=?'
 UPDATE_QUEUE_FOR_REMOVE = 'update queues set starting_index=starting_index+1 where id=?'
 UPDATE_QUEUE_SETTINGS = 'update qsettings set qname=?, max_size=?, keywords=?, location=?, active=?'
@@ -290,6 +292,17 @@ def add_to_queue(uid, qid, optional_data):
   db.execute(INSERT_MEMBER_INTO_QUEUE, (uid, qid, qid, optional_data))
   db.execute(UPDATE_QUEUE_FOR_ADD, (qid,))
   db.commit()
+
+def swap(uid1, uid2, qid):
+  rows1 = query_db(GET_POSITION, (uid1, qid))
+  relative_position1 = rows1[0]['relative_position']
+  rows2 = query_db(GET_POSITION, (uid2, qid))
+  relative_position2 = rows2[0]['relative_position']
+  db = get_db()
+  db.execute(UPDATE_POSITION, (relative_position2, uid1, qid))
+  db.execute(UPDATE_POSITION, (relative_position1, uid2, qid))
+  db.commit()
+  
 
 def remove_by_uid_qid(uid, qid):
   """
