@@ -23,7 +23,7 @@
       <div class="panel-heading">Queues You Own</div>
       <div class="panel-body">
         <ul class="list-group">
-          <a class="list-group-item" ng-repeat="queue in queueInfos.queues_admin" href="#/queue_admin/{{ queue.qid }}">
+          <a class="list-group-item" ng-repeat="queue in queueInfos.queues_admin" href="#/admin/{{ queue.qid }}">
             <img class="queue-img" src="img/default.png"/>{{ queue.qname }}: Current Size: {{ queue.size }}
           </a>
         </ul>
@@ -33,7 +33,7 @@
       <div class="panel-heading">Queues You Manage</div>
       <div class="panel-body">
         <ul class="list-group">
-          <a class="list-group-item" ng-repeat="queue in queueInfos.queues_manager" href="#/queue_admin/{{ queue.qid }}">
+          <a class="list-group-item" ng-repeat="queue in queueInfos.queues_manager" href="#/admin/{{ queue.qid }}">
             <img class="queue-img" src="img/default.png"/>{{ queue.qname }}: Current Size: {{ queue.size }}
           </a>
         </ul>
