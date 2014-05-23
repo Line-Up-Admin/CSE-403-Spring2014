@@ -23,11 +23,7 @@
   		<div class="panel-heading">Queues You Own</div>
   		<div class="panel-body">
     		<ul class="list-group">
-  				<li class="list-group-item">Cras justo odio</li>
-  				<li class="list-group-item">Dapibus ac facilisis in</li>
-  				<li class="list-group-item">Morbi leo risus</li>
-				  <li class="list-group-item">Porta ac consectetur ac</li>
-				  <li class="list-group-item">Vestibulum at eros</li>
+  				<li class="list-group-item" ng-repeat="queue in queueInfos.queues_admin">{{ queue.qname }}</li>
 				</ul>
   		</div>
 		</div>
@@ -35,18 +31,14 @@
 			<div class="panel-heading">Queues You Manage</div>
   		<div class="panel-body">
     		<ul class="list-group">
-  				<li class="list-group-item">Cras justo odio</li>
-  				<li class="list-group-item">Dapibus ac facilisis in</li>
-  				<li class="list-group-item">Morbi leo risus</li>
-				  <li class="list-group-item">Porta ac consectetur ac</li>
-				  <li class="list-group-item">Vestibulum at eros</li>
+  				<li class="list-group-item" ng-repeat="queue in queueInfos.queues_manager">{{ queue.qname }}</li>
 				</ul>
   		</div>
 		</div>
 		<div class="queue-list-header">
 			<h2>Queues You're In</h2>
 		</div>
-		<div ng-repeat="queue in queueInfos">
+		<div ng-repeat="queue in queueInfos.queues_in">
 		<a href="#/queue_info/{{ queue.qid }}"><div class="queue">
 			<img class="queue-img" src="img/default.png"/>
 			<!-- <div class="progress"><div class="progress-bar" style="width: 80%;"></div></div> -->

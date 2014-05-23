@@ -92,18 +92,16 @@ angular.module('LineUpApp.controllers', []).
       }
   }).
 
-  controller('userHomeController', function ($scope, lineUpAPIService, $route) {
+  // Controller for the #/user_home route
+  controller('userHomeController', function ($scope, lineUpAPIService, $route, $location) {
 
-
+    // hide the home button if we are on the home page
+    // call on page load with ng-init="init()"
     $scope.init = function () {
-      // hide the home button if we are on the home page
-      // console.log($route.current);
-      //console.log($route.current.loadedTemplateUrl);
       if ($route.current.loadedTemplateUrl == "partials/user_home.html") {
         document.getElementById("home-button").classList.add("hide");
       }
     };
-
 
 		// Sends a user queue request to the server.
     // Upon success: Loads the user queues to the requisite scope fields.
@@ -111,7 +109,13 @@ angular.module('LineUpApp.controllers', []).
     $scope.getUsersQueues = function () {
       lineUpAPIService.getUsersQueues().
         success(function (data, status, headers, config) {
-          $scope.queueInfos = data.queue_info_list;
+          console.log(data);
+          if (data.SUCCESS) {
+            $scope.queueInfos = data;
+          } else {
+            console.log("ELSE REDIRECT TO LOGIN");
+            $location.path("/");
+          }
         }).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the queue lookup request!\nStatus: " + status);
