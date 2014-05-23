@@ -14,6 +14,8 @@ from collections import deque
 from datetime import datetime
 
 import database_utilities as db_util
+from operator import itemgetter
+import re
 
 # Custom Exception
 class QueueFullException(Exception):
@@ -294,15 +296,44 @@ class QueueServer(object):
          db_util.remove_by_uid_qid(q_member.uid, qid)
       return q_member
 
-   def search(self, name, location):
+   def search(self, search_string):
       """ Returns a list of  qids that match the parameters 
-         passed in.
-      Implementation here is not very efficient. """
+         passed in. Currently, search returns all the queues
+         that match any of the keywords, with the ones that match
+         the most at the top. Implementation is not that efficient. """
+      def remove_duplicates(lst):
+         return list(set(lst))
+      def to_list(st):
+         #make both lists lower case, and remove commas or semicolons
+         return [re.sub('[;]', '', s.lower()) for s in re.split('[, ]+', st)]
+      def match_score(str1, str2):
+         words1 = remove_duplicates(to_list(str1))
+         words2 = remove_duplicates(to_list(str2))
+         score = 0
+         for word1 in words1:
+            for word2 in words2:
+               if word1 == word2:
+                  score += 1
+         return score
       results = []
-      name = name.lower()
-      #for qid, q in self.table:
-      #   if 
-      return "Not yet implemented"
+      for qid, queue in self.table.items():
+         qset = queue.q_settings
+         if qset == None:
+            continue
+         score = 0
+         if qset.qname:
+            score += match_score(search_string, qset.qname)
+         if qset.location:
+            score += match_score(search_string, qset.location)
+         if qset.keywords:
+            k_words = qset.keywords.replace(",", "")
+            k_words = qset.keywords.replace(";", "")
+            score += match_score(search_string, kwords)
+         if score > 0:
+            results.append( (qid, score) )
+      results = sorted(results, key=itemgetter(1), reverse=True)
+      results = [item[0] for item in results]
+      return results
 
    def create(self, settings):
       """ Given a settings dictionary, or a QueueSettings object,
