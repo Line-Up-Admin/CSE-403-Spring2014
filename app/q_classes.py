@@ -56,7 +56,9 @@ class Queue(object):
       """ This currently returns the average wait time in minutes 
       of everyone who has ever been in the queue. """
       if len(self.wait_times) == 0:
-         return None
+         # This shouldn't really be 0, but the users might not 
+         #  like a display of 'undefined'
+         return 0
       else:
          total_num = 0
          total_time = 0.0
