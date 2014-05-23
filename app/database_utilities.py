@@ -9,6 +9,7 @@ __init__.py in app. All methods are static.
 GET_ALL_QUEUES = 'select * from queues'
 GET_ALL_QUEUE_SETTINGS = 'select * from qsettings'
 GET_MEMBER_DATA_BY_QID = 'select qi.uid, u.uname, qi.relative_position, qi.optional_data from qindex as qi join users as u on qi.qid=? and qi.uid=u.id order by qi.relative_position'
+GET_PERMISSIONED_QIDS_BY_UID = 'select qid from permissions where uid=? and permission_level=?'
 GET_PROFILED_USER_BY_USERNAME = 'select * from users where temp=0 and uname=?'
 GET_QUEUES_BY_UID = 'select * from qindex where uid=?'
 GET_QUEUE_SETTINGS_BY_ID = 'select * from qsettings where id=?'
@@ -21,6 +22,8 @@ INSERT_TEMP_USER = 'insert into users values(?, 1, ?, NULL, NULL, NULL, NULL)'
 REMOVE_MEMBER_FROM_QUEUE = 'delete from qindex where uid=? and qid=?'
 UPDATE_QUEUE_FOR_ADD = 'update Queues set ending_index=ending_index+1 where id=?'
 UPDATE_QUEUE_FOR_REMOVE = 'update queues set starting_index=starting_index+1 where id=?'
+UPDATE_QUEUE_SETTINGS = 'update qsettings set qname=?, max_size=?, keywords=?, location=?, active=?'
+
 
 def query_db(query, args=()):
   db = get_db()
@@ -206,11 +209,11 @@ def create_queue(q_settings):
     if not result['SUCCESS']:
       raise ValidationException('The username', result['username'], 'was not found.')
     permissions.add_permission_list(result['uids'], q_settings['qid'], permissions.ADMIN)
-  if q_settings.has_key('employees'):
-    result = check_usernames(q_settings['employees'])
+  if q_settings.has_key('managers'):
+    result = check_usernames(q_settings['managers'])
     if not result['SUCCESS']:
       raise ValidationException('The username', result['username'], 'was not found.')
-    permissions.add_permission_list(result['uids'], q_settings['qid'], permissions.EMPLOYEE)
+    permissions.add_permission_list(result['uids'], q_settings['qid'], permissions.MANAGER)
   if q_settings.has_key('blocked_users'):
     result = check_usernames(q_settings['blocked_users'])
     if not result['SUCCESS']:
@@ -277,6 +280,10 @@ def get_all_queues():
   settings_rows = query_db(GET_ALL_QUEUE_SETTINGS)
   queue_rows = query_db(GET_ALL_QUEUES)
   return (settings_rows, queue_rows)
+
+def get_permissioned_qids(uid, permission_level):
+  rows = query_db(GET_PERMISSIONED_QIDS_BY_UID, (uid, permission_level))
+  return rows
 
 def add_to_queue(uid, qid, optional_data):
   db = get_db()

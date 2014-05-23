@@ -85,8 +85,8 @@ def create_queue_debug():
       queueSettings['admins'] = list()
    if not session['uname'] in queueSettings['admins']:
       queueSettings['admins'].append(session['uname'])
-   if queueSettings.has_key('employees'):
-      queueSettings['employees'] = [e.strip() for e in queueSettings['employees'].split(',')]
+   if queueSettings.has_key('managers'):
+      queueSettings['managers'] = [e.strip() for e in queueSettings['managers'].split(',')]
    if queueSettings.has_key('blocked_users'):
       queueSettings['blocked_users'] = [b.strip() for b in queueSettings['blocked_users'].split(',')]
    print queueSettings
@@ -157,7 +157,7 @@ def get_my_queues_debug():
        return jsonify(queue_info_list={})
    return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
        
-@app.route('/debug/employeeView/<int:qid>', methods=['GET', 'POST'])
+@app.route('/debug/managerView/<int:qid>', methods=['GET', 'POST'])
 def get_queue_info_and_members(qid):
     if not app.debug:
         abort(404)
@@ -166,7 +166,7 @@ def get_queue_info_and_members(qid):
         uid = session['id']
     else:
         uid = int(request.args.get('uid'))
-    if permissions.has_flag(uid, qid, permissions.EMPLOYEE):
+    if permissions.has_flag(uid, qid, permissions.MANAGER):
         members = queue_server.get_members(qid)
         q_info = queue_server.get_info(None, qid)
         return jsonify(queue_info=q_info.__dict__, member_list=[member.__dict__ for member in members])
@@ -175,6 +175,8 @@ def get_queue_info_and_members(qid):
 def add_to_queue_debug(qid):
    if not app.debug:
       abort(404)
+   if not queue_server.is_active(qid):
+      return jsonify(Failure('The queue is not active!'))
    uid = None
    username = None
    temp = False
@@ -210,14 +212,14 @@ def dequeue_debug(qid):
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['id']
    else:
-      uid = int(request.args.get('employeeID'))
-   if permissions.has_flag(uid, qid, permissions.EMPLOYEE):
+      uid = int(request.args.get('managerID'))
+   if permissions.has_flag(uid, qid, permissions.MANAGER):
       q_member = queue_server.dequeue(qid)
       if q_member is None:
          return jsonify({})
       return jsonify(q_member.__dict__)
    else:
-      return 'You must be an employee to dequeue.'
+      return 'You must be an manager to dequeue.'
 
 def copy_request_args(origRequest):
    res = dict()

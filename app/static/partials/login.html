@@ -1,60 +1,47 @@
 <!-- Header -->
-<div class="header-content text-right">
-	<div class="about">
-		<font size="4">
-      <a href="http://line-up-admin.github.io/CSE-403-Spring2014/"><u>About</u></a>
-    </font>
-  </div>
-	<div class="line-up-banner">
-		<img class="img-responsive" src="img/LineUp_Icon.png"/>
-	</div>
-	<br />
-	<hr class="bar1">
-	<hr class="bar2">
-	<hr class="bar3">
-</div>
+<div class="header-content text-right" ng-include src="'partials/login_header.html'"></div>
 
 <div class="container text-center main-page-content">
-	<div class="jumbotron info-box">
-		<h1>Welcome!</h1>
-	</div>
-	<div class="panel panel-default">
-		<div class="panel-body">
-			<form id="login-form" class="form-horizontal" role="form">
-				<div id="error" class=" col-md-6 col-md-offset-3 alert alert-danger hide">
-					{{ error }}
-				</div>
-			  <div class="form-group">
-			    <label for="inputEmail3" class="col-md-2 col-md-offset-3 control-label">User Name</label>
-			    <div class="col-md-3">
-			      <input class="form-control" placeholder="User Name" ng-model="user.uname">
-			    </div>
-			  </div>
-			  <div class="form-group">
-			    <label for="inputPassword3" class="col-md-2 col-md-offset-3 control-label">Password</label>
-			    <div class="col-md-3">
-			      <input type="password" class="form-control" placeholder="Password" ng-model="user.pw">
-			    </div>
-			  </div>
+  <div class="jumbotron info-box">
+    <h1>Welcome!</h1>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <form id="login-form" class="form-horizontal" role="form">
+        <div id="error" class=" col-md-6 col-md-offset-3 alert alert-danger hide">
+          {{ error }}
+        </div>
+        <div class="form-group">
+          <label for="inputEmail3" class="col-md-2 col-md-offset-3 control-label">User Name</label>
+          <div class="col-md-3">
+            <input class="form-control" placeholder="User Name" ng-model="user.uname">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword3" class="col-md-2 col-md-offset-3 control-label">Password</label>
+          <div class="col-md-3">
+            <input type="password" class="form-control" placeholder="Password" ng-model="user.pw">
+          </div>
+        </div>
 
 
-			  <!-- <div class="form-group">
-			    <div class="col-sm-offset-2 col-sm-10">
-			      <div class="checkbox">
-			        <label>
-			          <input type="checkbox"> Remember me
-			        </label>
-			      </div>
-			    </div>
-			  </div> -->
+        <!-- <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox"> Remember me
+              </label>
+            </div>
+          </div>
+        </div> -->
 
-			  <div class="form-group">
-			  	<div class="col-md-3 col-md-offset-5">
-			  		<a id="create-account" type="button" class="btn btn-default" href="" role="button" ng-click="signUp()">Sign Up</a>
-			  		<button id="submit-login" type="submit" class="btn btn-line-up" ng-click="login()">Login</button>
-					</div>
-				</div>
-			</form>
-		</div>
-	</div>
+        <div class="form-group">
+          <div class="col-md-3 col-md-offset-5">
+            <a id="create-account" type="button" class="btn btn-default" href="" role="button" ng-click="signUp()">Sign Up</a>
+            <button id="submit-login" type="submit" class="btn btn-line-up" ng-click="login()">Login</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
