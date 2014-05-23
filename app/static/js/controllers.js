@@ -29,7 +29,7 @@ angular.module('LineUpApp.controllers', []).
             alert(data.error_message);
           } else {
             // load the queue admin page
-            $location.path('/admin/' + $scope.queue.qid);
+            $location.path('/admin/' + data.qid);
           }
         }).
         error(function (data, status, headers, config) {
@@ -68,6 +68,8 @@ angular.module('LineUpApp.controllers', []).
 					}
         }).
         error(function (data, status, headers, config) {
+					$location.path("/");
+					document.getElementById('error').classList.remove('hide');
           alert("Something went wrong with the login request!\nStatus: " + status);
         });
     };
@@ -192,7 +194,6 @@ angular.module('LineUpApp.controllers', []).
     }();
 
     // Sends a request to the server to join the queue
-    // queues.
     // Upon success: Updates the current queueInfos array to store the results
     // of the request.
     // Upon error: TODO: Do something smart to handle the error
@@ -218,8 +219,8 @@ angular.module('LineUpApp.controllers', []).
 		$scope.queueInfo = {};
 		$scope.member_list = [];
 
-		// Sends a employee view request to the server.
-    // Upon success: Shows the employee view for the given queue id.
+		// Sends an admin view request to the server.
+    // Upon success: Shows the admin view for the given queue id.
     // Upon error: TODO: Do something smart to handle the error
 		$scope.getDetailedQueueInfo = function () {
 			lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
@@ -228,6 +229,7 @@ angular.module('LineUpApp.controllers', []).
 					$scope.member_list = data.member_list;
 				}).
 				error(function (data, status, headers, config) {
+					console.log($routeParams.qid);
 					alert("Are you logged in as an existing user? If not, that might be an issue.\nStatus: " + status);
 				});
 		}();
