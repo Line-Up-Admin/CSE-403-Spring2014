@@ -17,12 +17,12 @@ GET_TEMP_USER_BY_ID = 'select * from users where temp=1 and id=?'
 INSERT_MEMBER_INTO_QUEUE = 'insert into QIndex values(?, ?, (select ending_index from Queues where id=?), ?)'
 INSERT_PROFILED_USER = 'insert into users values(?, ?, ?, ?, ?, ?, ?)'
 INSERT_QUEUE = 'insert into queues values(?, 0, 0)'
-INSERT_QUEUE_SETTINGS = 'insert into qsettings values(?, ?, ?, ?, ?, ?)'
+INSERT_QUEUE_SETTINGS = 'insert into qsettings values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
 INSERT_TEMP_USER = 'insert into users values(?, 1, ?, NULL, NULL, NULL, NULL)'
 REMOVE_MEMBER_FROM_QUEUE = 'delete from qindex where uid=? and qid=?'
 UPDATE_QUEUE_FOR_ADD = 'update Queues set ending_index=ending_index+1 where id=?'
 UPDATE_QUEUE_FOR_REMOVE = 'update queues set starting_index=starting_index+1 where id=?'
-UPDATE_QUEUE_SETTINGS = 'update qsettings set qname=?, max_size=?, keywords=?, location=?, active=?'
+UPDATE_QUEUE_SETTINGS = 'update qsettings set qname=?, max_size=?, keywords=?, location=?, active=? min_wait_rejoin=? website=? organization=? disclaimer=? prompt=?'
 
 
 def query_db(query, args=()):
@@ -36,7 +36,7 @@ def user_dict_to_db_tuple(user_dict):
   return (user_dict['id'], user_dict['temp'], user_dict['uname'], user_dict['fname'], user_dict['lname'], user_dict['email'], user_dict['pw'])
 
 def qsettings_dict_to_db_tuple(qsettings):
-  return (qsettings['qid'], qsettings['qname'], qsettings['max_size'], qsettings['keywords'], qsettings['location'], qsettings['active'])
+  return (qsettings['qid'], qsettings['qname'], qsettings['max_size'], qsettings['keywords'], qsettings['location'], qsettings['active'], qsettings['min_wait_rejoin'], qsettings['website'], qsettings['organization'], qsettings['disclaimer'], qsettings['prompt'])
 
 class DatabaseException(Exception):
   pass
