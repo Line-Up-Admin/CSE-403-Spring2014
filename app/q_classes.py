@@ -15,6 +15,7 @@ from datetime import datetime
 
 import database_utilities as db_util
 from operator import itemgetter
+import re
 
 # Custom Exception
 class QueueFullException(Exception):
@@ -302,8 +303,9 @@ class QueueServer(object):
       def remove_duplicates(lst):
          return list(set(lst))
       def match_score(str1, str2):
-         words1 = [s.lower() for s in str1.split()]
-         words2 = [s.lower() for s in str2.split()]
+         #make both lists lower case, and remove commas or semicolons
+         words1 = [re.sub('[,;]', '', s.lower()) for s in str1.split()]
+         words2 = [re.sub('[,;]', '', s.lower()) for s in str2.split()]
          words1 = remove_duplicates(words1)
          words2 = remove_duplicates(words2)
          score = 0
@@ -323,7 +325,9 @@ class QueueServer(object):
          if qset.location:
             score += match_score(search_string, qset.location)
          if qset.keywords:
-            score += match_score(search_string, qset.keywords)
+            k_words = qset.keywords.replace(",", "")
+            k_words = qset.keywords.replace(";", "")
+            score += match_score(search_string, kwords)
          if score > 0:
             results.append( (qid, score) )
       results = sorted(results, key=itemgetter(1), reverse=True)
