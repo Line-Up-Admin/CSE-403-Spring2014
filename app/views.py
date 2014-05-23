@@ -307,10 +307,16 @@ def get_queue_settings():
 
    """
    queueID = request.json
+   if session.has_key('logged_in') and session['logged_in']:
+      uid = session['id']
+   else:
+      return jsonify(Failure('You must be logged in with an admin account to view queue settings.'))
    try:
-      #permissions.has_flag
-      queue = db_util.get_queue_settings(queueID)
-      return jsonify(queue)
+      if permissions.has_flag(uid, pid, permissions.ADMIN):
+         queue = db_util.get_queue_settings(queueID)
+         return jsonify(queue)
+      else:
+         return jsonify(Failure('You must be an admin of the queue to see queue settings.'))
    except sqlite3.Error as e:
       return e.message
 
