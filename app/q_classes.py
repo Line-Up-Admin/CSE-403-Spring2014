@@ -302,12 +302,12 @@ class QueueServer(object):
          the most at the top. Implementation is not that efficient. """
       def remove_duplicates(lst):
          return list(set(lst))
-      def match_score(str1, str2):
+      def to_list(st):
          #make both lists lower case, and remove commas or semicolons
-         words1 = [re.sub('[,;]', '', s.lower()) for s in str1.split()]
-         words2 = [re.sub('[,;]', '', s.lower()) for s in str2.split()]
-         words1 = remove_duplicates(words1)
-         words2 = remove_duplicates(words2)
+         return [re.sub('[;]', '', s.lower()) for s in re.split('[, ]+', st)]
+      def match_score(str1, str2):
+         words1 = remove_duplicates(to_list(str1))
+         words2 = remove_duplicates(to_list(str2))
          score = 0
          for word1 in words1:
             for word2 in words2:
