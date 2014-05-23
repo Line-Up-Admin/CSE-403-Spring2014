@@ -14,8 +14,8 @@ from collections import deque
 from datetime import datetime
 
 import database_utilities as db_util
-from operator import itemgetter
 import re
+from operator import itemgetter
 
 # Custom Exception
 class QueueFullException(Exception):
@@ -238,6 +238,7 @@ class QueueServer(object):
       self.sync_db = sync_db
       if not sync_db:
          self.id_gen = 500
+         print "###"
          return
       # read all the queues from the database, and put them into the tables
       # get_all_queues returns a list of tuples of qids to QueueSettings 
