@@ -57,8 +57,8 @@ def create_queue():
    q_settings = request.json
    if not session.has_key('logged_in') or not session['logged_in']:
       return jsonify(Failure('You cannot create a queue if you are not logged in!'))
-   if not q_settings['admins']:
-      q_settings=list()
+   if not q_settings.has_key('admins'):
+      q_settings['admins']=list()
    if not session['uname'] in q_settings['admins']:
       q_settings['admins'].append(session['uname'])
    try:
