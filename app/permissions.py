@@ -1,6 +1,6 @@
 from app import get_db
 from database_utilities import query_db, DatabaseException
-EMPLOYEE = 0b0001
+MANAGER = 0b0001
 ADMIN = 0b0011
 BLOCKED_USER = 0b1000
 PERMISSION_QUERY = 'select permission_level from Permissions where pid=? and qid=?'

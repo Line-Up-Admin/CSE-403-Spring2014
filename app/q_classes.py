@@ -198,10 +198,11 @@ class QueueSettings(object):
       self.keywords = ''
       # name is the name of the Queue, such as "Hall Health" 
       self.qname = ''
-      self.employees = None
+      self.managers = None
       self.admins = None
       self.blocked_users = None
       self.location = ''
+      self.active = 1
 
    @staticmethod
    def from_dict(settings):
@@ -374,7 +375,16 @@ class QueueServer(object):
       queue_list = list()
       for qid in self.index[userid]:
          queue_list.append(self.get_info(QueueMember(uid=userid), qid))
-      return queue_list   
+      return queue_list
+
+   def is_active(qid):
+      if self.table.has_key(qid):
+         q = self.table[qid]
+         return q.settings.active
+      return False
+
+   def set_active(qid, active):
+      pass
 
 class QueueInfo(object):
    """ This is a class to store a number of pieces of information
