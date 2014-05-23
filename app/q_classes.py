@@ -57,7 +57,9 @@ class Queue(object):
       """ This currently returns the average wait time in minutes 
       of everyone who has ever been in the queue. """
       if len(self.wait_times) == 0:
-         return None
+         # This shouldn't really be 0, but the users might not 
+         #  like a display of 'undefined'
+         return 0
       else:
          total_num = 0
          total_time = 0.0
@@ -198,7 +200,7 @@ class QueueSettings(object):
    """ This class is used to store all the settings that an administrator
       might want to set regarding a queue. """
    def __init__(self):
-      self.max_size = 0
+      self.max_size = 100
       # keywords may be a list of strings in the future
       self.keywords = ''
       # name is the name of the Queue, such as "Hall Health" 
@@ -208,6 +210,11 @@ class QueueSettings(object):
       self.blocked_users = None
       self.location = ''
       self.active = 1
+      self.min_wait_rejoin = 0
+      self.website = ''
+      self.organization = ''
+      self.disclaimer = ''
+      self.prompt = ''
 
    @staticmethod
    def from_dict(settings):
@@ -342,10 +349,7 @@ class QueueServer(object):
       return self.table[qid].postpone(member)
 
    def get_info(self, member, qid):
-      """ This method gets the info associated with a queue.
-         (Not currently in UML diagram.) """
-      if not self.table.has_key(qid):
-         return None
+      """ This method gets the info associated with a queue."""
       q = self.table[qid]
       q_set = q.q_settings
       if q_set:
@@ -357,7 +361,8 @@ class QueueServer(object):
       ex_wait = q.get_expected_wait(member)
       #this is a zero-based index
       position = q.get_position(member)
-      return QueueInfo(qname, qid, size, ex_wait, avg_wait, position)
+      return QueueInfo(qname, qid, size, ex_wait, avg_wait, position, q_set.organization, 
+                       q_set.prompt, q_set.disclaimer, q_set.min_wait_rejoin)
 
    def get_all_queues_info(self):
       """ (not in UML) """
@@ -384,24 +389,35 @@ class QueueServer(object):
          queue_list.append(self.get_info(QueueMember(uid=userid), qid))
       return queue_list
 
-   def is_active(qid):
+   def is_active(self, qid):
       if self.table.has_key(qid):
          q = self.table[qid]
          return q.settings.active
       return False
 
-   def set_active(qid, active):
-      pass
+   def set_active(self, qid, active):
+      """ Sets a specific queue as active or inactive."""
+      if qid not in self.table:
+         raise Exception('Queue not found')
+      q = self.table[qid]
+      settings = q.q_settings
+      settings.active = active
+      if self.sync_db:
+          db_util.modify_queue_settings(settings)
 
 class QueueInfo(object):
    """ This is a class to store a number of pieces of information
       about a queue. This info will be sent back to the client
       as JSON, and rendered in the browser."""
    def __init__(self, qname, qid, size, expected_wait, avg_wait_time,
-         member_position):
+         member_position, organization, prompt, disclaimer, min_wait_rejoin):
       self.qname = qname
       self.qid = qid
       self.size = size
       self.expected_wait = expected_wait
       self.avg_wait_time = avg_wait_time
       self.member_position = member_position
+      self.organization = organization
+      self.prompt = prompt
+      self.disclaimer = disclaimer
+      self.min_wait_rejoin = min_wait_rejoin

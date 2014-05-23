@@ -2,54 +2,39 @@
 <div class="header-content" ng-include src="'partials/header.html'"></div>
 
 <div class="container text-center main-page-content">
-  <h1>Your Queues</h1>
-  <!-- <div class="owned-queues">
-    <h2>Queues You Own</h2>
-    <a href="#"><div class="queue">
-      <img class="queue-img" src="img/CLUE_phys.png"/>
-      <div class="progress"><div class="progress-bar" style="width: 80%;"></div></div>
-      <p class="queue-name">CLUE - Physics</p>
-      <p class="time-left">10 min</p>
-    </div></a>
-    <a href="#"><div class="queue">
-      <img class="queue-img" src="img/hall_health.png"/>
-      <div class="progress"><div class="progress-bar" style="width: 30%;"></div></div>
-      <p class="queue-name">Hall Health</p>
-      <p class="time-left">3 hours</p>
-    </div></a>
-  </div> -->
-  <div class="current-queues">
-    <div class="panel panel-default">
-      <div class="panel-heading">Queues You Own</div>
-      <div class="panel-body">
-        <ul class="list-group">
-          <a class="list-group-item" ng-repeat="queue in queueInfos.queues_admin" href="#/admin/{{ queue.qid }}">
-            <img class="queue-img" src="img/default.png"/>{{ queue.qname }}: Current Size: {{ queue.size }}
-          </a>
-        </ul>
-      </div>
-    </div>
-    <div class="panel panel-default">
-      <div class="panel-heading">Queues You Manage</div>
-      <div class="panel-body">
-        <ul class="list-group">
-          <a class="list-group-item" ng-repeat="queue in queueInfos.queues_manager" href="#/admin/{{ queue.qid }}">
-            <img class="queue-img" src="img/default.png"/>{{ queue.qname }}: Current Size: {{ queue.size }}
-          </a>
-        </ul>
-      </div>
-    </div>
-    <div class="panel panel-default">
-      <div class="panel-heading">Queues You're In</div>
-      <div class="panel-body">
-        <ul class="list-group">
-          <a class="list-group-item" ng-repeat="queue in queueInfos.queues_in" href="#/queue_info/{{ queue.qid }}">
-            <img class="queue-img" src="img/default.png"/>{{ queue.qname }}: Position {{queue.member_position + 1 }} of {{ queue.size }} Estimated Wait: {{ queue.expected_wait }} min
-          </a>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <p><a href="#/create_queue" class="btn btn-line-up btn-lg btn-block" role="button">Create a New Queue</a></p>
-  <p><a href="#/search" class="btn btn-line-up btn-lg btn-block" role="button">Find a New Queue</a></p>
+	<h1>Your Queues</h1>
+	<div class="current-queues">
+		<div class="panel panel-default">
+			<div data-toggle="collapse" data-target="#collapseOwned" class="panel-heading">Queues You Own</div>
+			<div id="collapseOwned" class="panel-collapse collapse in panel-body">
+				<ul class="list-group">
+					<a class="list-group-item" ng-repeat="queue in queueInfos.queues_admin" href="#/admin/{{ queue.qid }}">
+						<img class="queue-img" src="img/default.png"/>{{ queue.qname }}: Current Size: {{ queue.size }}
+					</a>
+				</ul>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div data-toggle="collapse" data-target="#collapseManaging" class="panel-heading">Queues You Manage</div>
+			<div id="collapseManaging" class="panel-collapse collapse panel-body">
+				<ul class="list-group">
+					<a class="list-group-item" ng-repeat="queue in queueInfos.queues_manager" href="#/admin/{{ queue.qid }}">
+						<img class="queue-img" src="img/default.png"/>{{ queue.qname }}: Current Size: {{ queue.size }}
+					</a>
+				</ul>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div data-toggle="collapse" data-target="#collapseIn" class="panel-heading">Queues You're In</div>
+			<div id="collapseIn" class="panel-collapse collapse panel-body">
+				<ul class="list-group">
+					<a class="list-group-item" ng-repeat="queue in queueInfos.queues_in" href="#/queue_info/{{ queue.qid }}">
+						<img class="queue-img" src="img/default.png"/>{{ queue.qname }}: Position {{queue.member_position + 1 }} of {{ queue.size }} Estimated Wait: {{ queue.expected_wait }} min
+					</a>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<p><a href="#/create_queue" class="btn btn-line-up btn-lg btn-block" role="button">Create a New Queue</a></p>
+	<p><a href="#/search" class="btn btn-line-up btn-lg btn-block" role="button">Find a New Queue</a></p>
 </div>

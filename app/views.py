@@ -13,7 +13,7 @@ def Failure(message):
 # This procedure picks up the default route and returns index.html.
 @app.route('/')
 def root():
-	# If user is already logged in, let them log in again.
+	# If user is already logged in, let them log in again
   # if session.has_key('logged_in') and session['logged_in']:
 		# user is already logged in
 		# return app.send_static_file('index.html')
@@ -175,9 +175,7 @@ def search():
    Improved search functionality is coming in the Feature Complete Release.
 
    Args:
-      keywords:
-      location:
-      qname:
+      search_string:
 
    Returns:
       {
@@ -203,7 +201,10 @@ def search():
       }
 
    """
-   q_info_list = queue_server.get_all_queues_info()
+
+   search_string = request.json
+   qids = queue_server.search(search_string)
+   q_info_list = [queue_server.get_info(None, qid) for qid in qids]
    return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
 
 @app.route('/popular', methods=['GET'])
@@ -485,9 +486,11 @@ def login():
    if request.method == 'GET':
       return app.send_static_file('partials/login.html')
    else:
-      if session.has_key('logged_in') and session['logged_in']:
+      # if user is already logged in, home should just take them to user home
+			# but if they somehow get to index.html, they are able to log in again as normal
+			# if session.has_key('logged_in') and session['logged_in']:
          # user is already logged in
-         return jsonify({'SUCCESS':True})
+         # return jsonify({'SUCCESS':True})
       try:
          user = db_util.get_user(request.json['uname'], request.json['pw'])
          session['logged_in'] = True
@@ -512,5 +515,5 @@ def logout():
       if session['logged_in']:
          for key in  session.keys():
             session[key] = None
-         return 'Logged out.'
+         return '<meta http-equiv="refresh" content="0; url=/" />'
    return 'You are not logged in!'
