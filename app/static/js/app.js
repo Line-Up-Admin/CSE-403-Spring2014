@@ -37,6 +37,10 @@ config(['$routeProvider', function($routeProvider) {
     templateUrl: "partials/create_account.html",
     controller: "userCreateController"
   }).
+  when("/edit/:qid", {
+    templateUrl: "partials/edit_queue.html",
+    controller: "editQueueController"
+  }).
   when("/error", {
     templateUrl: "partials/error.html"
     // No controller needed at this time

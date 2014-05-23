@@ -14,6 +14,8 @@ angular.module('LineUpApp.controllers', []).
       }
     };
 
+          $scope.test = ["lskdjfkdfj", "dkljfl"];
+
     // Sends a request to the server to create a new queue. The request
     // contains the new queue settings.
     // Upon success: Updates the current queue model to include the new ID.
@@ -205,6 +207,10 @@ angular.module('LineUpApp.controllers', []).
           alert("Something went wrong with the join queue request! \nStatus: " + status);
         });
     }
+  }).
+
+  controller('editQueueController', function($scope, lineUpAPIService, $routeParams, $route) {
+
   }).
 
 	controller('adminViewController', function($scope, lineUpAPIService, $routeParams, $route) {
