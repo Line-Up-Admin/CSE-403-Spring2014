@@ -72,7 +72,7 @@ def create_queue():
       return jsonify(q_settings)
    except sqlite3.Error as e:
       return jsonify(Failure(e.message));
-   except ValidationException as e:
+   except db_util.ValidationException as e:
       return jsonify(Failure(e.message))
 
 @app.route('/join', methods=['POST'])
