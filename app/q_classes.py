@@ -388,8 +388,7 @@ class QueueServer(object):
       return self.table[qid].postpone(member)
 
    def get_info(self, member, qid):
-      """ This method gets the info associated with a queue.
-         (Not currently in UML diagram.) """
+      """ This method gets the info associated with a queue."""
       q = self.table[qid]
       q_set = q.q_settings
       if q_set:
@@ -428,14 +427,21 @@ class QueueServer(object):
          queue_list.append(self.get_info(QueueMember(uid=userid), qid))
       return queue_list
 
-   def is_active(qid):
+   def is_active(self, qid):
       if self.table.has_key(qid):
          q = self.table[qid]
          return q.settings.active
       return False
 
-   def set_active(qid, active):
-      pass
+   def set_active(self, qid, active):
+      """ Sets a specific queue as active or inactive."""
+      if qid not in self.table:
+         raise Exception('Queue not found')
+      q = self.table[qid]
+      settings = q.q_settings
+      settings.active = active
+      if self.sync_db:
+          db_util.modify_queue_settings(settings)
 
 class QueueInfo(object):
    """ This is a class to store a number of pieces of information
