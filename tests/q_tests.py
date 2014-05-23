@@ -130,6 +130,27 @@ class SomeTest(unittest.TestCase):
       lst = qq.get_members()
       assert lst == [m1, m2, m4]
 
+
+   def test_popularity(self):
+      """ Tests the get_popularity method of a queue 
+      popularity is defined as the number of people that
+      have entered and exited the queue. """
+      qq = Queue(112)
+      m1 = QueueMember("bob", 123)
+      m2 = QueueMember("carol", 125)
+      m3 = QueueMember("dave", 126)
+      assert qq.get_popularity() == 0
+      qq.add(m1)
+      qq.add(m2)
+      qq.add(m3)
+      assert qq.get_popularity() == 0
+      qq.dequeue()
+      qq.dequeue()
+      print "pop2",qq.get_popularity()
+      assert qq.get_popularity() == 2
+      qq.dequeue()
+      assert qq.get_popularity() == 3
+
 if __name__ == '__main__':
    unittest.main()
 

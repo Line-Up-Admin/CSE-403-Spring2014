@@ -9,12 +9,13 @@ This tests can be run at the command line with:
 import os
 import unittest
 import sys
-sys.path.insert(0, '../..') 
+#sys.path.insert(0, '../..') 
 sys.path.insert(0, '..') # the tests folder 
 sys.path.insert(0, '.') # CSE-403-Spring2014 level
 sys.path.insert(0, '../app')
 #from app import app
 from app.q_classes import *
+
 
 class SomeTest(unittest.TestCase):
 
