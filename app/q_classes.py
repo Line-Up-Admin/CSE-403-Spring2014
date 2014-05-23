@@ -22,6 +22,9 @@ class QueueFullException(Exception):
 class QueueNotFoundException(Exception):
    pass
 
+class MemberNotFoundException(Exception):
+   pass
+
 class Queue(object):
    """ A Queue object stores the actual in-memory representation 
       of a Queue. """
@@ -393,7 +396,7 @@ class QueueServer(object):
    def is_active(self, qid):
       if self.table.has_key(qid):
          q = self.table[qid]
-         return q.settings.active
+         return q.q_settings.active
       return False
 
    def set_active(self, qid, active):
