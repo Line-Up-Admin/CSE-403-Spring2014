@@ -23,7 +23,7 @@ config(['$routeProvider', function($routeProvider) {
   }).
   when("/create_queue", {
     templateUrl: "partials/create_queue.html",
-    controller: "lineUpController"
+    controller: "createQueueController"
   }).
 	when("/admin/:qid", {
 		templateUrl: "partials/queue_admin.html",
@@ -33,17 +33,13 @@ config(['$routeProvider', function($routeProvider) {
     templateUrl: "partials/user_home.html",
     controller: "userHomeController"
   }).
-  when("/anonymous", {
-    templateUrl: "/index.html",
-    controller: "lineUpController"
-  }).
   when("/create_account", {
     templateUrl: "partials/create_account.html",
     controller: "userCreateController"
   }).
-  when("/debug_q", { //SHOULD BE REMOVED BEFORE BETA RELEASE
-    templateUrl: "partials/debug_queue_settings.html",
-    controller: "lineUpController"
+  when("/error", {
+    templateUrl: "partials/error.html"
+    // No controller needed at this time
   }).
   otherwise( {
     redirectTo: '/'
