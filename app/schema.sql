@@ -1,6 +1,6 @@
 PRAGMA foreign_keys = ON;
 CREATE TABLE Users (
-	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	id INTEGER PRIMARY KEY,
 	temp int,
 	uname varchar(32),
 	fname varchar(20),
@@ -16,7 +16,7 @@ CREATE TABLE Queues (
 );
 
 CREATE TABLE QSettings (
-	qid INTEGER PRIMARY KEY AUTOINCREMENT,
+	qid INTEGER PRIMARY KEY,
 	qname varchar(32),
 	max_size int,
 	keywords varchar(256),
