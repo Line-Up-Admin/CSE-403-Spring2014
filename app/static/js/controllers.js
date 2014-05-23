@@ -23,6 +23,7 @@ angular.module('LineUpApp.controllers', []).
         }).
         error(function (data, status, headers, config) {
           alert("Database error: could not create queue.\nStatus: " + status);
+          console.log(data);
         });
     }
   }).
