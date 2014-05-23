@@ -15,10 +15,10 @@ GET_QUEUES_BY_UID = 'select * from qindex where uid=?'
 GET_QUEUE_SETTINGS_BY_ID = 'select * from qsettings where id=?'
 GET_TEMP_USER_BY_ID = 'select * from users where temp=1 and id=?'
 INSERT_MEMBER_INTO_QUEUE = 'insert into QIndex values(?, ?, (select ending_index from Queues where id=?), ?)'
-INSERT_PROFILED_USER = 'insert into users values(?, ?, ?, ?, ?, ?, ?)'
+INSERT_PROFILED_USER = 'insert into users values(?, ?, ?, ?, ?, ?)'
 INSERT_QUEUE = 'insert into queues values(?, 0, 0)'
-INSERT_QUEUE_SETTINGS = 'insert into qsettings values(?, ?, ?, ?, ?, ?)'
-INSERT_TEMP_USER = 'insert into users values(?, 1, ?, NULL, NULL, NULL, NULL)'
+INSERT_QUEUE_SETTINGS = 'insert into qsettings values(?, ?, ?, ?, ?)'
+INSERT_TEMP_USER = 'insert into users values(1, ?, NULL, NULL, NULL, NULL)'
 REMOVE_MEMBER_FROM_QUEUE = 'delete from qindex where uid=? and qid=?'
 UPDATE_QUEUE_FOR_ADD = 'update Queues set ending_index=ending_index+1 where id=?'
 UPDATE_QUEUE_FOR_REMOVE = 'update queues set starting_index=starting_index+1 where id=?'
@@ -33,10 +33,10 @@ def query_db(query, args=()):
   return rows
 
 def user_dict_to_db_tuple(user_dict):
-  return (user_dict['id'], user_dict['temp'], user_dict['uname'], user_dict['fname'], user_dict['lname'], user_dict['email'], user_dict['pw'])
+  return (user_dict['temp'], user_dict['uname'], user_dict['fname'], user_dict['lname'], user_dict['email'], user_dict['pw'])
 
 def qsettings_dict_to_db_tuple(qsettings):
-  return (qsettings['qid'], qsettings['qname'], qsettings['max_size'], qsettings['keywords'], qsettings['location'], qsettings['active'])
+  return (qsettings['qname'], qsettings['max_size'], qsettings['keywords'], qsettings['location'], qsettings['active'])
 
 class DatabaseException(Exception):
   pass
@@ -207,17 +207,17 @@ def create_queue(q_settings):
   if q_settings.has_key('admins'):
     result = check_usernames(q_settings['admins'])
     if not result['SUCCESS']:
-      raise ValidationException('The username', result['username'], 'was not found.')
+      raise ValidationException('The username ' + result['username'] + ' was not found.')
     permissions.add_permission_list(result['uids'], q_settings['qid'], permissions.ADMIN)
   if q_settings.has_key('managers'):
     result = check_usernames(q_settings['managers'])
     if not result['SUCCESS']:
-      raise ValidationException('The username', result['username'], 'was not found.')
+      raise ValidationException('The username' + result['username'] + 'was not found.')
     permissions.add_permission_list(result['uids'], q_settings['qid'], permissions.MANAGER)
   if q_settings.has_key('blocked_users'):
     result = check_usernames(q_settings['blocked_users'])
     if not result['SUCCESS']:
-      raise ValidationException('The username', result['username'], 'was not found.')
+      raise ValidationException('The username ' + result['username'] + ' was not found.')
     permissions.add_permission_list(result['uids'], q_settings['qid'], permissions.BLOCKED_USER)
   db = get_db()
   db.execute(INSERT_QUEUE, (q_settings['qid'],))
