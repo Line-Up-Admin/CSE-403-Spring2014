@@ -14,8 +14,6 @@ angular.module('LineUpApp.controllers', []).
       }
     };
 
-          $scope.test = ["lskdjfkdfj", "dkljfl"];
-
     // Sends a request to the server to create a new queue. The request
     // contains the new queue settings.
     // Upon success: Updates the current queue model to include the new ID.
@@ -146,8 +144,10 @@ angular.module('LineUpApp.controllers', []).
       }
     };
 
+
+
     $scope.search = function () {
-      lineUpAPIService.search().
+      lineUpAPIService.search($scope.query).
         success(function (data, status, headers, config) {
             document.getElementById("results").innerHTML="Search Results";
             $scope.queueInfos = data.queue_info_list;
