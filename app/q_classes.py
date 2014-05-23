@@ -64,7 +64,7 @@ class Queue(object):
             for wait in waits:
                total_num += 1
                total_time += (wait[1] - wait[0]).total_seconds()
-         # divide by 60 because time() is in seconds.
+         # divide by 60 because total_seconds() is in seconds.
          return total_time / float(total_num * 60)
 
    def add(self, member):
@@ -107,6 +107,9 @@ class Queue(object):
       #  more intelligent. Currently, it is average wait time of the queue
       #  times the proportion of the queue remaining.
       avg_wait = self.get_avg_wait()
+      if member == None:
+         #this allows the method to also be used more generically
+         return avg_wait
       position = self.get_position(member)
 
       if position == 0:
@@ -303,8 +306,8 @@ class QueueServer(object):
       def remove_duplicates(lst):
          return list(set(lst))
       def to_list(st):
-         #make both lists lower case, and remove commas or semicolons
-         return [re.sub('[;]', '', s.lower()) for s in re.split('[, ]+', st)]
+         #split string on comma, space, or semicolon, and make everything lower case
+         return [ s.lower() for s in re.split('[:;, ]+', st)]
       def match_score(str1, str2):
          words1 = remove_duplicates(to_list(str1))
          words2 = remove_duplicates(to_list(str2))
@@ -325,9 +328,7 @@ class QueueServer(object):
          if qset.location:
             score += match_score(search_string, qset.location)
          if qset.keywords:
-            k_words = qset.keywords.replace(",", "")
-            k_words = qset.keywords.replace(";", "")
-            score += match_score(search_string, kwords)
+            score += match_score(search_string, qset.keywords)
          if score > 0:
             results.append( (qid, score) )
       results = sorted(results, key=itemgetter(1), reverse=True)
