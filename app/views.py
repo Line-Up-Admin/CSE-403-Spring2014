@@ -31,10 +31,10 @@ def create_queue():
    Args:
    {
       active: 0 or 1
-      admins: [] (optional, a list of usernames)
-      blocked_users: [] (optional, a list of usernames)
-      employees: [] (optional, a list of usernames)
-      keywords:
+      admins: 1 string, comma separated list.
+      blocked_users: 1 string, comma separated list.
+      managers: 1 string, comma separated list.
+      keywords: 1 string. will be handled by search later.
       location:
       max_size:
       qname:
@@ -45,7 +45,7 @@ def create_queue():
          active:
          admins: [] (optional, a list of usernames)
          blocked_users: [] (optional, a list of usernames)
-         employees: [] (optional, a list of usernames)
+         managers: [] (optional, a list of usernames)
          keywords:
          location:
          max_size:
@@ -59,8 +59,14 @@ def create_queue():
       return jsonify(Failure('You cannot create a queue if you are not logged in!'))
    if not q_settings.has_key('admins'):
       q_settings['admins']=list()
+   else:
+      queueSettings['admins'] = [admin.strip() for admin in queueSettings['admins'].split(',')]
    if not session['uname'] in q_settings['admins']:
       q_settings['admins'].append(session['uname'])
+   if queueSettings.has_key('managers'):
+      queueSettings['managers'] = [e.strip() for e in queueSettings['managers'].split(',')]
+   if queueSettings.has_key('blocked_users'):
+      queueSettings['blocked_users'] = [b.strip() for b in queueSettings['blocked_users'].split(',')]
    try:
       q_settings['qid'] = queue_server.create(q_settings)
       return jsonify(q_settings)
@@ -102,6 +108,8 @@ def add_to_queue():
    uid = None
    username = None
    qid = int(request.json['qid'])
+   if not queue_server.is_active(qid):
+      return jsonify(Failure('The queue is not active!'))
    temp = None
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['id']
@@ -146,14 +154,14 @@ def dequeue(qid):
    if session.has_key('logged_in') and session['logged_in']:
       uid=session['id']
    else:
-      return "You must be logged in as an employee to dequeue."
-   if permissions.has_flag(uid, qid, permissions.EMPLOYEE):
+      return "You must be logged in as an manager to dequeue."
+   if permissions.has_flag(uid, qid, permissions.MANAGER):
       q_member = queue_server.dequeue(qid)
       if q_member is None:
          return jsonify({})
       return jsonify(q_member.__dict__)
    else:
-      return 'You must be an employee to dequeue.'
+      return 'You must be an manager to dequeue.'
 
 @app.route('/searchResults')
 def get_search_results():
@@ -238,11 +246,11 @@ def get_popular_queues():
 def get_member_queue():
    return 'Not implemented yet!'
 
-@app.route('/employeeView/<int:qid>', methods=['POST'])
-def get_employee_queue(qid):
-   """Allows the employee to view the queue info and the queue members.
+@app.route('/managerView/<int:qid>', methods=['POST'])
+def get_manager_queue(qid):
+   """Allows the manager to view the queue info and the queue members.
 
-   Args: none. The qid should be included with the url. Example: /employeeView/12345
+   Args: none. The qid should be included with the url. Example: /managerView/12345
 
    Returns: example return value
       {
@@ -278,8 +286,8 @@ def get_employee_queue(qid):
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['id']
    else:
-      return "You must be logged in as an employee to dequeue."
-   if permissions.has_flag(uid, qid, permissions.EMPLOYEE):
+      return "You must be logged in as an manager to dequeue."
+   if permissions.has_flag(uid, qid, permissions.MANAGER):
       members = queue_server.get_members(qid)
       q_info = queue_server.get_info(None, qid)
       return jsonify(queue_info=q_info.__dict__, member_list=[member.__dict__ for member in members])
@@ -464,10 +472,9 @@ def login():
    if request.method == 'GET':
       return app.send_static_file('partials/login.html')
    else:
-      # If user is already logged in, let them log in again.
-      # if session.has_key('logged_in') and session['logged_in']:
-          # user is already logged in
-          # return jsonify({'SUCCESS':True})
+      if session.has_key('logged_in') and session['logged_in']:
+         # user is already logged in
+         return jsonify({'SUCCESS':True})
       try:
          user = db_util.get_user(request.json['uname'], request.json['pw'])
          session['logged_in'] = True
