@@ -207,7 +207,7 @@ class QueueSettings(object):
    """ This class is used to store all the settings that an administrator
       might want to set regarding a queue. """
    def __init__(self):
-      self.max_size = 0
+      self.max_size = 100
       # keywords may be a list of strings in the future
       self.keywords = ''
       # name is the name of the Queue, such as "Hall Health" 
@@ -217,6 +217,11 @@ class QueueSettings(object):
       self.blocked_users = None
       self.location = ''
       self.active = 1
+      self.min_wait_rejoin = 0
+      self.website = ''
+      self.organization = ''
+      self.disclaimer = ''
+      self.prompt = ''
 
    @staticmethod
    def from_dict(settings):
@@ -400,7 +405,8 @@ class QueueServer(object):
       ex_wait = q.get_expected_wait(member)
       #this is a zero-based index
       position = q.get_position(member)
-      return QueueInfo(qname, qid, size, ex_wait, avg_wait, position)
+      return QueueInfo(qname, qid, size, ex_wait, avg_wait, position, q_set.organization, 
+                       q_set.prompt, q_set.disclaimer, q_set.min_wait_rejoin)
 
    def get_all_queues_info(self):
       """ (not in UML) """
@@ -448,10 +454,14 @@ class QueueInfo(object):
       about a queue. This info will be sent back to the client
       as JSON, and rendered in the browser."""
    def __init__(self, qname, qid, size, expected_wait, avg_wait_time,
-         member_position):
+         member_position, organization, prompt, disclaimer, min_wait_rejoin):
       self.qname = qname
       self.qid = qid
       self.size = size
       self.expected_wait = expected_wait
       self.avg_wait_time = avg_wait_time
       self.member_position = member_position
+      self.organization = organization
+      self.prompt = prompt
+      self.disclaimer = disclaimer
+      self.min_wait_rejoin = min_wait_rejoin
