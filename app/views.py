@@ -292,10 +292,6 @@ def get_manager_queue(qid):
       q_info = queue_server.get_info(None, qid)
       return jsonify(queue_info=q_info.__dict__, member_list=[member.__dict__ for member in members])
 
-@app.route('/adminQueue/<qid>')
-def get_admin_queue(qid):
-	return
-
 @app.route('/getQueueSettings', methods=['POST'])
 def get_queue_settings():
    """
@@ -359,7 +355,7 @@ def get_queue_status(qid):
       return jsonify(Failure('The queue does not exist.'))
    return jsonify(q_info.__dict__)
 
-@app.route('/myQueues', methods=['POST'])
+@app.route('/myQueues', methods=['GET', 'POST'])
 def get_my_queues():
    """Gets the info about the queues you are in.
 
@@ -399,10 +395,21 @@ def get_my_queues():
       uid = request.json
    else:
       return jsonify(Failure('User is not logged in, and no uid was provided.'))
-   q_info_list = queue_server.get_queue_info_list(uid)
-   if q_info_list is None:
-      return jsonify({})
-   return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
+   queues_in_info_list = queue_server.get_queue_info_list(uid)
+   qids_admin_rows = db_util.get_permissioned_qids(uid, permissions.ADMIN)
+   if qids_admin_rows is None:
+      queues_admin_info_list = list()
+   else:
+      queues_admin_info_list = [queue_server.get_info(None, row['qid']) for row in qids_admin_rows]
+   qids_manager_rows = db_util.get_permissioned_qids(uid, permissions.MANAGER)
+   if qids_manager_rows is None:
+      queues_manager_info_list = list()
+   else:
+      queues_manager_info_list = [queue_server.get_info(None, row['qid']) for row in qids_manager_rows]
+   return jsonify(queues_in=[q_info.__dict__ for q_info in queues_in_info_list],
+                  queues_admin=[q_info.__dict__ for q_info in queues_admin_info_list],
+                  queues_manager=[q_info.__dict__ for q_info in queues_manager_info_list],
+                  SUCCESS=True)
 
 @app.route('/remove')
 def remove_queue_member():

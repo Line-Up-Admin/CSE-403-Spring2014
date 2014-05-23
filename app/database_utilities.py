@@ -9,7 +9,7 @@ __init__.py in app. All methods are static.
 GET_ALL_QUEUES = 'select * from queues'
 GET_ALL_QUEUE_SETTINGS = 'select * from qsettings'
 GET_MEMBER_DATA_BY_QID = 'select qi.uid, u.uname, qi.relative_position, qi.optional_data from qindex as qi join users as u on qi.qid=? and qi.uid=u.id order by qi.relative_position'
-GET_PERMISSIONED_QIDS_BY_UID = 'select qid from permissions where uid=? and permission_level=?'
+GET_PERMISSIONED_QIDS_BY_UID = 'select qid from permissions where pid=? and permission_level=?'
 GET_PROFILED_USER_BY_USERNAME = 'select * from users where temp=0 and uname=?'
 GET_QUEUES_BY_UID = 'select * from qindex where uid=?'
 GET_QUEUE_SETTINGS_BY_ID = 'select * from qsettings where id=?'
