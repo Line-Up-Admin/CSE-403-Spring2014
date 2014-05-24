@@ -278,6 +278,7 @@ angular.module('LineUpApp.controllers', []).
 					console.log($scope.queueInfo.expected_wait);
 					$scope.member_list = data.member_list;
 					document.getElementById("list-group").size=$scope.member_list.length+1;
+					console.log($scope.setActiveStatusTo);
 				}).
 				error(function (data, status, headers, config) {
 					console.log($routeParams.qid);
@@ -324,10 +325,11 @@ angular.module('LineUpApp.controllers', []).
 		
 		$scope.setActive = function() {
 			var prevActiveStatus = document.getElementById("btn-close-queue").value;
-			lineUpAPIService.setActive({ 'qid': $routeParams.qid, 'setActive': $scope.prevActiveStatus }).
+			console.log(prevActiveStatus + "," + $routeParams.qid);
+			lineUpAPIService.setActive({ 'qid': $routeParams.qid, 'active': $scope.prevActiveStatus }).
         success(function (data, status, headers, config) {
 					var button = document.getElementById("btn-close-queue");
-					if( $scope.prevActiveStatus == 0 ) {
+					if( prevActiveStatus == 0 ) {
 						$scope.setActiveStatusTo = "Open Queue";
 						button.value = 1;
 					} else {
