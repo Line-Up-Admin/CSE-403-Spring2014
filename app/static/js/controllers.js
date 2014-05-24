@@ -400,6 +400,7 @@ angular.module('LineUpApp.controllers', []).
 
 		$scope.demoteSelectPerson = function () {
 			var list = document.getElementById("list-group");
+			console.log($scope.member_list[list.options[list.options.selectedIndex]]);
 			lineUpAPIService.demoteSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.member_list[list.options[list.options.selectedIndex]] }).
 				success(function (data, status, headers, config) {
 					$scope.queueInfo = data.queue_info;
@@ -407,7 +408,7 @@ angular.module('LineUpApp.controllers', []).
 					$route.reload();
 				}).
 				error(function (data, status, headers, config) {
-					alert("Something went wrong with the dequeue request!\nStatus: " + status);
+					alert("Something went wrong with the demote request!\nStatus: " + status);
 				});
 		}
 
