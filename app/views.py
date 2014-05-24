@@ -231,6 +231,55 @@ def postpone():
    except sqlite3.Error as e:
       return jsonify(Failure(e.message))
 
+@app.route('/managerPostpone', methods=['POST'])
+def manager_postpone():
+   """
+   Args:
+   {
+      qid:
+      uid:
+   }
+
+   Returns:
+   {
+      'SUCCESS': True or False
+      (if SUCCESS is true)
+      'qname':
+      'qid':
+      'size':
+      'expected_wait:
+      'avg_wait_time':
+      'member_position':
+      'organization':
+      'prompt':
+      'disclaimer':
+      'website':
+      'location':
+      (if SUCCESS is false)
+      'error_message':
+   }
+   
+   """
+   if session.has_key('logged_in') and session['logged_in']:
+      manager_id = session['id']
+   else:
+      return jsonify(Failure('You are not logged in!'))
+   qid= int(request.json['qid'])
+   uid = int(request.json['uid'])
+   try:
+      if not permissions.has_key(manager_id, qid, permissions.MANAGER):
+         return jsonify(Failure('You must be a manager of the queue to postpone someone!'))
+      queue_server.postpone(QueueMember(uid=uid), qid)
+      q_info = queue_server.get_info(QueueMember(uid=uid), qid)
+      q_info_dict = dict(q_info.__dict__)
+      return jsonify(Success(q_info_dict))
+   except QueueNotFoundException as e:
+      return jsonify(Failure(e.message))
+   except MemberNotFoundException as e:
+      return jsonify(Failure(e.message))
+   except sqlite3.Error as e:
+      return jsonify(Failure(e.message))
+
 @app.route('/leaveQueue', methods=['POST'])
 def leave_queue():
    """

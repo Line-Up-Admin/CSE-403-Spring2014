@@ -211,6 +211,10 @@ def get_user(username, given_password):
     else:
       raise ValidationException('the username password combination is invalid.')
 
+def get_user_by_uid(uid):
+  rows = query_db('select * from users where uid=?', (uid,))
+  return rows
+
 def get_temp_user(temp_uid):
   """Retrieves the user data associated with the given user id, only if the uid matches a temporary user.
 
