@@ -286,11 +286,7 @@ angular.module('LineUpApp.controllers', []).
 		}();
 
 		$scope.editQueue = function () {
-<<<<<<< HEAD
-			lineUpAPIService.editQueue({ 'qid': $routeParams.qid, 'q_settings': $scope.queue }).
-=======
-			lineUpAPIService.modifyQueue($scope.queue).
->>>>>>> 1ac62cc73c9dca929c74199884cf28418db2e63b
+		lineUpAPIService.editQueue({ 'qid': $routeParams.qid, 'q_settings': $scope.queue }).
 				success(function (data, status, headers, config) {
 					$location.path('/admin/' + $routeParams.qid);
 				}).
@@ -388,8 +384,7 @@ angular.module('LineUpApp.controllers', []).
           alert("Something went wrong with the join queue request! \nStatus: " + status);
         });
 		}
-<<<<<<< HEAD
-		
+
 		// $scope.demoteSelectPerson() {
 			// var list = document.getElementById("list-group");
 			// lineUpAPIService.demoteSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.member_list[list.options[list.options.selectedIndex]] }).
@@ -402,10 +397,7 @@ angular.module('LineUpApp.controllers', []).
 					// alert("Something went wrong with the dequeue request!\nStatus: " + status);
 				// });
 		// }
-		
-=======
 
->>>>>>> 1ac62cc73c9dca929c74199884cf28418db2e63b
 		// Sends a request to toggle the queue's active status to the server.
     // Upon success: toggles the queue to open or closed depending on prev state.
     // Upon error: Alert message.
