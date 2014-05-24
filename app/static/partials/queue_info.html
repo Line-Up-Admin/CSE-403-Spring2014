@@ -30,7 +30,7 @@
       </p>
     </div>
     <div id="notEnqueued" class="queue-control container hide">
-      <p class="button-join"><buton id="btn-join" class="btn btn-line-up btn-lg btn-block" role="button" ng-click="promptForInfo()">
+      <p class="button-join"><buton id="btn-join" class="btn btn-line-up btn-lg btn-block" role="button" ng-click="promptForData()">
         <span class="glyphicon glyphicon-send"></span></br>
         Join Queue
       </button></p>
@@ -54,13 +54,13 @@
       </div>
       <div class="modal-body">
         <form class="form-horizontal" role="form">
-          <div class="form-group">
+          <div id="prompt" class="form-group">
             <label class="col-sm-4 control-label text-right">{{ queue.prompt }}</label>
             <div class="col-sm-5">
-              <textarea class="form-control" rows="3" id="other-info" ng-model="queue.optional_data"></textarea>
+              <textarea class="form-control" rows="3" id="other-info" ng-model="optional_data"></textarea>
             </div>
           </div>
-          <div class="form-group">
+          <div id="name" class="form-group">
             <label class="col-sm-4 control-label text-right">What is your name? </label>
             <div class="col-sm-5">
               <input type="text" class="form-control"  ng-model="uname"></input>
@@ -69,7 +69,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary">Get in Line</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="joinQueue()">Join Queue</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

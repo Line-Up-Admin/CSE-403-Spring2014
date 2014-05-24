@@ -178,6 +178,8 @@ angular.module('LineUpApp.controllers', []).
   }).
 
   controller('queueInfoController', function ($scope, $route, lineUpAPIService, $routeParams) {
+    $scope.optional_data = "";
+    $scope.uname = "";
 
     // hide the edit button if we are on the create queue page
     // called on element load with ng-init="init()"
@@ -210,23 +212,20 @@ angular.module('LineUpApp.controllers', []).
         if ($scope.queue.prompt) {
           $("#question-modal").modal('toggle');
           //hide the name prompt
-          $("#name").classList.add("hide");
+          document.getElementById("name").classList.add("hide");
         } else {
           // don't show window just join queue
-          joinQueue();
-        } else {
+          $scope.joinQueue();
+        }
+      } else {
           if ($scope.queue.prompt) {
             // show both the prompt and the name
             $("#question-modal").modal('toggle');
-          }else {
+          } else {
             $("#question-modal").modal('toggle');
             // hide the prompt
-            $("#prompt").classList.add("hide");
+            document.getElementById("prompt").classList.add("hide");
           }
-        }
-      }
-      if ($scope.queue.prompt) {
-        $("#question-modal").modal('toggle');
       }
     }
 
@@ -235,7 +234,7 @@ angular.module('LineUpApp.controllers', []).
     // of the request.
     // Upon error: TODO: Do something smart to handle the error
     $scope.joinQueue = function () {
-      lineUpAPIService.joinQueue({ 'qid': $scope.queue.qid, 'uname': "temp", 'optional_data': $scope.optional_data }).
+      lineUpAPIService.joinQueue({ 'qid': $scope.queue.qid, 'uname': $scope.uname, 'optional_data': $scope.optional_data }).
         success(function (data, status, headers, config) {
           $scope.queue = data;
           document.getElementById('notEnqueued').classList.add('hide');
