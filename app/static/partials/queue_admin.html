@@ -62,9 +62,9 @@
 					<span class="glyphicon glyphicon-ban-circle"></span></br>
 					Begin Closing
 				</button> -->
-				<button id="btn-close-queue" class="btn btn-line-up btn-lg" role="button" disabled>
+				<button id="btn-close-queue" class="btn btn-line-up btn-lg" role="button" ng-click='setActive()' value=0 disabled>
 					<span class="glyphicon glyphicon-remove"></span></br>
-					Close Queue
+					{{ setActiveStatusTo }}
 				</button>
 			</p>
 		</div>

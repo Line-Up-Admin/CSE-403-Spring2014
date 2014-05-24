@@ -182,6 +182,18 @@ def postpone():
    Returns:
    {
       'SUCCESS': True or False
+      (if SUCCESS is true)
+      'qname':
+      'qid':
+      'size':
+      'expected_wait:
+      'avg_wait_time':
+      'member_position':
+      'organization':
+      'prompt':
+      'disclaimer':
+      'website':
+      'location':
       (if SUCCESS is false)
       'error_message':
    }
@@ -243,9 +255,7 @@ def search():
 
    """
 
-   search_string = request.json
-   print "\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n"
-   print search_string
+   search_string = request.data
    qids = queue_server.search(search_string)
    q_info_list = [queue_server.get_info(None, qid) for qid in qids]
    return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
