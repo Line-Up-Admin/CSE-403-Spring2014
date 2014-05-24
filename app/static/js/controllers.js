@@ -363,6 +363,7 @@ angular.module('LineUpApp.controllers', []).
     // Upon error: TODO: Do something smart to handle the error
 		$scope.dequeueSelectPerson = function () {
 			var list = document.getElementById("list-group");
+			console.log(list.options.selectedIndex);
 			lineUpAPIService.dequeueSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.member_list[list.options[list.options.selectedIndex]] }).
 				success(function (data, status, headers, config) {
 					$scope.queueInfo = data.queue_info;
@@ -397,18 +398,18 @@ angular.module('LineUpApp.controllers', []).
         });
 		}
 
-		// $scope.demoteSelectPerson() {
-			// var list = document.getElementById("list-group");
-			// lineUpAPIService.demoteSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.member_list[list.options[list.options.selectedIndex]] }).
-				// success(function (data, status, headers, config) {
-					// $scope.queueInfo = data.queue_info;
-					// $scope.member_list = data.member_list;
-					// $route.reload();
-				// }).
-				// error(function (data, status, headers, config) {
-					// alert("Something went wrong with the dequeue request!\nStatus: " + status);
-				// });
-		// }
+		$scope.demoteSelectPerson = function () {
+			var list = document.getElementById("list-group");
+			lineUpAPIService.demoteSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.member_list[list.options[list.options.selectedIndex]] }).
+				success(function (data, status, headers, config) {
+					$scope.queueInfo = data.queue_info;
+					$scope.member_list = data.member_list;
+					$route.reload();
+				}).
+				error(function (data, status, headers, config) {
+					alert("Something went wrong with the dequeue request!\nStatus: " + status);
+				});
+		}
 
 		// Sends a request to toggle the queue's active status to the server.
     // Upon success: toggles the queue to open or closed depending on prev state.
