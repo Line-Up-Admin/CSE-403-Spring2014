@@ -112,10 +112,11 @@ def add_to_queue():
    """
    uid = None
    username = None
-   qid = int(request.json['qid'])
    optional_data = None
+   qid = int(request.json['qid'])
    if request.json.has_key('optional_data'):
       optional_data = request.json['optional_data']
+      qid = int(request.json['qid'])
    if not queue_server.is_active(qid):
       return jsonify(Failure('The queue is not active!'))
    temp = None
@@ -203,7 +204,7 @@ def postpone():
       uid = session['id']
    else:
       return jsonify(Failure('You are not logged in!'))
-   qid= int(request.json['qid'])
+   qid= request.json
    try:
       queue_server.postpone(QueueMember(uid=uid), qid)
       q_info = queue_server.get_info(QueueMember(uid=uid), qid)
