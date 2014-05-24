@@ -541,17 +541,20 @@ def set_active():
 
    """
    uid = None
-   if session.has_key('logged_in') and session['logged_in'] and permissions.has_flag(uid, qid, permissions.MANAGER):
-      uid=session['id']
+   if session.has_key('logged_in') and session['logged_in']:
+      uid = session['id']
       qid = request.json['qid']
       active = request.json['active']
-      try:
-         queue_server.set_active(qid, active)
-         return jsonify({'SUCCESS':True})
-      except QueueNotFoundException as e:
-         return jsonify(Failure(e.message))
+      if permissions.has_flag(uid, qid, permissions.MANAGER):
+        try:
+          queue_server.set_active(qid, active)
+          return jsonify({'SUCCESS':True})
+        except QueueNotFoundException as e:
+          return jsonify(Failure(e.message))
+      else:
+        return jsonify(Failure("You must be logged in as an manager to open or close a queue."))
    else:
-      return jsonify(Failure("You must be logged in as an manager to open or close a queue."))
+     return jsonify(Failure("You must at least be logged in to open or close a queue."))
 
       
 @app.route('/login', methods=['GET', 'POST'])
