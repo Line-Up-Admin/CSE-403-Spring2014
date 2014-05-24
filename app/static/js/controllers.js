@@ -213,9 +213,9 @@ angular.module('LineUpApp.controllers', []).
             document.getElementById('notEnqueued').classList.remove('hide');
           } else {
             document.getElementById('enqueued').classList.remove('hide');
-						if (data.member_position == data.size) {
-							docuemnt.getElementById('btn-postpone').disabled = true;
-						}
+						// if (data.member_position == data.size) {
+							// document.getElementById('btn-postpone').disabled = true;
+						// }
           }
         }).
         error(function (data, status, headers, config) {
@@ -262,11 +262,29 @@ angular.module('LineUpApp.controllers', []).
     }
   }).
 
-  // controller('editQueueController', function($scope, lineUpAPIService, $routeParams, $route) {
-		// $scope.editQueue = function () {
-			// lineUpAPIService.
-		// }
-  // }).
+  controller('editQueueController', function($scope, lineUpAPIService, $routeParams, $route) {
+		$scope.queue = {};
+		
+		$scope.fillFormFields = function () {
+			lineUpAPIService.getQueueSettings($routeParams.qid).
+				success(function (data, status, headers, config) {
+					$scope.queue = data;
+				}).
+				error(function (data, status, headers, config) {
+					alert("Something went wrong with the form fill request!\nStatus: " + status);
+				});
+		}();
+		
+		$scope.editQueue = function () {
+			lineUpAPIService.editQueue({ 'qid': $routeParams.qid, 'q_settings': queue }).
+				success(function (data, status, headers, config) {
+					$location.path('/admin/' + $routeParams.qid);
+				}).
+				error(function (data, status, headers, config) {
+					alert("Something went wrong with the edit queue request!\nStatus: " + status);
+				});
+		}
+  }).
 
 	controller('adminViewController', function($scope, lineUpAPIService, $location, $routeParams, $route) {
 		$scope.user = {};
