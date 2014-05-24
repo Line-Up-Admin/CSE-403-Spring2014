@@ -190,6 +190,18 @@ angular.module('LineUpApp.controllers', []).
       }
     };
 
+    $scope.leaveQueue = function () {
+      lineUpAPIService.leaveQueue($routeParams.qid).
+      sucess(function (data, status, header, config) {
+        if(data.SUCCESS) {
+          $scope.queue = data;
+        }
+      }).
+      error(function (data, status, header, config) {
+        alert("Something went wrong with your request to leave the queue!\n Status" + status);
+      });
+    };
+
     $scope.postpone = function () {
       lineUpAPIService.postpone($routeParams.qid).
         success(function (data, status, header, config) {
