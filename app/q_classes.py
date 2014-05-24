@@ -264,6 +264,12 @@ class QueueServer(object):
          q = Queue(qid, q_settings)
          self.table[qid] = q
          member_rows = db_util.get_queue_members(qid)
+         #timestamp_rows = db_util.get_history(qid)
+         #if timestamp_rows is not None:  
+            # do something here to add the timestamp_rows to your queue history.
+            # timestamp_rows[0]['join_time'] = 148000234
+            # timestamp_rows[0]['leave_time'] = 148002222
+            # timestamp_rows[0]['uid'] = 10         
          if member_rows:
             j = 0
             for member_row in member_rows:

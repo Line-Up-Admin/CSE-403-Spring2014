@@ -10,6 +10,10 @@ from q_classes import QueueServer, QueueMember, QueueSettings, QueueNotFoundExce
 def Failure(message):
    return {'SUCCESS':False, 'error_message':message}
 
+def Success(dict_to_be_jsonified):
+   dict_to_be_jsonified['SUCCESS'] = True
+   return dict_to_be_jsonified
+
 # This procedure picks up the default route and returns index.html.
 @app.route('/')
 def root():
