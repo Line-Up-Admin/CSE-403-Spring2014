@@ -305,7 +305,7 @@ class QueueServer(object):
    def add(self, member, qid):
       """ Adds a new member to a specific queue."""
       if qid not in self.table:
-         raise Exception('Queue not found')
+         raise QueueNotFoundException('Queue not found')
       q = self.table[qid]
       q.add(member)
       #add member to the reverse index
@@ -320,13 +320,24 @@ class QueueServer(object):
          passing on the to caller. """
       q = self.table[qid]
       self.index[member.uid].remove(qid)
-      # TODO: update database state
+      if self.sync_db:
+         db_util.remove_by_uid_qid(member.uid, qid)
       return q.remove(member)
 
+   def removeByID(self, uid, qid):
+      """ This could raise a KeyError, which we are currently
+         passing on the to caller. """
+      q = self.table[qid]
+      self.index[uid].remove(qid)
+      if self.sync_db:
+         db_util.remove_by_uid_qid(uid, qid)
+      member = q.get_member(uid)
+      return q.remove(member)
+
+
    def dequeue(self, qid):
-      """ Note -- parameter here differs from UML diagram. """
       if qid not in self.table:
-         raise Exception('Queue not found')
+         raise QueueNotFoundException('Queue not found')
       q_member = self.table[qid].dequeue()
       if q_member is None:
          return None
@@ -408,11 +419,30 @@ class QueueServer(object):
       """ Returns a set of queues that a member is in 
          (not in UML)"""
       return self.index[uid]
-
+   
+   def edit_queue(self, qid, qsettings):
+      """ Updates the settings for the specified queue."""
+      if qid not in self.table:
+         raise QueueNotFoundException('Queue not found')
+      else:
+         q = self.table[qid]
+         q.q_settings = qsettings
+         db_settings = dict(q.q_settings.__dict__)
+         db_settings['qid'] = qid
+         if self.sync_db:
+            db_util.modify_queue_settings(db_settings)
+         
    def postpone(self, member, qid):
       if qid not in self.table:
          raise QueueNotFoundException('Queue not found')
       return self.table[qid].postpone(member, self.sync_db)
+
+   def get_settings(self, member, qid):
+      """ This method gets the settings associated with a queue."""
+      q = self.table[qid]
+      if qid not in self.table:
+         raise QueueNotFoundException('Queue not found')
+      return self.table[qid].q_settings
 
    def get_info(self, member, qid):
       """ This method gets the info associated with a queue."""
