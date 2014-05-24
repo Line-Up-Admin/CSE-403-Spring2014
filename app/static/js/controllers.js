@@ -328,7 +328,7 @@ angular.module('LineUpApp.controllers', []).
 		$scope.setActive = function() {
 			var prevActiveStatus = document.getElementById("btn-close-queue").value;
 			console.log(prevActiveStatus + "," + $routeParams.qid);
-			lineUpAPIService.setActive({ 'qid': $routeParams.qid, 'active': $scope.prevActiveStatus }).
+			lineUpAPIService.setActive({ 'qid': $routeParams.qid, 'active': prevActiveStatus }).
         success(function (data, status, headers, config) {
 					var button = document.getElementById("btn-close-queue");
 					if( prevActiveStatus == 0 ) {
