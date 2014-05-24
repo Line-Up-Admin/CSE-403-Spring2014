@@ -305,7 +305,7 @@ class QueueServer(object):
    def add(self, member, qid):
       """ Adds a new member to a specific queue."""
       if qid not in self.table:
-         raise Exception('Queue not found')
+         raise QueueNotFoundException('Queue not found')
       q = self.table[qid]
       q.add(member)
       #add member to the reverse index
@@ -320,13 +320,24 @@ class QueueServer(object):
          passing on the to caller. """
       q = self.table[qid]
       self.index[member.uid].remove(qid)
-      # TODO: update database state
+      if self.sync_db:
+         db_util.remove_by_uid_qid(member.uid, qid)
       return q.remove(member)
 
+   def removeByID(self, uid, qid):
+      """ This could raise a KeyError, which we are currently
+         passing on the to caller. """
+      q = self.table[qid]
+      self.index[uid].remove(qid)
+      if self.sync_db:
+         db_util.remove_by_uid_qid(uid, qid)
+      member = q.get_member(uid)
+      return q.remove(member)
+
+
    def dequeue(self, qid):
-      """ Note -- parameter here differs from UML diagram. """
       if qid not in self.table:
-         raise Exception('Queue not found')
+         raise QueueNotFoundException('Queue not found')
       q_member = self.table[qid].dequeue()
       if q_member is None:
          return None

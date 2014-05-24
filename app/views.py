@@ -505,9 +505,36 @@ def get_my_queues():
                   queues_manager=[q_info.__dict__ for q_info in queues_manager_info_list],
                   SUCCESS=True)
 
-@app.route('/remove')
+@app.route('/remove', methods=['POST'])
 def remove_queue_member():
-	return jsonify(Failure('Not implemented yet!'))
+   """
+   Args:
+      {
+         qid:
+         uid:
+      }
+   
+   Returns:
+      {
+         SUCCESS:
+         error_message: (only if failure)
+      }
+
+   """
+   uid = None
+   if session.has_key('logged_in') and session['logged_in']:
+      uid = session['id']
+      qid = request.json['qid']
+      if permissions.has_flag(uid, qid, permissions.MANAGER):
+         try:
+            queue_server.removeByID(uid, qid)
+            return jsonify({'SUCCESS':True})
+         except QueueNotFoundException as e:
+            return jsonify(Failure(e.message))
+      else:
+        return jsonify(Failure("You must be logged in as an manager to remove a user."))
+   else:
+     return jsonify(Failure("You must at least be logged in to remove a user."))
 
 @app.route('/qtracks')
 def queue_tracks():
