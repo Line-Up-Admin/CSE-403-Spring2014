@@ -79,6 +79,20 @@ def create_queue():
    except db_util.ValidationException as e:
       return jsonify(Failure(e.message))
 
+@app.route('/modifyQueue', methods=['POST'])
+def modify_queue_settings():
+   if not session.has_key('logged_in') or not session['logged_in']:
+      return jsonify(Failure('You cannot modify queue settings if you are not logged in as an admin!'))
+   uid = session['id']
+   q_settings = request.json
+   if not permissions.has_flag(uid, q_settings['qid'], permissions.ADMIN):
+      return jsonify(Failure('You cannot modify queue settings if you are not an admin of the queue.'))
+   try:
+      db_util.modify_queue_settings(q_settings)
+      return jsonify(Success({}))
+   except sqlite3.Error as e:
+      return jsonify(Failure('Failed to update queue settings.'))
+
 @app.route('/join', methods=['POST'])
 def add_to_queue():
    """Joins a queue.
@@ -112,10 +126,11 @@ def add_to_queue():
    """
    uid = None
    username = None
-   qid = int(request.json['qid'])
    optional_data = None
+   qid = int(request.json['qid'])
    if request.json.has_key('optional_data'):
       optional_data = request.json['optional_data']
+      qid = int(request.json['qid'])
    if not queue_server.is_active(qid):
       return jsonify(Failure('The queue is not active!'))
    temp = None
@@ -203,7 +218,7 @@ def postpone():
       uid = session['id']
    else:
       return jsonify(Failure('You are not logged in!'))
-   qid= int(request.json['qid'])
+   qid= request.json
    try:
       queue_server.postpone(QueueMember(uid=uid), qid)
       q_info = queue_server.get_info(QueueMember(uid=uid), qid)
@@ -367,14 +382,14 @@ def get_queue_settings():
       }
 
    """
-   queueID = request.json
+   qid = request.json
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['id']
    else:
       return jsonify(Failure('You must be logged in with an admin account to view queue settings.'))
    try:
-      if permissions.has_flag(uid, pid, permissions.ADMIN):
-         queue = db_util.get_queue_settings(queueID)
+      if permissions.has_flag(uid, qid, permissions.ADMIN):
+         queue = db_util.get_queue_settings(qid)
          return jsonify(queue)
       else:
          return jsonify(Failure('You must be an admin of the queue to see queue settings.'))
@@ -413,8 +428,39 @@ def get_queue_status(qid):
       return jsonify(Failure('The queue does not exist.'))
    q_info_dict = dict(q_info.__dict__)
    q_info_dict['logged_in'] = session.has_key('logged_in') and session['logged_in']
-   return jsonify(q_info_dict)
+   return jsonify(Success(q_info_dict))
 
+
+@app.route('/editQueue', methods=['POST'])
+def edit_queue():
+   """Change the settings for a queue.
+   Args:
+      {
+         qid:
+         q_settings:
+      }
+   Returns:
+      {
+         SUCCESS:
+         error_message: (only if failure)
+      }
+   """
+   uid = None
+   if session.has_key('logged_in') and session['logged_in']:
+      uid = session['id']
+      qid = request.json['qid']
+      qsettings = request.json['q_settings']
+      if permissions.has_flag(uid, qid, permissions.ADMIN):
+         try:
+            queue_server.edit_queue(qid, qsettings)
+            return jsonify({'SUCCESS':True})
+         except QueueNotFoundException as e:
+            return jsonify(Failure(e.message))
+      else:
+        return jsonify(Failure("You must be logged in as an admin to edit queue settings."))
+   else:
+     return jsonify(Failure("You must at least be logged in to edit queue settings."))
+      
 @app.route('/myQueues', methods=['GET', 'POST'])
 def get_my_queues():
    """Gets the info about the queues you are in.
@@ -473,9 +519,36 @@ def get_my_queues():
                   queues_manager=[q_info.__dict__ for q_info in queues_manager_info_list],
                   SUCCESS=True)
 
-@app.route('/remove')
+@app.route('/remove', methods=['POST'])
 def remove_queue_member():
-	return jsonify(Failure('Not implemented yet!'))
+   """
+   Args:
+      {
+         qid:
+         uid:
+      }
+   
+   Returns:
+      {
+         SUCCESS:
+         error_message: (only if failure)
+      }
+
+   """
+   uid = None
+   if session.has_key('logged_in') and session['logged_in']:
+      uid = session['id']
+      qid = request.json['qid']
+      if permissions.has_flag(uid, qid, permissions.MANAGER):
+         try:
+            queue_server.removeByID(uid, qid)
+            return jsonify({'SUCCESS':True})
+         except QueueNotFoundException as e:
+            return jsonify(Failure(e.message))
+      else:
+        return jsonify(Failure("You must be logged in as an manager to remove a user."))
+   else:
+     return jsonify(Failure("You must at least be logged in to remove a user."))
 
 @app.route('/qtracks')
 def queue_tracks():

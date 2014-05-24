@@ -15,7 +15,7 @@ GET_PERMISSIONED_QIDS_BY_UID = 'select qid from permissions where pid=? and perm
 GET_POSITION = 'select relative_position from qindex where uid=? and qid=?'
 GET_PROFILED_USER_BY_USERNAME = 'select * from users where temp=0 and uname=?'
 GET_QUEUES_BY_UID = 'select * from qindex where uid=?'
-GET_QUEUE_SETTINGS_BY_ID = 'select * from qsettings where id=?'
+GET_QUEUE_SETTINGS_BY_ID = 'select * from qsettings where qid=?'
 GET_TEMP_USER_BY_ID = 'select * from users where temp=1 and id=?'
 INSERT_INTO_QUEUE_HISTORY = 'insert into QHistory values (?, ?, ?, ?)'
 INSERT_MEMBER_INTO_QUEUE = 'insert into QIndex values(?, ?, (select ending_index from Queues where id=?), ?)'
@@ -28,7 +28,7 @@ UPDATE_POSITION = 'update qindex set relative_position=? where uid=? and qid=?'
 UPDATE_QUEUE_FOR_ADD = 'update Queues set ending_index=ending_index+1 where id=?'
 UPDATE_QUEUE_FOR_REMOVE = 'update queues set starting_index=starting_index+1 where id=?'
 UPDATE_QUEUE_HISTORY = 'update qhistory set leave_time=? where uid=? and qid=? and leave_time is null'
-UPDATE_QUEUE_SETTINGS = 'update qsettings set qname=?, max_size=?, keywords=?, location=?, active=?, min_wait_rejoin=?, website=?, organization=?, disclaimer=?, prompt=?'
+UPDATE_QUEUE_SETTINGS = 'update qsettings set qname=?, max_size=?, keywords=?, location=?, active=?, min_wait_rejoin=?, website=?, organization=?, disclaimer=?, prompt=? where qid=?'
 
 
 def query_db(query, args=()):
@@ -60,6 +60,20 @@ def qsettings_dict_to_db_tuple(qsettings):
           qsettings['organization'] if qsettings.has_key('organization') else None,
           qsettings['disclaimer'] if qsettings.has_key('disclaimer') else None,
           qsettings['prompt'] if qsettings.has_key('prompt') else None
+          )
+
+def qsettings_dict_to_db_tuple_modify(qsettings):
+  return (qsettings['qname'],
+          qsettings['max_size'] if qsettings.has_key('max_size') else maxint,
+          qsettings['keywords'] if qsettings.has_key('keywords') else None,
+          qsettings['location'] if qsettings.has_key('location') else None,
+          qsettings['active'] if qsettings.has_key('active') else 1,
+          qsettings['min_wait_rejoin'] if qsettings.has_key('min_wait_rejoin') else maxint,
+          qsettings['website'] if qsettings.has_key('website') else None,
+          qsettings['organization'] if qsettings.has_key('organization') else None,
+          qsettings['disclaimer'] if qsettings.has_key('disclaimer') else None,
+          qsettings['prompt'] if qsettings.has_key('prompt') else None,
+          qsettings['qid']
           )
 
 class DatabaseException(Exception):
@@ -271,7 +285,8 @@ def modify_queue_settings(q_settings):
       (2) The q_settings are invalid.
     PermissionException: the current session user does not have permission to modify this queue's settings.
   """
-  db.execute(UPDATE_QUEUE_SETTINGS, qsettings_dict_to_db_tuple(q_settings))
+  db = get_db()
+  db.execute(UPDATE_QUEUE_SETTINGS, qsettings_dict_to_db_tuple_modify(q_settings))
   db.commit()
 
 def delete_queue(qid):

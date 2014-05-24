@@ -1,2 +1,2 @@
 #!/bash/bin
-python test.py
+python flask_tests/test.py
