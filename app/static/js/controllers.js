@@ -262,13 +262,15 @@ angular.module('LineUpApp.controllers', []).
     }
   }).
 
-  controller('editQueueController', function($scope, lineUpAPIService, $routeParams, $route) {
+  controller('editQueueController', function($scope, lineUpAPIService, $location, $routeParams, $route) {
 		$scope.queue = {};
 		
 		$scope.fillFormFields = function () {
 			lineUpAPIService.getQueueSettings($routeParams.qid).
 				success(function (data, status, headers, config) {
+					console.log(data);
 					$scope.queue = data;
+					console.log($scope.queue);
 				}).
 				error(function (data, status, headers, config) {
 					alert("Something went wrong with the form fill request!\nStatus: " + status);
@@ -276,7 +278,7 @@ angular.module('LineUpApp.controllers', []).
 		}();
 		
 		$scope.editQueue = function () {
-			lineUpAPIService.editQueue({ 'qid': $routeParams.qid, 'q_settings': queue }).
+			lineUpAPIService.editQueue({ 'qid': $routeParams.qid, 'q_settings': $scope.queue }).
 				success(function (data, status, headers, config) {
 					$location.path('/admin/' + $routeParams.qid);
 				}).
@@ -303,11 +305,11 @@ angular.module('LineUpApp.controllers', []).
 		$scope.getDetailedQueueInfo = function () {
 			lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
 				success(function (data, status, headers, config) {
+					console.log(data.queue_info);
 					$scope.queueInfo = data.queue_info;
-					console.log($scope.queueInfo.expected_wait);
+					console.log($scope.queueInfo);
 					$scope.member_list = data.member_list;
 					document.getElementById("list-group").size=$scope.member_list.length+1;
-					console.log($scope.setActiveStatusTo);
 				}).
 				error(function (data, status, headers, config) {
 					console.log($routeParams.qid);
@@ -368,6 +370,19 @@ angular.module('LineUpApp.controllers', []).
           alert("Something went wrong with the join queue request! \nStatus: " + status);
         });
 		}
+		
+		// $scope.demoteSelectPerson() {
+			// var list = document.getElementById("list-group");
+			// lineUpAPIService.demoteSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.member_list[list.options[list.options.selectedIndex]] }).
+				// success(function (data, status, headers, config) {
+					// $scope.queueInfo = data.queue_info;
+					// $scope.member_list = data.member_list;
+					// $route.reload();
+				// }).
+				// error(function (data, status, headers, config) {
+					// alert("Something went wrong with the dequeue request!\nStatus: " + status);
+				// });
+		// }
 		
 		// Sends a request to toggle the queue's active status to the server.
     // Upon success: toggles the queue to open or closed depending on prev state.
