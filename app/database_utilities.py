@@ -5,6 +5,8 @@ No classes have to be instantiated except the initial database declared in
 __init__.py in app. All methods are static.
 """
 
+from sys import maxint
+
 # Query constants
 GET_ALL_QUEUES = 'select * from queues'
 GET_ALL_QUEUE_SETTINGS = 'select * from qsettings'
@@ -37,10 +39,28 @@ def query_db(query, args=()):
   return rows
 
 def user_dict_to_db_tuple(user_dict):
-  return (user_dict['id'], user_dict['temp'], user_dict['uname'], user_dict['fname'], user_dict['lname'], user_dict['email'], user_dict['pw'])
+  return (user_dict['id'],
+          user_dict['temp'] if user_dict.has_key('temp') else 0,
+          user_dict['uname'],
+          user_dict['fname'] if user_dict.has_key('fname') else None,
+          user_dict['lname'] if user_dict.has_key('lname') else None,
+          user_dict['email'] if user_dict.has_key('email') else None,
+          user_dict['pw']
+          )
 
 def qsettings_dict_to_db_tuple(qsettings):
-  return (qsettings['qid'], qsettings['qname'], qsettings['max_size'], qsettings['keywords'], qsettings['location'], qsettings['active'], qsettings['min_wait_rejoin'], qsettings['website'], qsettings['organization'], qsettings['disclaimer'], qsettings['prompt'])
+  return (qsettings['qid'],
+          qsettings['qname'],
+          qsettings['max_size'] if qsettings.has_key('max_size') else maxint,
+          qsettings['keywords'] if qsettings.has_key('keywords') else None,
+          qsettings['location'] if qsettings.has_key('location') else None,
+          qsettings['active'] if qsettings.has_key('active') else 1,
+          qsettings['min_wait_rejoin'] if qsettings.has_key('min_wait_rejoin') else maxint,
+          qsettings['website'] if qsettings.has_key('website') else None,
+          qsettings['organization'] if qsettings.has_key('organization') else None,
+          qsettings['disclaimer'] if qsettings.has_key('disclaimer') else None,
+          qsettings['prompt'] if qsettings.has_key('prompt') else None
+          )
 
 class DatabaseException(Exception):
   pass
