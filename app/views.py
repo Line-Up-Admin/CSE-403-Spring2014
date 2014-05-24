@@ -5,7 +5,7 @@ import sqlite3
 from flask import request, session, g, redirect, url_for, abort, jsonify
 import permissions
 
-from q_classes import QueueServer, QueueMember, QueueSettings
+from q_classes import QueueServer, QueueMember, QueueSettings, QueueNotFoundException
 
 def Failure(message):
    return {'SUCCESS':False, 'error_message':message}
@@ -162,6 +162,39 @@ def dequeue(qid):
       return jsonify(q_member.__dict__)
    else:
       return 'You must be an manager to dequeue.'
+
+@app.route('/postpone', methods=['POST'])
+def postpone():
+   """
+   Args:
+   {
+      qid:
+      uid:
+   }
+
+   Returns:
+   {
+      'SUCCESS': True or False
+      (if SUCCESS is false)
+      'error_message':
+   }
+   
+   """
+   if session.has_key('logged_in') and session['logged_in']:
+      uid = session['id']
+   else:
+      return jsonify(Failure('You are not logged in!'))
+   qid= int(request.json['qid'])
+   uid = int(request.json['uid'])
+   try:
+      queue_server.postpone(QueueMember(uid=uid), qid)
+      return jsonify({'SUCCESS':True})
+   except QueueNotFoundException as e:
+      return jsonify(Failure(e.message))
+   except MemberNotFoundException as e:
+      return jsonify(Failure(e.message))
+   except sqlite3.Error as e:
+      return jsonify(Failure(e.message))
 
 @app.route('/searchResults')
 def get_search_results():
