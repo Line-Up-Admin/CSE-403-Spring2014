@@ -169,7 +169,6 @@ def postpone():
    Args:
    {
       qid:
-      uid:
    }
 
    Returns:
@@ -185,7 +184,6 @@ def postpone():
    else:
       return jsonify(Failure('You are not logged in!'))
    qid= int(request.json['qid'])
-   uid = int(request.json['uid'])
    try:
       queue_server.postpone(QueueMember(uid=uid), qid)
       return jsonify({'SUCCESS':True})
