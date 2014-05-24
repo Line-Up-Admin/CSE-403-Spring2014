@@ -112,6 +112,9 @@ def add_to_queue():
    uid = None
    username = None
    qid = int(request.json['qid'])
+   optional_data = None
+   if request.json.has_key('optional_data'):
+      optional_data = request.json['optional_data']
    if not queue_server.is_active(qid):
       return jsonify(Failure('The queue is not active!'))
    temp = None
@@ -129,7 +132,7 @@ def add_to_queue():
       username = temp_user['uname']
       uid = temp_user['id']
    if not permissions.has_flag(uid, qid, permissions.BLOCKED_USER):
-      q_member = QueueMember(username, uid)
+      q_member = QueueMember(username, uid, optional_data)
       queue_server.add(q_member, qid)
       q_info = queue_server.get_info(q_member, qid)
       q_info_dict = dict(q_info.__dict__)
@@ -237,7 +240,9 @@ def search():
 
    """
 
-   search_string = request.data
+   search_string = request.json
+   print "\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n"
+   print search_string
    qids = queue_server.search(search_string)
    q_info_list = [queue_server.get_info(None, qid) for qid in qids]
    return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
@@ -373,6 +378,7 @@ def get_queue_status(qid):
          "avg_wait_time": null,
          "confirmation_number": null,
          "expected_wait": null,
+         "logged_in": True or False
          "member_position": null,
          "qname": "ohhey",
          "qid": 556035656,
@@ -392,8 +398,10 @@ def get_queue_status(qid):
          q_member = QueueMember(uid=userid)
    q_info = queue_server.get_info(q_member, qid)
    if q_info is None:
-      return jsonify(Failure('The queue does not exist.'))
-   return jsonify(q_info.__dict__)
+      return jsonify(Failure('The queue does not exist.'))'
+   q_info_dict = dict(q_info.__dict__)
+   q_info_dict['logged_in'] = session.has_key('logged_in') and session['logged_in']
+   return jsonify(q_info_dict)
 
 @app.route('/myQueues', methods=['GET', 'POST'])
 def get_my_queues():
