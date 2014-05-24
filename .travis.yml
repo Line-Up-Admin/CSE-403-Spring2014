@@ -8,10 +8,10 @@ install:
   - "pip install coveralls"
 # command to run tests, e.g. python setup.py test
 script: 
-# - python tests/q_tests.py 
-# - python tests/q_server_tests.py
-  - coverage run --source=app tests/q_server_tests.py
-  - coverage run --source=app tests/q_tests.py
+ - python tests/q_tests.py 
+ - python tests/q_server_tests.py
+ - coverage run --source=app tests/q_server_tests.py
+ - coverage run --source=app tests/q_tests.py
 
 aftersuccess:
   - coveralls
