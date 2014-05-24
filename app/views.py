@@ -264,9 +264,6 @@ def search():
 def get_popular_queues():
    """Searches for popular queues.
 
-   Right now, this does no logic and returns all queues.
-   Improved popularity logic is coming in the Feature Complete Release.
-
    Args: none.
 
    Returns:
@@ -293,7 +290,9 @@ def get_popular_queues():
       }
 
    """
-   q_info_list = queue_server.get_all_queues_info()
+   #Filter the top 5
+   qids = queue_server.get_popular()[:4]
+   q_info_list = [queue_server.get_info(None, qid) for qid in qids]
    return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
 
 @app.route('/memberQueue', methods=['POST'])
