@@ -86,6 +86,7 @@ def add_to_queue():
    Args:
       qid: the id of the queue to join.
       uname: the uname to create a temporary user. This is ignored if the user is logged in.
+      optional_data:
 
    Returns: example return value below
    If user is a temporary user:
@@ -193,7 +194,9 @@ def postpone():
    qid= int(request.json['qid'])
    try:
       queue_server.postpone(QueueMember(uid=uid), qid)
-      return jsonify({'SUCCESS':True})
+      q_info = queue_server.get_info(QueueMember(uid=uid), qid)
+      q_info_dict = dict(q_info.__dict__)
+      return jsonify(Success(q_info_dict))
    except QueueNotFoundException as e:
       return jsonify(Failure(e.message))
    except MemberNotFoundException as e:
