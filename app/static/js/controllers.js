@@ -192,11 +192,13 @@ angular.module('LineUpApp.controllers', []).
     $scope.postpone = function () {
       lineUpAPIService.postpone($routeParams.qid).
         success(function (data, status, header, config) {
-          //change the queue display
-          $scope.queue = data;
-
+          if(data.SUCCESS) {
+            $scope.queue = data;
+          } else {
+            $scope.error = "You are already at the end of the queue";
+          }
         }).
-        error(function () {
+        error(function (data, status, header, config) {
           alert("Something went wrong with your request to postpone!\nStatus: " + status);
         });
     };
