@@ -191,6 +191,7 @@ angular.module('LineUpApp.controllers', []).
       lineUpAPIService.queueStatus($routeParams.qid).
         success(function (data, status, headers, config) {
           $scope.queue = data;
+          console.log(data);
           document.getElementById('enqueued').classList.add('hide');
           document.getElementById('notEnqueued').classList.add('hide');
           if (data.member_position == null) {
@@ -204,12 +205,37 @@ angular.module('LineUpApp.controllers', []).
         });
     }();
 
+    $scope.promptForData = function () {
+      if ($scope.queue.logged_in) {
+        if ($scope.queue.prompt) {
+          $("#question-modal").modal('toggle');
+          //hide the name prompt
+          $("#name").classList.add("hide");
+        } else {
+          // don't show window just join queue
+          joinQueue();
+        } else {
+          if ($scope.queue.prompt) {
+            // show both the prompt and the name
+            $("#question-modal").modal('toggle');
+          }else {
+            $("#question-modal").modal('toggle');
+            // hide the prompt
+            $("#prompt").classList.add("hide");
+          }
+        }
+      }
+      if ($scope.queue.prompt) {
+        $("#question-modal").modal('toggle');
+      }
+    }
+
     // Sends a request to the server to join the queue
     // Upon success: Updates the current queueInfos array to store the results
     // of the request.
     // Upon error: TODO: Do something smart to handle the error
     $scope.joinQueue = function () {
-      lineUpAPIService.joinQueue({ 'qid': $scope.queue.qid, 'uname': "temp" }).
+      lineUpAPIService.joinQueue({ 'qid': $scope.queue.qid, 'uname': "temp", 'optional_data': $scope.optional_data }).
         success(function (data, status, headers, config) {
           $scope.queue = data;
           document.getElementById('notEnqueued').classList.add('hide');
