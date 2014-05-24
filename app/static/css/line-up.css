@@ -150,9 +150,13 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 	background-color: #E6DDBC;
 }
 
+#list-group {
+	width: 100%;
+	font-size: 200%;
+}
+
 .list-group-item {
 	background: linear-gradient(#8CBDBA, #76ADA9);
-	font-size: 200%;
 	border: 3px solid #3C3940;
 	margin-top: 20px;
 }
