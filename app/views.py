@@ -231,6 +231,47 @@ def postpone():
    except sqlite3.Error as e:
       return jsonify(Failure(e.message))
 
+@app.route('/leaveQueue', methods=['POST'])
+def leave_queue():
+   """
+   Args:
+   {
+      qid
+   }
+
+   Returns:
+   {
+      'SUCCESS': True or False
+      (if SUCCESS is true)
+      'qname':
+      'qid':
+      'size':
+      'expected_wait:
+      'avg_wait_time':
+      'member_position':
+      'organization':
+      'prompt':
+      'disclaimer':
+      'website':
+      'location':
+      (if SUCCESS is false)
+      'error_message':
+   }
+
+   """
+      
+   if not session.has_key('logged_in') and session['logged_in']:
+      return jsonify(Failure('You are not logged in!'))
+   uid=session['id']
+   qid=request.json
+   try:
+      queue_server.remove(QueueMember(uid=uid), qid)
+      return jsonify(Success({}))
+   except sqlite3.Error as e:
+      return jsonify(Failure('Failed to leave the queue.'))
+   except QueueNotFoundException as e:
+      return jsonify(Failure(e.message))
+
 @app.route('/searchResults')
 def get_search_results():
    return 'Not implemented yet!'
@@ -538,17 +579,17 @@ def remove_queue_member():
    uid = None
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['id']
-      qid = request.json['qid']
+      qid = request.json
       if permissions.has_flag(uid, qid, permissions.MANAGER):
          try:
-            queue_server.removeByID(uid, qid)
+            queue_server.remove(QueueMember(uid=uid), qid)
             return jsonify({'SUCCESS':True})
          except QueueNotFoundException as e:
             return jsonify(Failure(e.message))
       else:
-        return jsonify(Failure("You must be logged in as an manager to remove a user."))
+        return jsonify(Failure("You must be a manager to remove a user."))
    else:
-     return jsonify(Failure("You must at least be logged in to remove a user."))
+     return jsonify(Failure("You must be logged in as a manager to remove a user."))
 
 @app.route('/qtracks')
 def queue_tracks():

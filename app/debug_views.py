@@ -240,6 +240,13 @@ def dequeue_debug(qid):
    else:
       return 'You must be an manager to dequeue.'
 
+@app.route('/debug/remove', methods=['GET', 'POST'])
+def debug_remove():
+   qid = int(request.args['qid'])
+   uid = int(request.args['uid'])
+   queue_server.remove(QueueMember(uid=uid), qid)
+   return Success({})
+
 @app.route('/debug/postpone', methods=['GET', 'POST'])
 def dequeue_postpone():
    if not app.debug:

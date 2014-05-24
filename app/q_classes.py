@@ -318,22 +318,13 @@ class QueueServer(object):
    def remove(self, member, qid):
       """ This could raise a KeyError, which we are currently
          passing on the to caller. """
+      if not self.table.has_key(qid):
+         raise QueueNotFoundException('The queue was not found.')
       q = self.table[qid]
       self.index[member.uid].remove(qid)
       if self.sync_db:
          db_util.remove_by_uid_qid(member.uid, qid)
       return q.remove(member)
-
-   def removeByID(self, uid, qid):
-      """ This could raise a KeyError, which we are currently
-         passing on the to caller. """
-      q = self.table[qid]
-      self.index[uid].remove(qid)
-      if self.sync_db:
-         db_util.remove_by_uid_qid(uid, qid)
-      member = q.get_member(uid)
-      return q.remove(member)
-
 
    def dequeue(self, qid):
       if qid not in self.table:
