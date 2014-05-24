@@ -627,9 +627,10 @@ def remove_queue_member():
    """
    uid = None
    if session.has_key('logged_in') and session['logged_in']:
-      uid = session['id']
-      qid = request.json
-      if permissions.has_flag(uid, qid, permissions.MANAGER):
+      manager_id = session['id']
+      qid = request.json['qid']
+      uid = request.json['uid']
+      if permissions.has_flag(manager_id, qid, permissions.MANAGER):
          try:
             queue_server.remove(QueueMember(uid=uid), qid)
             return jsonify({'SUCCESS':True})
