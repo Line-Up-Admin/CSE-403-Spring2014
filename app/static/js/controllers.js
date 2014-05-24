@@ -177,7 +177,16 @@ angular.module('LineUpApp.controllers', []).
     }();
   }).
 
-  controller('queueInfoController', function ($scope, lineUpAPIService, $routeParams) {
+  controller('queueInfoController', function ($scope, $route, lineUpAPIService, $routeParams) {
+
+    // hide the edit button if we are on the create queue page
+    // called on element load with ng-init="init()"
+    $scope.init = function () {
+      if ($route.current.loadedTemplateUrl == "partials/queue_info.html") {
+        document.getElementById("edit-button").classList.add("hide");
+      }
+    };
+
     $scope.queueStatus = function () {
       lineUpAPIService.queueStatus($routeParams.qid).
         success(function (data, status, headers, config) {

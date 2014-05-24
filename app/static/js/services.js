@@ -27,7 +27,7 @@ angular.module('LineUpApp.services', []).
     }
 
     lineUpAPI.search = function (query) {
-            console.log(query);
+      console.log(query);
       return $http.post('/search', query);
     }
 
