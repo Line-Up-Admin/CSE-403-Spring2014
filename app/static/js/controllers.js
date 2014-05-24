@@ -187,6 +187,18 @@ angular.module('LineUpApp.controllers', []).
       }
     };
 
+    $scope.postpone = function () {
+      lineUpAPIService.postpone($routeParams.qid).
+        success(function (data, status, header, config) {
+          //change the queue display
+          $scope.queue = data;
+
+        }).
+        error(function () {
+          alert("Something went wrong with your request to postpone!\nStatus: " + status);
+        });
+    };
+
     $scope.queueStatus = function () {
       lineUpAPIService.queueStatus($routeParams.qid).
         success(function (data, status, headers, config) {
