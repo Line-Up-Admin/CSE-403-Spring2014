@@ -239,6 +239,7 @@ angular.module('LineUpApp.controllers', []).
 					$scope.queueInfo = data.queue_info;
 					console.log($scope.queueInfo.expected_wait);
 					$scope.member_list = data.member_list;
+					document.getElementById("list-group").size=$scope.member_list.length;
 				}).
 				error(function (data, status, headers, config) {
 					console.log($routeParams.qid);
