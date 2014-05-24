@@ -216,6 +216,10 @@ def get_temp_user(temp_uid):
 # Queue related utilities.
 #################################################
 
+def get_history(qid):
+   # This will be expanded upon
+   return None
+
 def create_queue(q_settings):
   """Creates a new queue with the defined settings. All settings except qid must exist.
 
