@@ -13,7 +13,7 @@ script:
  - coverage run --source=app tests/q_server_tests.py
  - coverage run --source=app tests/q_tests.py
 
-aftersuccess:
+after_success:
   - coveralls
 
 notifications:
