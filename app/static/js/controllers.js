@@ -324,6 +324,11 @@ angular.module('LineUpApp.controllers', []).
 					$scope.queueInfo = data.queue_info;
 					$scope.member_list = data.member_list;
 					$route.reload();
+					if(data.optional_data != null) {
+						alert(data.uname + " was removed, information: " + data.optional_data);
+					} else {
+						alert(data.uname + " was removed.");
+					}
 				}).
 				error(function (data, status, headers, config) {
 					alert("Something went wrong with the dequeue request!\nStatus: " + status);
