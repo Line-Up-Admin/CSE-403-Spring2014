@@ -396,7 +396,7 @@ class QueueServer(object):
       #this is a zero-based index
       position = q.get_position(member)
       return QueueInfo(qname, qid, size, ex_wait, avg_wait, position, q_set.organization, 
-                       q_set.prompt, q_set.disclaimer, q_set.min_wait_rejoin)
+                       q_set.prompt, q_set.disclaimer, q_set.website, q_set.location)
 
    def get_all_queues_info(self):
       """ (not in UML) """
@@ -445,7 +445,7 @@ class QueueInfo(object):
       about a queue. This info will be sent back to the client
       as JSON, and rendered in the browser."""
    def __init__(self, qname, qid, size, expected_wait, avg_wait_time,
-         member_position, organization, prompt, disclaimer, min_wait_rejoin):
+         member_position, organization, prompt, disclaimer, website, location):
       self.qname = qname
       self.qid = qid
       self.size = size
@@ -455,4 +455,5 @@ class QueueInfo(object):
       self.organization = organization
       self.prompt = prompt
       self.disclaimer = disclaimer
-      self.min_wait_rejoin = min_wait_rejoin
+      self.website = website
+      self.location = location
