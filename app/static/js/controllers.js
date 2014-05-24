@@ -265,7 +265,20 @@ angular.module('LineUpApp.controllers', []).
       if ($route.current.loadedTemplateUrl == "partials/create_queue.html") {
         document.getElementById("edit-button").classList.add("hide");
       }
-    };
+    }
+
+    $scope.getQueueSettings = function () {
+      console.log($routeParams.qid);
+      lineUpAPIService.getQueueSettings($routeParams.qid).
+        success(function (data, status, headers, config) {
+          console.log(data);
+          $scope.queue = data;
+        }).
+        error(function (data, status, headers, config) {
+          console.log($routeParams.qid);
+          alert("Could not retrieve queue settings. \nStatus: " + status);
+        });
+    }();
   }).
 
 	controller('adminViewController', function($scope, lineUpAPIService, $routeParams, $route) {
