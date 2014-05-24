@@ -37,6 +37,7 @@ angular.module('LineUpApp.controllers', []).
     }
   }).
 
+  // Controller for the #/login route
   controller('userLoginController', function ($scope, lineUpUserService, $location) {
     $scope.user = lineUpUserService.getUser();
 
@@ -90,7 +91,7 @@ angular.module('LineUpApp.controllers', []).
       delete $scope.user.pwx2;
       lineUpUserService.saveUser($scope.user);
 
-      console.log($scope.user);
+      // send the new account info to the server
       lineUpUserService.createUser($scope.user).
         success(function (data, status, headers, config) {
           // account created successfully, redirect to the login page
@@ -146,8 +147,8 @@ angular.module('LineUpApp.controllers', []).
       }
     };
 
-
-
+    // Sends search query to the server and fills the search results in the
+    // HTML
     $scope.search = function () {
       lineUpAPIService.search($scope.query).
         success(function (data, status, headers, config) {
@@ -159,7 +160,6 @@ angular.module('LineUpApp.controllers', []).
             alert("Something went wrong with the search request! \nStatus: " + status);
         });
     }
-
 
     // Sends a request to the server to get the information for the most popular
     // queues.
@@ -177,6 +177,7 @@ angular.module('LineUpApp.controllers', []).
     }();
   }).
 
+  // Controller for the #/queue_info route
   controller('queueInfoController', function ($scope, $route, lineUpAPIService, $routeParams) {
     $scope.optional_data = "";
     $scope.uname = "";
@@ -262,9 +263,16 @@ angular.module('LineUpApp.controllers', []).
     }
   }).
 
-  controller('editQueueController', function($scope, lineUpAPIService, $location, $routeParams, $route) {
+	controller('editQueueController', function($scope, lineUpAPIService, $routeParams, $location, $route) {
+    // hide the edit button if we are on the create queue page
+    // call on page load with ng-init="init()"
+    $scope.init = function () {
+      if ($route.current.loadedTemplateUrl == "partials/edit_queue.html") {
+        document.getElementById("edit-button").classList.add("hide");
+      }
+    }
 		$scope.queue = {};
-		
+
 		$scope.fillFormFields = function () {
 			lineUpAPIService.getQueueSettings($routeParams.qid).
 				success(function (data, status, headers, config) {
@@ -276,9 +284,13 @@ angular.module('LineUpApp.controllers', []).
 					alert("Something went wrong with the form fill request!\nStatus: " + status);
 				});
 		}();
-		
+
 		$scope.editQueue = function () {
+<<<<<<< HEAD
 			lineUpAPIService.editQueue({ 'qid': $routeParams.qid, 'q_settings': $scope.queue }).
+=======
+			lineUpAPIService.modifyQueue($scope.queue).
+>>>>>>> 1ac62cc73c9dca929c74199884cf28418db2e63b
 				success(function (data, status, headers, config) {
 					$location.path('/admin/' + $routeParams.qid);
 				}).
@@ -288,7 +300,8 @@ angular.module('LineUpApp.controllers', []).
 		}
   }).
 
-	controller('adminViewController', function($scope, lineUpAPIService, $location, $routeParams, $route) {
+  // Controller for the #/admin route
+	controller('adminViewController', function ($scope, lineUpAPIService, $routeParams, $route) {
 		$scope.user = {};
 		$scope.queueInfo = {};
 		$scope.member_list = [];
@@ -298,7 +311,7 @@ angular.module('LineUpApp.controllers', []).
 		$scope.redirectToEditQueue = function () {
 			$location.path('/edit/' + $routeParams.qid);
 		}
-		
+
 		// Sends an admin view request to the server.
     // Upon success: Shows the admin view for the given queue id.
     // Upon error: TODO: Do something smart to handle the error
@@ -316,7 +329,7 @@ angular.module('LineUpApp.controllers', []).
 					alert("Are you logged in as an existing user? If not, that might be an issue.\nStatus: " + status);
 				});
 		}();
-		
+
 		// Sends a dequeue request to the server.
     // Upon success: Dequeues the first person in line.
     // Upon error: TODO: Do something smart to handle the error
@@ -326,12 +339,17 @@ angular.module('LineUpApp.controllers', []).
 					$scope.queueInfo = data.queue_info;
 					$scope.member_list = data.member_list;
 					$route.reload();
+					if(data.optional_data != null) {
+						alert(data.uname + " was removed, information: " + data.optional_data);
+					} else {
+						alert(data.uname + " was removed.");
+					}
 				}).
 				error(function (data, status, headers, config) {
 					alert("Something went wrong with the dequeue request!\nStatus: " + status);
 				});
 		}
-		
+
 		// Sends a remove request to the server.
     // Upon success: Dequeues the first person in line.
     // Upon error: TODO: Do something smart to handle the error
@@ -370,6 +388,7 @@ angular.module('LineUpApp.controllers', []).
           alert("Something went wrong with the join queue request! \nStatus: " + status);
         });
 		}
+<<<<<<< HEAD
 		
 		// $scope.demoteSelectPerson() {
 			// var list = document.getElementById("list-group");
@@ -384,6 +403,9 @@ angular.module('LineUpApp.controllers', []).
 				// });
 		// }
 		
+=======
+
+>>>>>>> 1ac62cc73c9dca929c74199884cf28418db2e63b
 		// Sends a request to toggle the queue's active status to the server.
     // Upon success: toggles the queue to open or closed depending on prev state.
     // Upon error: Alert message.
