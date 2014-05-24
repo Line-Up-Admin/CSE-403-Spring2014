@@ -398,7 +398,7 @@ def get_queue_status(qid):
          q_member = QueueMember(uid=userid)
    q_info = queue_server.get_info(q_member, qid)
    if q_info is None:
-      return jsonify(Failure('The queue does not exist.'))'
+      return jsonify(Failure('The queue does not exist.'))
    q_info_dict = dict(q_info.__dict__)
    q_info_dict['logged_in'] = session.has_key('logged_in') and session['logged_in']
    return jsonify(q_info_dict)
