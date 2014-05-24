@@ -268,7 +268,7 @@ class QueueServer(object):
          #  (dict of list of tuples)
          time_rows = db_util.get_history(qid)
          if time_rows == None:
-            return None
+            return {}
          result = {}
          for row in time_rows:
             uid = row[uid]
