@@ -309,7 +309,7 @@ angular.module('LineUpApp.controllers', []).
   }).
 
   // Controller for the #/admin route
-	controller('adminViewController', function ($scope, lineUpAPIService, $routeParams, $route) {
+	controller('adminViewController', function ($scope, lineUpAPIService, $location, $routeParams, $route) {
 		$scope.user = {};
 		$scope.queueInfo = {};
 		$scope.member_list = [];
