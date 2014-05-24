@@ -124,7 +124,7 @@ class Queue(object):
          return 0
       if avg_wait and position:
          #avg_wait is already in minutes
-         ex_wait = avg_wait * (position + 0.5)/float(size) 
+         ex_wait = avg_wait * (position + 0.5)/len(self.my_q)
          return ex_wait
       else:
          # This is currently fake data for demoing purposes.
@@ -434,10 +434,11 @@ class QueueServer(object):
       if qid not in self.table:
          raise Exception('Queue not found')
       q = self.table[qid]
-      settings = q.q_settings
-      settings.active = active
+      q.q_settings.active = active
+      db_settings = dict(q.q_settings.__dict__)
+      db_settings['qid'] = qid
       if self.sync_db:
-          db_util.modify_queue_settings(settings)
+          db_util.modify_queue_settings(db_settings)
 
 class QueueInfo(object):
    """ This is a class to store a number of pieces of information
