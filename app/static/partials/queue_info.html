@@ -19,7 +19,7 @@
         Position {{ queue.member_position + 1 }} of {{ queue.size }}
       </div>
       <p class="buttons_control">
-        <a href="#" id="btn-postpone" class="btn btn-line-up btn-lg" role="button" ng-click="postpone()">
+        <a id="btn-postpone" class="btn btn-line-up btn-lg" role="button" ng-click="postpone()">
           <span class="glyphicon glyphicon-time"></span></br>
           Postpone
         </a>
@@ -30,7 +30,7 @@
       </p>
     </div>
     <div id="notEnqueued" class="queue-control container hide">
-      <p class="button-join"><buton id="btn-join" class="btn btn-line-up btn-lg btn-block" role="button" ng-click="promptForData()">
+      <p class="button-join"><button id="btn-join" class="btn btn-line-up btn-lg btn-block" role="button" ng-click="promptForData()">
         <span class="glyphicon glyphicon-send"></span></br>
         Join Queue
       </button></p>

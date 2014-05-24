@@ -192,10 +192,9 @@ angular.module('LineUpApp.controllers', []).
     $scope.postpone = function () {
       lineUpAPIService.postpone($routeParams.qid).
         success(function (data, status, header, config) {
+          console.log(data);
           if(data.SUCCESS) {
             $scope.queue = data;
-          } else {
-            $scope.error = "You are already at the end of the queue";
           }
         }).
         error(function (data, status, header, config) {
