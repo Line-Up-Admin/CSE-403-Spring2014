@@ -247,7 +247,13 @@ angular.module('LineUpApp.controllers', []).
   }).
 
   controller('editQueueController', function($scope, lineUpAPIService, $routeParams, $route) {
-
+    // hide the edit button if we are on the create queue page
+    // call on page load with ng-init="init()"
+    $scope.init = function () {
+      if ($route.current.loadedTemplateUrl == "partials/create_queue.html") {
+        document.getElementById("edit-button").classList.add("hide");
+      }
+    };
   }).
 
 	controller('adminViewController', function($scope, lineUpAPIService, $routeParams, $route) {
@@ -272,7 +278,7 @@ angular.module('LineUpApp.controllers', []).
 					alert("Are you logged in as an existing user? If not, that might be an issue.\nStatus: " + status);
 				});
 		}();
-		
+
 		// Sends a dequeue to the server.
     // Upon success: Dequeues the first person in line.
     // Upon error: TODO: Do something smart to handle the error
@@ -309,7 +315,7 @@ angular.module('LineUpApp.controllers', []).
           alert("Something went wrong with the join queue request! \nStatus: " + status);
         });
 		}
-		
+
 		$scope.setActive = function() {
 			var prevActiveStatus = document.getElementById("btn-close-queue").value;
 			lineUpAPIService.setActive({ 'qid': $routeParams.qid, 'setActive': $scope.prevActiveStatus }).
