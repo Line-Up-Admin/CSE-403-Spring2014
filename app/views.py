@@ -264,9 +264,6 @@ def search():
 def get_popular_queues():
    """Searches for popular queues.
 
-   Right now, this does no logic and returns all queues.
-   Improved popularity logic is coming in the Feature Complete Release.
-
    Args: none.
 
    Returns:
@@ -293,7 +290,9 @@ def get_popular_queues():
       }
 
    """
-   q_info_list = queue_server.get_all_queues_info()
+   #Filter the top 5
+   qids = queue_server.get_popular()[:4]
+   q_info_list = [queue_server.get_info(None, qid) for qid in qids]
    return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
 
 @app.route('/memberQueue', methods=['POST'])
@@ -541,17 +540,20 @@ def set_active():
 
    """
    uid = None
-   if session.has_key('logged_in') and session['logged_in'] and permissions.has_flag(uid, qid, permissions.MANAGER):
-      uid=session['id']
+   if session.has_key('logged_in') and session['logged_in']:
+      uid = session['id']
       qid = request.json['qid']
       active = request.json['active']
-      try:
-         queue_server.set_active(qid, active)
-         return jsonify({'SUCCESS':True})
-      except QueueNotFoundException as e:
-         return jsonify(Failure(e.message))
+      if permissions.has_flag(uid, qid, permissions.MANAGER):
+        try:
+          queue_server.set_active(qid, active)
+          return jsonify({'SUCCESS':True})
+        except QueueNotFoundException as e:
+          return jsonify(Failure(e.message))
+      else:
+        return jsonify(Failure("You must be logged in as an manager to open or close a queue."))
    else:
-      return jsonify(Failure("You must be logged in as an manager to open or close a queue."))
+     return jsonify(Failure("You must at least be logged in to open or close a queue."))
 
       
 @app.route('/login', methods=['GET', 'POST'])

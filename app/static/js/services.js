@@ -59,6 +59,10 @@ angular.module('LineUpApp.services', []).
       return $http.get('/queueStatus/' + qid);
     }
 
+    lineUpAPI.postpone = function (qid) {
+      return $http.post('/postpone', qid);
+    }
+
     return lineUpAPI;
   }).
 
