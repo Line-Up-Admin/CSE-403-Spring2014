@@ -15,7 +15,7 @@ GET_PERMISSIONED_QIDS_BY_UID = 'select qid from permissions where pid=? and perm
 GET_POSITION = 'select relative_position from qindex where uid=? and qid=?'
 GET_PROFILED_USER_BY_USERNAME = 'select * from users where temp=0 and uname=?'
 GET_QUEUES_BY_UID = 'select * from qindex where uid=?'
-GET_QUEUE_SETTINGS_BY_ID = 'select * from qsettings where id=?'
+GET_QUEUE_SETTINGS_BY_ID = 'select * from qsettings where qid=?'
 GET_TEMP_USER_BY_ID = 'select * from users where temp=1 and id=?'
 INSERT_INTO_QUEUE_HISTORY = 'insert into QHistory values (?, ?, ?, ?)'
 INSERT_MEMBER_INTO_QUEUE = 'insert into QIndex values(?, ?, (select ending_index from Queues where id=?), ?)'

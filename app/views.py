@@ -112,10 +112,11 @@ def add_to_queue():
    """
    uid = None
    username = None
-   qid = int(request.json['qid'])
    optional_data = None
+   qid = int(request.json['qid'])
    if request.json.has_key('optional_data'):
       optional_data = request.json['optional_data']
+      qid = int(request.json['qid'])
    if not queue_server.is_active(qid):
       return jsonify(Failure('The queue is not active!'))
    temp = None
@@ -203,7 +204,7 @@ def postpone():
       uid = session['id']
    else:
       return jsonify(Failure('You are not logged in!'))
-   qid= int(request.json['qid'])
+   qid= request.json
    try:
       queue_server.postpone(QueueMember(uid=uid), qid)
       q_info = queue_server.get_info(QueueMember(uid=uid), qid)
@@ -264,9 +265,6 @@ def search():
 def get_popular_queues():
    """Searches for popular queues.
 
-   Right now, this does no logic and returns all queues.
-   Improved popularity logic is coming in the Feature Complete Release.
-
    Args: none.
 
    Returns:
@@ -293,7 +291,9 @@ def get_popular_queues():
       }
 
    """
-   q_info_list = queue_server.get_all_queues_info()
+   #Filter the top 5
+   qids = queue_server.get_popular()[:4]
+   q_info_list = [queue_server.get_info(None, qid) for qid in qids]
    return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
 
 @app.route('/memberQueue', methods=['POST'])
@@ -368,14 +368,14 @@ def get_queue_settings():
       }
 
    """
-   queueID = request.json
+   qid = request.json
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['id']
    else:
       return jsonify(Failure('You must be logged in with an admin account to view queue settings.'))
    try:
-      if permissions.has_flag(uid, pid, permissions.ADMIN):
-         queue = db_util.get_queue_settings(queueID)
+      if permissions.has_flag(uid, qid, permissions.ADMIN):
+         queue = db_util.get_queue_settings(qid)
          return jsonify(queue)
       else:
          return jsonify(Failure('You must be an admin of the queue to see queue settings.'))
