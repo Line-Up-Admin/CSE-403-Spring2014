@@ -15,6 +15,7 @@ GET_PROFILED_USER_BY_USERNAME = 'select * from users where temp=0 and uname=?'
 GET_QUEUES_BY_UID = 'select * from qindex where uid=?'
 GET_QUEUE_SETTINGS_BY_ID = 'select * from qsettings where id=?'
 GET_TEMP_USER_BY_ID = 'select * from users where temp=1 and id=?'
+INSERT_INTO_QUEUE_HISTORY = 'insert into QHistory values (?, ?, ?, ?)'
 INSERT_MEMBER_INTO_QUEUE = 'insert into QIndex values(?, ?, (select ending_index from Queues where id=?), ?)'
 INSERT_PROFILED_USER = 'insert into users values(?, ?, ?, ?, ?, ?, ?)'
 INSERT_QUEUE = 'insert into queues values(?, 0, 0)'
@@ -24,7 +25,8 @@ REMOVE_MEMBER_FROM_QUEUE = 'delete from qindex where uid=? and qid=?'
 UPDATE_POSITION = 'update qindex set relative_position=? where uid=? and qid=?'
 UPDATE_QUEUE_FOR_ADD = 'update Queues set ending_index=ending_index+1 where id=?'
 UPDATE_QUEUE_FOR_REMOVE = 'update queues set starting_index=starting_index+1 where id=?'
-UPDATE_QUEUE_SETTINGS = 'update qsettings set qname=?, max_size=?, keywords=?, location=?, active=? min_wait_rejoin=? website=? organization=? disclaimer=? prompt=?'
+UPDATE_QUEUE_HISTORY = 'update qhistory set leave_time=? where uid=? and qid=? and leave_time is null'
+UPDATE_QUEUE_SETTINGS = 'update qsettings set qname=?, max_size=?, keywords=?, location=?, active=?, min_wait_rejoin=?, website=?, organization=?, disclaimer=?, prompt=?'
 
 
 def query_db(query, args=()):
@@ -53,6 +55,7 @@ class ValidationException(Exception):
 import permissions
 import validators
 import sqlite3
+import time
 from app import get_db
 
 #############################################
@@ -291,6 +294,7 @@ def add_to_queue(uid, qid, optional_data):
   db = get_db()
   db.execute(INSERT_MEMBER_INTO_QUEUE, (uid, qid, qid, optional_data))
   db.execute(UPDATE_QUEUE_FOR_ADD, (qid,))
+  db.execute(INSERT_INTO_QUEUE_HISTORY, (uid, qid, int(time.time()), None))
   db.commit()
 
 def swap(uid1, uid2, qid):
@@ -313,6 +317,7 @@ def remove_by_uid_qid(uid, qid):
   db = get_db()
   db.execute(REMOVE_MEMBER_FROM_QUEUE, (uid, qid))
   db.execute(UPDATE_QUEUE_FOR_REMOVE, (qid,))
+  db.execute(UPDATE_QUEUE_HISTORY, (int(time.time()), uid, qid))
   db.commit()
 
 def get_queue_members(qid):
