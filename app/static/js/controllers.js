@@ -229,6 +229,7 @@ angular.module('LineUpApp.controllers', []).
 		$scope.user = {};
 		$scope.queueInfo = {};
 		$scope.member_list = [];
+		$scope.setActiveStatusTo = "Close Queue";
 
 		// Sends an admin view request to the server.
     // Upon success: Shows the admin view for the given queue id.
@@ -239,14 +240,14 @@ angular.module('LineUpApp.controllers', []).
 					$scope.queueInfo = data.queue_info;
 					console.log($scope.queueInfo.expected_wait);
 					$scope.member_list = data.member_list;
-					document.getElementById("list-group").size=$scope.member_list.length;
+					document.getElementById("list-group").size=$scope.member_list.length+1;
 				}).
 				error(function (data, status, headers, config) {
 					console.log($routeParams.qid);
 					alert("Are you logged in as an existing user? If not, that might be an issue.\nStatus: " + status);
 				});
 		}();
-
+		
 		// Sends a dequeue to the server.
     // Upon success: Dequeues the first person in line.
     // Upon error: TODO: Do something smart to handle the error
@@ -281,6 +282,24 @@ angular.module('LineUpApp.controllers', []).
 				}).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the join queue request! \nStatus: " + status);
+        });
+		}
+		
+		$scope.setActive = function() {
+			var prevActiveStatus = document.getElementById("btn-close-queue").value;
+			lineUpAPIService.setActive({ 'qid': $routeParams.qid, 'setActive': $scope.prevActiveStatus }).
+        success(function (data, status, headers, config) {
+					var button = document.getElementById("btn-close-queue");
+					if( $scope.prevActiveStatus == 0 ) {
+						$scope.setActiveStatusTo = "Open Queue";
+						button.value = 1;
+					} else {
+						$scope.setActiveStatusTo = "Close Queue";
+						button.value = 0;
+					}
+				}).
+        error(function (data, status, headers, config) {
+          alert("Could not change queue active status.\nStatus: " + status);
         });
 		}
 	});
