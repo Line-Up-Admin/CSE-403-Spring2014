@@ -255,9 +255,7 @@ def search():
 
    """
 
-   search_string = request.json
-   print "\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n"
-   print search_string
+   search_string = request.data
    qids = queue_server.search(search_string)
    q_info_list = [queue_server.get_info(None, qid) for qid in qids]
    return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
