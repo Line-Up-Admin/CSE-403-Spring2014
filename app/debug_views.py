@@ -7,6 +7,13 @@ import permissions
 
 from q_classes import QueueServer, QueueMember, QueueSettings, QueueNotFoundException
 
+def Failure(message):
+   return {'SUCCESS':False, 'error_message':message}
+
+def Success(dict_to_be_jsonified):
+   dict_to_be_jsonified['SUCCESS'] = True
+   return dict_to_be_jsonified
+
 # Temporary: debugging purposes only.
 @app.route('/helloworld', methods=['GET', 'POST'])
 def helloworld():
@@ -231,7 +238,8 @@ def dequeue_postpone():
       raise Exception('You are not logged in!')
    qid=int(request.args.get('qid'))
    queue_server.postpone(QueueMember(uid=uid), qid)
-   return jsonify({'SUCCESS':True})
+   q_info_dict = dict(queue_server.get_info(QueueMember(uid=uid), qid).__dict__)
+   return jsonify(Success(q_info_dict))
 
 def copy_request_args(origRequest):
    res = dict()

@@ -27,9 +27,9 @@
 				{{queueInfo.size}} people
 			</div>
 			<div class="queue-member-listing">
-				<ul class="list-group">
-					<li class="list-group-item" ng-repeat='person in member_list'>{{person.uname}}</li>
-				</ul>
+				<select id="list-group">
+					<option class="list-group-item" ng-repeat='person in member_list'>{{person.uname}}</option>
+				</select>
 			</div>
 		</div>
 		<div class="control-options container text-center">
@@ -58,10 +58,10 @@
 					<span class="glyphicon glyphicon-star"></span></br>
 					Promote
 				</button>
-				<button id="btn-begin-closing" class="btn btn-line-up btn-lg" role="button" disabled>
+				<!-- <button id="btn-begin-closing" class="btn btn-line-up btn-lg" role="button" disabled>
 					<span class="glyphicon glyphicon-ban-circle"></span></br>
 					Begin Closing
-				</button>
+				</button> -->
 				<button id="btn-close-queue" class="btn btn-line-up btn-lg" role="button" disabled>
 					<span class="glyphicon glyphicon-remove"></span></br>
 					Close Queue

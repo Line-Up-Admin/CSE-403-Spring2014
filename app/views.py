@@ -10,6 +10,10 @@ from q_classes import QueueServer, QueueMember, QueueSettings, QueueNotFoundExce
 def Failure(message):
    return {'SUCCESS':False, 'error_message':message}
 
+def Success(dict_to_be_jsonified):
+   dict_to_be_jsonified['SUCCESS'] = True
+   return dict_to_be_jsonified
+
 # This procedure picks up the default route and returns index.html.
 @app.route('/')
 def root():
@@ -82,6 +86,7 @@ def add_to_queue():
    Args:
       qid: the id of the queue to join.
       uname: the uname to create a temporary user. This is ignored if the user is logged in.
+      optional_data:
 
    Returns: example return value below
    If user is a temporary user:
@@ -108,6 +113,9 @@ def add_to_queue():
    uid = None
    username = None
    qid = int(request.json['qid'])
+   optional_data = None
+   if request.json.has_key('optional_data'):
+      optional_data = request.json['optional_data']
    if not queue_server.is_active(qid):
       return jsonify(Failure('The queue is not active!'))
    temp = None
@@ -125,7 +133,7 @@ def add_to_queue():
       username = temp_user['uname']
       uid = temp_user['id']
    if not permissions.has_flag(uid, qid, permissions.BLOCKED_USER):
-      q_member = QueueMember(username, uid)
+      q_member = QueueMember(username, uid, optional_data)
       queue_server.add(q_member, qid)
       q_info = queue_server.get_info(q_member, qid)
       q_info_dict = dict(q_info.__dict__)
@@ -169,7 +177,6 @@ def postpone():
    Args:
    {
       qid:
-      uid:
    }
 
    Returns:
@@ -185,10 +192,11 @@ def postpone():
    else:
       return jsonify(Failure('You are not logged in!'))
    qid= int(request.json['qid'])
-   uid = int(request.json['uid'])
    try:
       queue_server.postpone(QueueMember(uid=uid), qid)
-      return jsonify({'SUCCESS':True})
+      q_info = queue_server.get_info(QueueMember(uid=uid), qid)
+      q_info_dict = dict(q_info.__dict__)
+      return jsonify(Success(q_info_dict))
    except QueueNotFoundException as e:
       return jsonify(Failure(e.message))
    except MemberNotFoundException as e:
@@ -373,6 +381,7 @@ def get_queue_status(qid):
          "avg_wait_time": null,
          "confirmation_number": null,
          "expected_wait": null,
+         "logged_in": True or False
          "member_position": null,
          "qname": "ohhey",
          "qid": 556035656,
@@ -393,7 +402,9 @@ def get_queue_status(qid):
    q_info = queue_server.get_info(q_member, qid)
    if q_info is None:
       return jsonify(Failure('The queue does not exist.'))
-   return jsonify(q_info.__dict__)
+   q_info_dict = dict(q_info.__dict__)
+   q_info_dict['logged_in'] = session.has_key('logged_in') and session['logged_in']
+   return jsonify(q_info_dict)
 
 @app.route('/myQueues', methods=['GET', 'POST'])
 def get_my_queues():
