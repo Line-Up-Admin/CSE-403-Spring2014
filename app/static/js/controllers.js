@@ -14,8 +14,6 @@ angular.module('LineUpApp.controllers', []).
       }
     };
 
-          $scope.test = ["lskdjfkdfj", "dkljfl"];
-
     // Sends a request to the server to create a new queue. The request
     // contains the new queue settings.
     // Upon success: Updates the current queue model to include the new ID.
@@ -148,8 +146,10 @@ angular.module('LineUpApp.controllers', []).
       }
     };
 
+
+
     $scope.search = function () {
-      lineUpAPIService.search().
+      lineUpAPIService.search($scope.query).
         success(function (data, status, headers, config) {
             document.getElementById("results").innerHTML="Search Results";
             $scope.queueInfos = data.queue_info_list;
@@ -177,7 +177,16 @@ angular.module('LineUpApp.controllers', []).
     }();
   }).
 
-  controller('queueInfoController', function ($scope, lineUpAPIService, $routeParams) {
+  controller('queueInfoController', function ($scope, $route, lineUpAPIService, $routeParams) {
+
+    // hide the edit button if we are on the create queue page
+    // called on element load with ng-init="init()"
+    $scope.init = function () {
+      if ($route.current.loadedTemplateUrl == "partials/queue_info.html") {
+        document.getElementById("edit-button").classList.add("hide");
+      }
+    };
+
     $scope.queueStatus = function () {
       lineUpAPIService.queueStatus($routeParams.qid).
         success(function (data, status, headers, config) {

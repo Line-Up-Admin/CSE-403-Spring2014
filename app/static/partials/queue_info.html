@@ -1,56 +1,40 @@
-<!-- header image -->
-		<div class="header-content">
-			<div class="text-right">
-				<div class="line-up-icon">
-					<img class="pull-left img-responsive" src="img/LineUp_Icon.png"/>
+<!-- Header -->
+<div class="header-content" ng-include src="'partials/header.html'"></div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">{{ queue.qname }}</div>
+  <div class="panel-body">
+    <div class="queue-portrait">
+			<img src="img/default.png"/>
+		</div>
+		<div id="enqueued" class="queue_control container text-center hide">
+			<div class="queue-status">
+				{{ queue.expected_wait }} min</br>
+				<div class="progress queue-position">
+					<div class="progress-bar" style="width: 60%;"></div>
 				</div>
-				<a href="#/home"><button type="button" class="btn btn-default btn-lg">
-					<span class="glyphicon glyphicon-home"></span>
-				</button></a>
-				<button type="button" class="btn btn-default btn-lg" disabled>
-					<span class="glyphicon glyphicon-exclamation-sign"></span>
-				</button>
-				<button type="button" class="btn btn-default btn-lg" disabled>
-					<span class="glyphicon glyphicon-log-out"></span>
-				</button>
+				Position {{ queue.member_position + 1 }} of {{ queue.size }}
 			</div>
-			<hr class="bar3">
-		</div>
-
-<div class="queue_face container text-center">
-	<div class="queue-portrait">
-		<img src="img/default.png"/>
-	</div>
-	<h1 class="queue-page-header">{{ queue.qname }}</h1>
-</div>
-<div id="enqueued" class="queue_control container text-center hide">
-	<div class="queue-status">
-		{{ queue.expected_wait }} min</br>
-		<div class="progress queue-position">
-			<div class="progress-bar" style="width: 60%;">
+			<p class="buttons_control">
+				<a href="#" id="btn-postpone" class="btn btn-line-up btn-lg" role="button" onclick="return false">
+					<span class="glyphicon glyphicon-time"></span></br>
+					Postpone
+				</a>
+				<a href="#" id="btn-leave" class="btn btn-line-up btn-lg" role="button" onclick="return false">
+					<span class="glyphicon glyphicon-remove-sign"></span></br>
+					Leave Queue
+				</a>
+			</p>
+  	</div>
+  	<div id="notEnqueued" class="queue-control container hide">
+			<p class="button-join"><buton id="btn-join" class="btn btn-line-up btn-lg btn-block" role="button" ng-click="joinQueue()">
+				<span class="glyphicon glyphicon-send"></span></br>
+				Join Queue
+			</button></p>
+			<div class="queue-status">
+				{{ queue.expected_wait }} min wait</br>
+				{{ queue.size }} people
 			</div>
 		</div>
-		Position {{ queue.member_position + 1 }} of {{ queue.size }}
-	</div>
-	<p class="buttons_control">
-		<a href="#" id="btn-postpone" class="btn btn-line-up btn-lg" role="button" onclick="return false">
-			<span class="glyphicon glyphicon-time"></span></br>
-			Postpone
-		</a>
-		<a href="#" id="btn-leave" class="btn btn-line-up btn-lg" role="button" onclick="return false">
-			<span class="glyphicon glyphicon-remove-sign"></span></br>
-			Leave Queue
-		</a>
-	</p>
-</div>
-
-<div id="notEnqueued" class="queue-control container hide">
-	<p class="button-join"><buton id="btn-join" class="btn btn-line-up btn-lg btn-block" role="button" ng-click="joinQueue()">
-		<span class="glyphicon glyphicon-send"></span></br>
-		Join Queue
-	</button></p>
-	<div class="queue-status">
-		{{ queue.expected_wait }} min wait</br>
-		{{ queue.size }} people
-	</div>
+  </div>
 </div>
