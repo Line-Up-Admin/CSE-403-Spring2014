@@ -258,8 +258,24 @@ class QueueServer(object):
       self.index = {}
       self.sync_db = sync_db
       if not sync_db:
+         # If we don't want to recreate from the database, we can stop here
          self.id_gen = 500
          return
+
+      def get_q_history(qid):
+         # this method takes a qid, gets the info from the database
+         #  and returns the q_history for it.
+         #  (dict of list of tuples)
+         time_rows = db_util.get_history(qid)
+         if time_rows == None:
+            return None
+         result = {}
+         for row in time_rows:
+            uid = row[uid]
+            if uid not in result:
+               result[uid] = []
+            result[uid].append( (row['join_time'], row['leave_time']) )
+         return result
 
       # read all the queues from the database, and put them into the tables
       # get_all_queues returns a list of tuples of qids to QueueSettings 
@@ -271,22 +287,10 @@ class QueueServer(object):
          q_settings = QueueSettings.from_dict(q_settings_row)
          qid = q_settings_row['qid']
          q = Queue(qid, q_settings)
+         #reattach the time history to the queue
+         q.wait_times = get_q_history(qid)
          self.table[qid] = q
          member_rows = db_util.get_queue_members(qid)
-         # Working on implementing constructing from history
-   #      timestamp_rows = db_util.get_history(qid)
-   #      if timestamp_rows is not None:  
-   #         for entry in timestamp_rows:
-   #            uid = entry[uid]
-   #            tup = (entry['join_time'], entry['leave_time'])
-   #            #queue here has qid of 98769876
-   #            if q
-   #            
-
-            # do something here to add the timestamp_rows to your queue history.
-            # timestamp_rows[0]['join_time'] = 148000234
-            # timestamp_rows[0]['leave_time'] = 148002222
-            # timestamp_rows[0]['uid'] = 10         
          if member_rows:
             j = 0
             for member_row in member_rows:
@@ -448,8 +452,9 @@ class QueueServer(object):
       ex_wait = q.get_expected_wait(member)
       #this is a zero-based index
       position = q.get_position(member)
-      return QueueInfo(qname, qid, size, ex_wait, avg_wait, position, q_set.organization, 
-                       q_set.prompt, q_set.disclaimer, q_set.website, q_set.location)
+      return QueueInfo(qname, qid, size, ex_wait, avg_wait, 
+            position, q_set.organization, q_set.prompt, 
+            q_set.disclaimer, q_set.website, q_set.location)
 
    def get_all_queues_info(self):
       """ (not in UML) """
