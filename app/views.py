@@ -414,8 +414,39 @@ def get_queue_status(qid):
       return jsonify(Failure('The queue does not exist.'))
    q_info_dict = dict(q_info.__dict__)
    q_info_dict['logged_in'] = session.has_key('logged_in') and session['logged_in']
-   return jsonify(q_info_dict)
+   return jsonify(Success(q_info_dict))
 
+
+@app.route('/editQueue', methods=['POST'])
+def edit_queue():
+   """Change the settings for a queue.
+   Args:
+      {
+         qid:
+         q_settings:
+      }
+   Returns:
+      {
+         SUCCESS:
+         error_message: (only if failure)
+      }
+   """
+   uid = None
+   if session.has_key('logged_in') and session['logged_in']:
+      uid = session['id']
+      qid = request.json['qid']
+      qsettings = request.json['q_settings']
+      if permissions.has_flag(uid, qid, permissions.ADMIN):
+         try:
+            queue_server.edit_queue(qid, qsettings)
+            return jsonify({'SUCCESS':True})
+         except QueueNotFoundException as e:
+            return jsonify(Failure(e.message))
+      else:
+        return jsonify(Failure("You must be logged in as an admin to edit queue settings."))
+   else:
+     return jsonify(Failure("You must at least be logged in to edit queue settings."))
+      
 @app.route('/myQueues', methods=['GET', 'POST'])
 def get_my_queues():
    """Gets the info about the queues you are in.
