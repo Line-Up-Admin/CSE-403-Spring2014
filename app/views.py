@@ -182,6 +182,18 @@ def postpone():
    Returns:
    {
       'SUCCESS': True or False
+      (if SUCCESS is true)
+      'qname':
+      'qid':
+      'size':
+      'expected_wait:
+      'avg_wait_time':
+      'member_position':
+      'organization':
+      'prompt':
+      'disclaimer':
+      'website':
+      'location':
       (if SUCCESS is false)
       'error_message':
    }

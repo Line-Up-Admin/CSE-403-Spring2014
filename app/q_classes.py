@@ -99,7 +99,7 @@ class Queue(object):
          the position is not affected."""
       pos = self.get_position(member)
       if pos == None:
-         raise Exception("Member is not in queue.")
+         raise MemberNotFoundException("Member is not in queue.")
       elif pos + 1 < len(self.my_q):
          #There is room to move the user back a position in the queue.
          temp = self.my_q[pos]
