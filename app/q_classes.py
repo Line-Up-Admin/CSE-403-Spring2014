@@ -438,7 +438,7 @@ class QueueServer(object):
    def set_active(self, qid, active):
       """ Sets a specific queue as active or inactive."""
       if qid not in self.table:
-         raise Exception('Queue not found')
+         raise QueueNotFoundException('Queue not found')
       q = self.table[qid]
       q.q_settings.active = active
       db_settings = dict(q.q_settings.__dict__)
