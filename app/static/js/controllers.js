@@ -263,9 +263,17 @@ angular.module('LineUpApp.controllers', []).
     }
   }).
 
-  controller('editQueueController', function($scope, lineUpAPIService, $routeParams, $route) {
+  controller('editQueueController', function($scope, lineUpAPIService, $routeParams, $location, $route) {
+    // hide the edit button if we are on the create queue page
+    // call on page load with ng-init="init()"
+    $scope.init = function () {
+      if ($route.current.loadedTemplateUrl == "partials/edit_queue.html") {
+        document.getElementById("edit-button").classList.add("hide");
+      }
+    }
+
 		$scope.queue = {};
-		
+
 		$scope.fillFormFields = function () {
 			lineUpAPIService.getQueueSettings($routeParams.qid).
 				success(function (data, status, headers, config) {
@@ -275,9 +283,9 @@ angular.module('LineUpApp.controllers', []).
 					alert("Something went wrong with the form fill request!\nStatus: " + status);
 				});
 		}();
-		
+
 		$scope.editQueue = function () {
-			lineUpAPIService.editQueue({ 'qid': $routeParams.qid, 'q_settings': queue }).
+			lineUpAPIService.modifyQueue($scope.queue).
 				success(function (data, status, headers, config) {
 					$location.path('/admin/' + $routeParams.qid);
 				}).
@@ -298,7 +306,7 @@ angular.module('LineUpApp.controllers', []).
 		$scope.redirectToEditQueue = function () {
 			$location.path('/edit/' + $routeParams.qid);
 		}
-		
+
 		// Sends an admin view request to the server.
     // Upon success: Shows the admin view for the given queue id.
     // Upon error: TODO: Do something smart to handle the error
@@ -316,7 +324,7 @@ angular.module('LineUpApp.controllers', []).
 					alert("Are you logged in as an existing user? If not, that might be an issue.\nStatus: " + status);
 				});
 		}();
-		
+
 		// Sends a dequeue request to the server.
     // Upon success: Dequeues the first person in line.
     // Upon error: TODO: Do something smart to handle the error
@@ -336,7 +344,7 @@ angular.module('LineUpApp.controllers', []).
 					alert("Something went wrong with the dequeue request!\nStatus: " + status);
 				});
 		}
-		
+
 		// Sends a remove request to the server.
     // Upon success: Dequeues the first person in line.
     // Upon error: TODO: Do something smart to handle the error
@@ -375,7 +383,7 @@ angular.module('LineUpApp.controllers', []).
           alert("Something went wrong with the join queue request! \nStatus: " + status);
         });
 		}
-		
+
 		// Sends a request to toggle the queue's active status to the server.
     // Upon success: toggles the queue to open or closed depending on prev state.
     // Upon error: Alert message.
