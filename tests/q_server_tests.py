@@ -68,6 +68,7 @@ class SomeTest(unittest.TestCase):
       qs3 = {"qname":"dragon castle", "location":"Fire Mountain"}
       qs4 = {"qname":"lunch spot", "location":"Berlin"}
       qs5 = {"qname":"dragon park", "location":"Fire Mountain"}
+      qs6 = {"qname":"twilight struggle", "keywords":"board;game:fun;;seattle"}
 
       # create queues using the settings
       qid_1 = qs.create(qs1)
@@ -75,6 +76,7 @@ class SomeTest(unittest.TestCase):
       qid_3 = qs.create(qs3)
       qid_4 = qs.create(qs4)
       qid_5 = qs.create(qs5)
+      qid_6 = qs.create(qs6)
 
       #search for a queue by name
       res1 = qs.search("water park")
@@ -84,17 +86,18 @@ class SomeTest(unittest.TestCase):
 
       #search by location
       res2 = qs.search("Seattle")
-      assert len(res2) == 2
+      assert len(res2) == 3
       assert qid_1 in res2
       assert qid_2 in res2
+      assert qid_6 in res2
 
       #search with both
       res3 = qs.search("lunch spot seattle")
-      assert len(res3) == 3
+      assert len(res3) == 4
       assert res3[0] == qid_2
       assert res3[1] == qid_4
-      assert res3[2] == qid_1
-      assert qid_2 in res3
+      assert qid_1 in res3
+      assert qid_6 in res3
 
 
 if __name__ == '__main__':

@@ -182,6 +182,18 @@ def postpone():
    Returns:
    {
       'SUCCESS': True or False
+      (if SUCCESS is true)
+      'qname':
+      'qid':
+      'size':
+      'expected_wait:
+      'avg_wait_time':
+      'member_position':
+      'organization':
+      'prompt':
+      'disclaimer':
+      'website':
+      'location':
       (if SUCCESS is false)
       'error_message':
    }
@@ -243,9 +255,7 @@ def search():
 
    """
 
-   search_string = request.json
-   print "\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n"
-   print search_string
+   search_string = request.data
    qids = queue_server.search(search_string)
    q_info_list = [queue_server.get_info(None, qid) for qid in qids]
    return jsonify(queue_info_list=[q_info.__dict__ for q_info in q_info_list])
@@ -514,6 +524,36 @@ def create_user():
    except db_util.ValidationException as e:
       return jsonify(Failure(e.message))
 
+@app.route('/setActive', methods=['POST'])
+def set_active():
+   """ Sets a queue's active status. 
+   Args:
+      {
+         qid:
+         active:
+      }
+
+   Returns:
+      {
+         SUCCESS:
+         error_message: (only if failure)
+      }
+
+   """
+   uid = None
+   if session.has_key('logged_in') and session['logged_in'] and permissions.has_flag(uid, qid, permissions.MANAGER):
+      uid=session['id']
+      qid = request.json['qid']
+      active = request.json['active']
+      try:
+         queue_server.set_active(qid, active)
+         return jsonify({'SUCCESS':True})
+      except QueueNotFoundException as e:
+         return jsonify(Failure(e.message))
+   else:
+      return jsonify(Failure("You must be logged in as an manager to open or close a queue."))
+
+      
 @app.route('/login', methods=['GET', 'POST'])
 def login():
    """

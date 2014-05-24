@@ -267,7 +267,8 @@ def modify_queue_settings(q_settings):
       (2) The q_settings are invalid.
     PermissionException: the current session user does not have permission to modify this queue's settings.
   """
-  raise NotImplementedError()
+  db.execute(UPDATE_QUEUE_SETTINGS, qsettings_dict_to_db_tuple(q_settings))
+  db.commit()
 
 def delete_queue(qid):
   """Deletes the queue with the given qid.

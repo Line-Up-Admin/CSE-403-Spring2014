@@ -93,13 +93,13 @@ class Queue(object):
       del q[pos]
       return True
 
-   def postpone(self, member, sync_db):
+   def postpone(self, member, sync_db = False):
       """ Postpones a Queue Member's position in a Queue.
          If a user attempt to postpone past the end of the line,
          the position is not affected."""
       pos = self.get_position(member)
       if pos == None:
-         raise Exception("Member is not in queue.")
+         raise MemberNotFoundException("Member is not in queue.")
       elif pos + 1 < len(self.my_q):
          #There is room to move the user back a position in the queue.
          temp = self.my_q[pos]
@@ -176,6 +176,14 @@ class Queue(object):
          members.append(member[0])
       return members
 
+   def get_popularity(self):
+        """
+        Returns the number of people who have been enqued and dequed
+        from this queue"""
+        total = 0
+        for item in self.wait_times.values():
+           total += len(item)
+        return total
 
 class QueueMember(object):
       """  This is a person / anonymous user in a queue. More
@@ -252,6 +260,7 @@ class QueueServer(object):
       if not sync_db:
          self.id_gen = 500
          return
+
       # read all the queues from the database, and put them into the tables
       # get_all_queues returns a list of tuples of qids to QueueSettings 
       #  objects
@@ -264,8 +273,16 @@ class QueueServer(object):
          q = Queue(qid, q_settings)
          self.table[qid] = q
          member_rows = db_util.get_queue_members(qid)
-         #timestamp_rows = db_util.get_history(qid)
-         #if timestamp_rows is not None:  
+         # Working on implementing constructing from history
+   #      timestamp_rows = db_util.get_history(qid)
+   #      if timestamp_rows is not None:  
+   #         for entry in timestamp_rows:
+   #            uid = entry[uid]
+   #            tup = (entry['join_time'], entry['leave_time'])
+   #            #queue here has qid of 98769876
+   #            if q
+   #            
+
             # do something here to add the timestamp_rows to your queue history.
             # timestamp_rows[0]['join_time'] = 148000234
             # timestamp_rows[0]['leave_time'] = 148002222
@@ -356,6 +373,15 @@ class QueueServer(object):
       results = [item[0] for item in results]
       return results
 
+   def get_popular(self):
+         """ Returns a list of queues, sorted by their popularity """
+         results = []
+         for (qid, queue) in self.table.items():
+            results.append( (qid, queue.get_popularity()) )
+         results = sorted(results, key=itemgetter(1), reverse=True)
+         results = [item[0] for item in results]
+         return results
+
    def create(self, settings):
       """ Given a settings dictionary, or a QueueSettings object,
          creates a queue, adds to the database, and 
@@ -438,7 +464,7 @@ class QueueServer(object):
    def set_active(self, qid, active):
       """ Sets a specific queue as active or inactive."""
       if qid not in self.table:
-         raise Exception('Queue not found')
+         raise QueueNotFoundException('Queue not found')
       q = self.table[qid]
       q.q_settings.active = active
       db_settings = dict(q.q_settings.__dict__)
