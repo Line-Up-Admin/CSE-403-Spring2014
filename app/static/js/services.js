@@ -9,6 +9,10 @@ angular.module('LineUpApp.services', []).
     lineUpAPI.createQueue = function (queue) {
       return $http.post('/createQueue', queue);
     }
+		
+		lineUpAPI.editQueue = function (queue) {
+			return $http.post('/editQueue', queue);
+		}
 
     lineUpAPI.getQueueSettings = function (qid) {
       return $http.post('/getQueueSettings', qid);
@@ -30,6 +34,10 @@ angular.module('LineUpApp.services', []).
       console.log(query);
       return $http.post('/search', query);
     }
+		
+		lineUpAPI.setActive = function (data) {
+			return $http.post('/setActive', data);
+		}
 
     lineUpAPI.joinQueue = function (data) {
       return $http.post('/join', data);
