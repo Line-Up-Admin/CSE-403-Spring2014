@@ -70,6 +70,10 @@ angular.module('LineUpApp.services', []).
     lineUpAPI.postpone = function (qid) {
       return $http.post('/postpone', qid);
     }
+		
+		lineUpAPI.demoteSelectPerson = function (data) {
+			return $http.post('/managerPostpone/', data);
+		}
 
     lineUpAPI.leaveQueue = function (qid) {
       return $http.post('/leaveQueue', qid);
