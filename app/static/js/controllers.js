@@ -37,6 +37,7 @@ angular.module('LineUpApp.controllers', []).
     }
   }).
 
+  // Controller for the #/login route
   controller('userLoginController', function ($scope, lineUpUserService, $location) {
     $scope.user = lineUpUserService.getUser();
 
@@ -90,7 +91,7 @@ angular.module('LineUpApp.controllers', []).
       delete $scope.user.pwx2;
       lineUpUserService.saveUser($scope.user);
 
-      console.log($scope.user);
+      // send the new account info to the server
       lineUpUserService.createUser($scope.user).
         success(function (data, status, headers, config) {
           // account created successfully, redirect to the login page
@@ -146,8 +147,8 @@ angular.module('LineUpApp.controllers', []).
       }
     };
 
-
-
+    // Sends search query to the server and fills the search results in the
+    // HTML
     $scope.search = function () {
       lineUpAPIService.search($scope.query).
         success(function (data, status, headers, config) {
@@ -159,7 +160,6 @@ angular.module('LineUpApp.controllers', []).
             alert("Something went wrong with the search request! \nStatus: " + status);
         });
     }
-
 
     // Sends a request to the server to get the information for the most popular
     // queues.
@@ -177,6 +177,7 @@ angular.module('LineUpApp.controllers', []).
     }();
   }).
 
+  // Controller for the #/queue_info route
   controller('queueInfoController', function ($scope, $route, lineUpAPIService, $routeParams) {
     $scope.optional_data = "";
     $scope.uname = "";
@@ -258,7 +259,7 @@ angular.module('LineUpApp.controllers', []).
     }
   }).
 
-  controller('editQueueController', function ($scope, lineUpAPIService, $routeParams, $route) {
+  controller('editQueueController', function ($scope, lineUpAPIService, $routeParams, $location) {
     // hide the edit button if we are on the create queue page
     // call on page load with ng-init="init()"
     $scope.init = function () {
@@ -285,8 +286,7 @@ angular.module('LineUpApp.controllers', []).
     $scope.editQueue = function () {
       lineUpAPIService.modifyQueue(queue).
         success(function (data, status, headers, config) {
-          console.log(data);
-          $scope.queue = data;
+          $location.path('/admin/' + data.qid);
         }).
         error(function (data, status, headers, config) {
           alert("Could not retrieve queue settings. \nStatus: " + status);
@@ -294,6 +294,7 @@ angular.module('LineUpApp.controllers', []).
     }
   }).
 
+  // Controller for the #/admin route
 	controller('adminViewController', function ($scope, lineUpAPIService, $routeParams, $route) {
 		$scope.user = {};
 		$scope.queueInfo = {};
