@@ -29,6 +29,10 @@ angular.module('LineUpApp.services', []).
 		lineUpAPI.dequeueFirstPerson = function (qid) {
 			return $http.post('/dequeue/' + qid);
 		}
+		
+		lineUpAPI.dequeueSelectPerson = function (data) {
+			return $http.post('/remove/' + data);
+		}
 
     lineUpAPI.getPopularQueues = function () {
       return $http.get('/popular');

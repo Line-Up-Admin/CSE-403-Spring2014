@@ -193,11 +193,12 @@ angular.module('LineUpApp.controllers', []).
     $scope.postpone = function () {
       lineUpAPIService.postpone($routeParams.qid).
         success(function (data, status, header, config) {
-          //change the queue display
-          $scope.queue = data;
-
+          console.log(data);
+          if(data.SUCCESS) {
+            $scope.queue = data;
+          }
         }).
-        error(function () {
+        error(function (data, status, header, config) {
           alert("Something went wrong with your request to postpone!\nStatus: " + status);
         });
     };
@@ -213,6 +214,9 @@ angular.module('LineUpApp.controllers', []).
             document.getElementById('notEnqueued').classList.remove('hide');
           } else {
             document.getElementById('enqueued').classList.remove('hide');
+						// if (data.member_position == data.size) {
+							// document.getElementById('btn-postpone').disabled = true;
+						// }
           }
         }).
         error(function (data, status, headers, config) {
@@ -259,39 +263,28 @@ angular.module('LineUpApp.controllers', []).
     }
   }).
 
-  controller('editQueueController', function ($scope, lineUpAPIService, $routeParams, $location) {
-    // hide the edit button if we are on the create queue page
-    // call on page load with ng-init="init()"
-    $scope.init = function () {
-      if ($route.current.loadedTemplateUrl == "partials/create_queue.html") {
-        document.getElementById("edit-button").classList.add("hide");
-      }
-    }
-
-    // get the settings of an existing queue
-    $scope.getQueueSettings = function () {
-      lineUpAPIService.getQueueSettings($routeParams.qid).
-        success(function (data, status, headers, config) {
-          console.log(data);
-          $scope.queue = data;
-        }).
-        error(function (data, status, headers, config) {
-          console.log($routeParams.qid);
-          alert("Could not retrieve queue settings. \nStatus: " + status);
-        });
-    }();
-
-    // modify the settings of an existing queue
-    // Upon success: redirect to the admin page.
-    $scope.editQueue = function () {
-      lineUpAPIService.modifyQueue(queue).
-        success(function (data, status, headers, config) {
-          $location.path('/admin/' + data.qid);
-        }).
-        error(function (data, status, headers, config) {
-          alert("Could not retrieve queue settings. \nStatus: " + status);
-        });
-    }
+  controller('editQueueController', function($scope, lineUpAPIService, $routeParams, $route) {
+		$scope.queue = {};
+		
+		$scope.fillFormFields = function () {
+			lineUpAPIService.getQueueSettings($routeParams.qid).
+				success(function (data, status, headers, config) {
+					$scope.queue = data;
+				}).
+				error(function (data, status, headers, config) {
+					alert("Something went wrong with the form fill request!\nStatus: " + status);
+				});
+		}();
+		
+		$scope.editQueue = function () {
+			lineUpAPIService.editQueue({ 'qid': $routeParams.qid, 'q_settings': queue }).
+				success(function (data, status, headers, config) {
+					$location.path('/admin/' + $routeParams.qid);
+				}).
+				error(function (data, status, headers, config) {
+					alert("Something went wrong with the edit queue request!\nStatus: " + status);
+				});
+		}
   }).
 
   // Controller for the #/admin route
@@ -301,6 +294,11 @@ angular.module('LineUpApp.controllers', []).
 		$scope.member_list = [];
 		$scope.setActiveStatusTo = "Close Queue";
 
+		// Redirects to edit queue page.
+		$scope.redirectToEditQueue = function () {
+			$location.path('/edit/' + $routeParams.qid);
+		}
+		
 		// Sends an admin view request to the server.
     // Upon success: Shows the admin view for the given queue id.
     // Upon error: TODO: Do something smart to handle the error
@@ -318,8 +316,8 @@ angular.module('LineUpApp.controllers', []).
 					alert("Are you logged in as an existing user? If not, that might be an issue.\nStatus: " + status);
 				});
 		}();
-
-		// Sends a dequeue to the server.
+		
+		// Sends a dequeue request to the server.
     // Upon success: Dequeues the first person in line.
     // Upon error: TODO: Do something smart to handle the error
 		$scope.dequeueFirstPerson = function () {
@@ -327,9 +325,26 @@ angular.module('LineUpApp.controllers', []).
 				success(function (data, status, headers, config) {
 					$scope.queueInfo = data.queue_info;
 					$scope.member_list = data.member_list;
+					$route.reload();
 				}).
 				error(function (data, status, headers, config) {
-					alert("Wow you suck at this.\nStatus: " + status);
+					alert("Something went wrong with the dequeue request!\nStatus: " + status);
+				});
+		}
+		
+		// Sends a remove request to the server.
+    // Upon success: Dequeues the first person in line.
+    // Upon error: TODO: Do something smart to handle the error
+		$scope.dequeueSelectPerson = function () {
+			var list = document.getElementById("list-group");
+			lineUpAPIService.dequeueSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.member_list[list.options[list.options.selectedIndex]] }).
+				success(function (data, status, headers, config) {
+					$scope.queueInfo = data.queue_info;
+					$scope.member_list = data.member_list;
+					$route.reload();
+				}).
+				error(function (data, status, headers, config) {
+					alert("Something went wrong with the dequeue request!\nStatus: " + status);
 				});
 		}
 
@@ -355,7 +370,10 @@ angular.module('LineUpApp.controllers', []).
           alert("Something went wrong with the join queue request! \nStatus: " + status);
         });
 		}
-
+		
+		// Sends a request to toggle the queue's active status to the server.
+    // Upon success: toggles the queue to open or closed depending on prev state.
+    // Upon error: Alert message.
 		$scope.setActive = function() {
 			var prevActiveStatus = document.getElementById("btn-close-queue").value;
 			console.log(prevActiveStatus + "," + $routeParams.qid);

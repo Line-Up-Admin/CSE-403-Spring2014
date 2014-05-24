@@ -71,6 +71,18 @@ def get_queue_settings_debug():
    except sqlite3.Error as e:
       return e.message
 
+@app.route('/debug/modifyQueue', methods=['GET', 'POST'])
+def debug_modify_queue_settings():
+   if not session.has_key('logged_in') or not session['logged_in']:
+      return jsonify(Failure('You cannot modify queue settings if you are not logged in as an admin!'))
+   uid = session['id']
+   q_settings = copy_request_args(request)
+   q_settings['qid'] = int(q_settings['qid'])
+   if not permissions.has_flag(uid, q_settings['qid'], permissions.ADMIN):
+      return jsonify(Failure('You cannot modify queue settings if you are not an admin of the queue.'))
+   db_util.modify_queue_settings(q_settings)
+   return Success({})
+
 @app.route('/debug/search', methods=['GET'])
 def search_debug():
    search_string = request.args["search_string"]

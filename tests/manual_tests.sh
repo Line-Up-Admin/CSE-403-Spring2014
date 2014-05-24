@@ -6,7 +6,9 @@
 
 
 #run python tests and redirect output to file
-python flask_tests/test.py
+bash flask_tests/run_flask_tests.sh
+python q_tests.py
+python q_server_tests.py
 
 #run angular tests and redirect output to file
 phantomjs angular_tests/auto_jasmine_tests.js
