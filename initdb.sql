@@ -6,9 +6,11 @@ insert into QSettings values (0, 'tgr4', 10, 'thomas,seattle', 'seattle,uw', 1, 
 insert into QSettings values (1, 'portland', 10, 'portland,oregon', 'portland,oregon', 1, null, null, null, null, 'What is the something velocity of a swallow?');
 insert into QSettings values (2, 'bestqueueever', 10, 'best,favorite', 'moon', 1, null, null, null, null, 'Party size:');
 insert into QSettings values (3, 'RedRobin', 10, 'RedRobin,restaurant,food,covington', 'covington', 1, null, null, null, null, 'Party size:');
+insert into QSettings values (4, 'NoQuestion', 20, 'NoQuestion', 'NoQuestion', 1, null, null, null, null, null);
 insert into Users values (0, 0, 'Creator', 'Thomas', 'Rothschilds', 'tgr4@uw.edu', 'Creator');
 insert into Users values (1, 0, 'Jim', 'Jim', 'Jim', 'jim@jim.jim', 'Jim');
 insert into Users values (2, 0, 'boi', 'oh', 'hai', 'boi@oh.hai', 'boi');
+insert into Users values (3, 0, 'best', 'best', 'best', 'best@best.best', 'best');
 insert into Permissions values (0, 0, 3);
 insert into Permissions values (0, 1, 3);
 insert into Permissions values (0, 2, 3);
