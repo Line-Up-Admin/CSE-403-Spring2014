@@ -258,7 +258,7 @@ angular.module('LineUpApp.controllers', []).
     }
   }).
 
-  controller('editQueueController', function($scope, lineUpAPIService, $routeParams, $route) {
+  controller('editQueueController', function ($scope, lineUpAPIService, $routeParams, $route) {
     // hide the edit button if we are on the create queue page
     // call on page load with ng-init="init()"
     $scope.init = function () {
@@ -267,8 +267,8 @@ angular.module('LineUpApp.controllers', []).
       }
     }
 
+    // get the settings of an existing queue
     $scope.getQueueSettings = function () {
-      console.log($routeParams.qid);
       lineUpAPIService.getQueueSettings($routeParams.qid).
         success(function (data, status, headers, config) {
           console.log(data);
@@ -279,9 +279,22 @@ angular.module('LineUpApp.controllers', []).
           alert("Could not retrieve queue settings. \nStatus: " + status);
         });
     }();
+
+    // modify the settings of an existing queue
+    // Upon success: redirect to the admin page.
+    $scope.editQueue = function () {
+      lineUpAPIService.modifyQueue(queue).
+        success(function (data, status, headers, config) {
+          console.log(data);
+          $scope.queue = data;
+        }).
+        error(function (data, status, headers, config) {
+          alert("Could not retrieve queue settings. \nStatus: " + status);
+        });
+    }
   }).
 
-	controller('adminViewController', function($scope, lineUpAPIService, $routeParams, $route) {
+	controller('adminViewController', function ($scope, lineUpAPIService, $routeParams, $route) {
 		$scope.user = {};
 		$scope.queueInfo = {};
 		$scope.member_list = [];
