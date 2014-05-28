@@ -681,6 +681,7 @@ def create_user():
       return jsonify({'SUCCESS':True})
    except sqlite3.Error as e:
       print 'exit create user route failure.'
+
       return jsonify(Failure('Failed to create user.'))
    except db_util.ValidationException as e:
       return jsonify(Failure(e.message))
