@@ -15,7 +15,7 @@ class ViewsTestCase(unittest.TestCase):
       os.close(self.db_fd)
       os.unlink(views.app.config['DATABASE'])
   
-   def test_login
+  # def test_login
 
 if __name__ == '__main__':
     unittest.main()
