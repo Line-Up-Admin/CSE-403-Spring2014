@@ -421,7 +421,10 @@ class QueueServer(object):
          raise QueueNotFoundException('Queue not found')
       else:
          q = self.table[qid]
-         q.q_settings = qsettings
+         if type(qsettings) is QueueSettings:
+            q.q_settings = qsettings
+         else:
+            q.q_settings = QueueSettings.from_dict(qsettings)
          db_settings = dict(q.q_settings.__dict__)
          db_settings['qid'] = qid
          if self.sync_db:

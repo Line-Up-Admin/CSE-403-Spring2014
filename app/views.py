@@ -538,11 +538,10 @@ def edit_queue():
    uid = None
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['id']
-      qid = request.json['qid']
       qsettings = request.json['q_settings']
-      if permissions.has_flag(uid, qid, permissions.ADMIN):
+      if permissions.has_flag(uid, qsettings['qid'], permissions.ADMIN):
          try:
-            queue_server.edit_queue(qid, qsettings)
+            queue_server.edit_queue(qsettings['qid'], qsettings)
             return jsonify({'SUCCESS':True})
          except QueueNotFoundException as e:
             return jsonify(Failure(e.message))
