@@ -310,7 +310,7 @@ def leave_queue():
    if not session.has_key('logged_in') and session['logged_in']:
       return jsonify(Failure('You are not logged in!'))
    uid=session['id']
-   qid=request.json
+   qid=request.json['qid']
    try:
       queue_server.remove(QueueMember(uid=uid), qid)
       return jsonify(Success({}))
