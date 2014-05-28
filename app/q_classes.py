@@ -328,6 +328,7 @@ class QueueServer(object):
       self.index[member.uid].remove(qid)
       if self.sync_db:
          db_util.remove_by_uid_qid(member.uid, qid)
+         
       return q.remove(member)
 
    def dequeue(self, qid):

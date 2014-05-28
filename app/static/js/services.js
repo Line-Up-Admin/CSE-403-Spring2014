@@ -31,7 +31,7 @@ angular.module('LineUpApp.services', []).
 		}
 		
 		lineUpAPI.dequeueSelectPerson = function (data) {
-			return $http.post('/remove/' + data);
+			return $http.post('/remove', data);
 		}
 
     lineUpAPI.getPopularQueues = function () {
@@ -72,7 +72,7 @@ angular.module('LineUpApp.services', []).
     }
 		
 		lineUpAPI.demoteSelectPerson = function (data) {
-			return $http.post('/managerPostpone/', data);
+			return $http.post('/managerPostpone', data);
 		}
 
     lineUpAPI.leaveQueue = function (qid) {

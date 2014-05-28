@@ -5,7 +5,7 @@ import sqlite3
 from flask import request, session, g, redirect, url_for, abort, jsonify
 import permissions
 
-from q_classes import QueueServer, QueueMember, QueueSettings, QueueNotFoundException
+from q_classes import QueueServer, QueueMember, QueueSettings, QueueNotFoundException, MemberNotFoundException
 
 def Failure(message):
    return {'SUCCESS':False, 'error_message':message}
@@ -264,10 +264,10 @@ def manager_postpone():
       manager_id = session['id']
    else:
       return jsonify(Failure('You are not logged in!'))
-   qid= int(request.json['qid'])
+   qid = int(request.json['qid'])
    uid = int(request.json['uid'])
    try:
-      if not permissions.has_key(manager_id, qid, permissions.MANAGER):
+      if not permissions.has_flag(manager_id, qid, permissions.MANAGER):
          return jsonify(Failure('You must be a manager of the queue to postpone someone!'))
       queue_server.postpone(QueueMember(uid=uid), qid)
       q_info = queue_server.get_info(QueueMember(uid=uid), qid)
@@ -627,10 +627,11 @@ def remove_queue_member():
    uid = None
    if session.has_key('logged_in') and session['logged_in']:
       manager_id = session['id']
-      qid = request.json['qid']
-      uid = request.json['uid']
+      qid = int(request.json['qid'])
+      uid = int(request.json['uid'])
       if permissions.has_flag(manager_id, qid, permissions.MANAGER):
          try:
+            print 'QueueMember ID = ', uid, ', qid = ', qid
             queue_server.remove(QueueMember(uid=uid), qid)
             return jsonify({'SUCCESS':True})
          except QueueNotFoundException as e:
