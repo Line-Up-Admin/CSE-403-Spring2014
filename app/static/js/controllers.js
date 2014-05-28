@@ -82,7 +82,8 @@ angular.module('LineUpApp.controllers', []).
     // Upon error: TODO: Do something smart to handle the error
     $scope.createUser = function () {
       if ($scope.user.pw != $scope.user.pwx2) {
-        alert("Passwords do not match, please retype and try again.");
+        $scope.error = "Passwords do not match, please retype and try again.";
+				document.getElementById('error').classList.remove('hide');
         return;
       }
 
@@ -358,19 +359,18 @@ angular.module('LineUpApp.controllers', []).
 		}
 
 		// Sends a remove request to the server.
-    // Upon success: Dequeues the first person in line.
+    // Upon success: Dequeues the selected person in line.
     // Upon error: TODO: Do something smart to handle the error
 		$scope.dequeueSelectPerson = function () {
-			var list = document.getElementById("list-group");
-			console.log(list.options.selectedIndex);
-			lineUpAPIService.dequeueSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.member_list[list.options[list.options.selectedIndex]] }).
+			var selectIndex = document.getElementById("list-group").options.selectedIndex;
+			lineUpAPIService.dequeueSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.member_list[selectIndex].uid }).
 				success(function (data, status, headers, config) {
 					$scope.queueInfo = data.queue_info;
 					$scope.member_list = data.member_list;
 					$route.reload();
 				}).
 				error(function (data, status, headers, config) {
-					alert("Something went wrong with the dequeue request!\nStatus: " + status);
+					alert(data);
 				});
 		}
 
@@ -398,16 +398,15 @@ angular.module('LineUpApp.controllers', []).
 		}
 
 		$scope.demoteSelectPerson = function () {
-			var list = document.getElementById("list-group");
-			console.log($scope.member_list[list.options[list.options.selectedIndex]]);
-			lineUpAPIService.demoteSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.member_list[list.options[list.options.selectedIndex]] }).
+			var selectIndex = document.getElementById("list-group").options.selectedIndex;
+			lineUpAPIService.demoteSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.member_list[selectIndex].uid }).
 				success(function (data, status, headers, config) {
 					$scope.queueInfo = data.queue_info;
 					$scope.member_list = data.member_list;
 					$route.reload();
 				}).
 				error(function (data, status, headers, config) {
-					alert("Something went wrong with the demote request!\nStatus: " + status);
+					alert(data);
 				});
 		}
 

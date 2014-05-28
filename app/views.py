@@ -1,11 +1,12 @@
 # This is the file that contains all the route handlers.
 from app import app, queue_server
 import database_utilities as db_util
+import validators
 import sqlite3
 from flask import request, session, g, redirect, url_for, abort, jsonify
 import permissions
 
-from q_classes import QueueServer, QueueMember, QueueSettings, QueueNotFoundException
+from q_classes import QueueServer, QueueMember, QueueSettings, QueueNotFoundException, MemberNotFoundException
 
 def Failure(message):
    return {'SUCCESS':False, 'error_message':message}
@@ -58,26 +59,23 @@ def create_queue():
       }
 
    """
-   q_settings = request.json
+   try:
+      q_settings = request.get_json()
+   except:
+      return abort(500)
+   q_settings = validators.validate_q_settings(q_settings)
+   if not q_settings['SUCCESS']:
+      return jsonify(q_settings)
    if not session.has_key('logged_in') or not session['logged_in']:
       return jsonify(Failure('You cannot create a queue if you are not logged in!'))
-   if not q_settings.has_key('admins'):
-      q_settings['admins']=list()
-   else:
-      q_settings['admins'] = [admin.strip() for admin in q_settings['admins'].split(',')]
-   if not session['uname'] in q_settings['admins']:
-      q_settings['admins'].append(session['uname'])
-   if q_settings.has_key('managers'):
-      q_settings['managers'] = [e.strip() for e in q_settings['managers'].split(',')]
-   if q_settings.has_key('blocked_users'):
-      q_settings['blocked_users'] = [b.strip() for b in q_settings['blocked_users'].split(',')]
    try:
       q_settings['qid'] = queue_server.create(q_settings)
       return jsonify(q_settings)
-   except sqlite3.Error as e:
-      return jsonify(Failure(e.message));
    except db_util.ValidationException as e:
-      return jsonify(Failure(e.message))
+      q_settings['SUCCESS'] = False
+      return jsonify(q_settings)
+   except sqlite3.Error as e:
+      return abort(500)
 
 @app.route('/modifyQueue', methods=['POST'])
 def modify_queue_settings():
@@ -264,10 +262,10 @@ def manager_postpone():
       manager_id = session['id']
    else:
       return jsonify(Failure('You are not logged in!'))
-   qid= int(request.json['qid'])
+   qid = int(request.json['qid'])
    uid = int(request.json['uid'])
    try:
-      if not permissions.has_key(manager_id, qid, permissions.MANAGER):
+      if not permissions.has_flag(manager_id, qid, permissions.MANAGER):
          return jsonify(Failure('You must be a manager of the queue to postpone someone!'))
       queue_server.postpone(QueueMember(uid=uid), qid)
       q_info = queue_server.get_info(QueueMember(uid=uid), qid)
@@ -312,7 +310,7 @@ def leave_queue():
    if not session.has_key('logged_in') and session['logged_in']:
       return jsonify(Failure('You are not logged in!'))
    uid=session['id']
-   qid=request.json
+   qid=request.json['qid']
    try:
       queue_server.remove(QueueMember(uid=uid), qid)
       return jsonify(Success({}))
@@ -627,10 +625,11 @@ def remove_queue_member():
    uid = None
    if session.has_key('logged_in') and session['logged_in']:
       manager_id = session['id']
-      qid = request.json['qid']
-      uid = request.json['uid']
+      qid = int(request.json['qid'])
+      uid = int(request.json['uid'])
       if permissions.has_flag(manager_id, qid, permissions.MANAGER):
          try:
+            print 'QueueMember ID = ', uid, ', qid = ', qid
             queue_server.remove(QueueMember(uid=uid), qid)
             return jsonify({'SUCCESS':True})
          except QueueNotFoundException as e:
@@ -682,6 +681,7 @@ def create_user():
       return jsonify({'SUCCESS':True})
    except sqlite3.Error as e:
       print 'exit create user route failure.'
+
       return jsonify(Failure('Failed to create user.'))
    except db_util.ValidationException as e:
       return jsonify(Failure(e.message))

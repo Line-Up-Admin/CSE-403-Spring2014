@@ -248,23 +248,29 @@ def create_queue(q_settings):
     The new qid if the queue was successfully created.
 
   Raises:
-    DatabaseException: the q_settings are invalid.
+    ValidationException: the username <uname> was not found.
   """
   q_settings['qid'] = validators.get_unique_queue_id()
   if q_settings.has_key('admins'):
     result = check_usernames(q_settings['admins'])
     if not result['SUCCESS']:
-      raise ValidationException('The username ' + result['username'] + ' was not found.')
+      err = 'The username ' + result['username'] + ' was not found.'
+      q_settings['admins'] = err
+      raise ValidationException(err)
     permissions.add_permission_list(result['uids'], q_settings['qid'], permissions.ADMIN)
   if q_settings.has_key('managers'):
     result = check_usernames(q_settings['managers'])
     if not result['SUCCESS']:
-      raise ValidationException('The username' + result['username'] + 'was not found.')
+      err = 'The username' + result['username'] + 'was not found.'
+      q_settings['managers'] = err
+      raise ValidationException(err)
     permissions.add_permission_list(result['uids'], q_settings['qid'], permissions.MANAGER)
   if q_settings.has_key('blocked_users'):
     result = check_usernames(q_settings['blocked_users'])
     if not result['SUCCESS']:
-      raise ValidationException('The username ' + result['username'] + ' was not found.')
+      err = 'The username ' + result['username'] + ' was not found.'
+      q_settings['blocked_users'] = err
+      raise ValidationException(err)
     permissions.add_permission_list(result['uids'], q_settings['qid'], permissions.BLOCKED_USER)
   db = get_db()
   db.execute(INSERT_QUEUE, (q_settings['qid'],))
