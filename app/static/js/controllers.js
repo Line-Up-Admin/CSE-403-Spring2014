@@ -22,17 +22,16 @@ angular.module('LineUpApp.controllers', []).
       $scope.queue.active = 1;
 			lineUpAPIService.createQueue($scope.queue).
         success(function (data, status, headers, config) {
-
-          if (data.error_message) {
-            alert(data.error_message);
-          } else {
+          if (data.SUCCESS) {
             // load the queue admin page
             $location.path('/admin/' + data.qid);
+          } else {
+            console.log(data)
           }
         }).
         error(function (data, status, headers, config) {
-          alert("Database error: could not create queue.\nStatus: " + status);
-          console.log(data);
+          // not an error we are prepared to handle
+          $location.path("/error");
         });
     }
   }).
