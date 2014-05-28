@@ -1,6 +1,7 @@
 # This is the file that contains all the route handlers.
 from app import app, queue_server
 import database_utilities as db_util
+import validators
 import sqlite3
 from flask import request, session, g, redirect, url_for, abort, jsonify
 import permissions
@@ -58,26 +59,23 @@ def create_queue():
       }
 
    """
-   q_settings = request.json
+   try:
+      q_settings = request.get_json()
+   except:
+      return abort(500)
+   q_settings = validators.validate_q_settings(q_settings)
+   if not q_settings['SUCCESS']:
+      return jsonify(q_settings)
    if not session.has_key('logged_in') or not session['logged_in']:
       return jsonify(Failure('You cannot create a queue if you are not logged in!'))
-   if not q_settings.has_key('admins'):
-      q_settings['admins']=list()
-   else:
-      q_settings['admins'] = [admin.strip() for admin in q_settings['admins'].split(',')]
-   if not session['uname'] in q_settings['admins']:
-      q_settings['admins'].append(session['uname'])
-   if q_settings.has_key('managers'):
-      q_settings['managers'] = [e.strip() for e in q_settings['managers'].split(',')]
-   if q_settings.has_key('blocked_users'):
-      q_settings['blocked_users'] = [b.strip() for b in q_settings['blocked_users'].split(',')]
    try:
       q_settings['qid'] = queue_server.create(q_settings)
       return jsonify(q_settings)
-   except sqlite3.Error as e:
-      return jsonify(Failure(e.message));
    except db_util.ValidationException as e:
-      return jsonify(Failure(e.message))
+      q_settings['SUCCESS'] = False
+      return jsonify(q_settings)
+   except sqlite3.Error as e:
+      return abort(500)
 
 @app.route('/modifyQueue', methods=['POST'])
 def modify_queue_settings():
