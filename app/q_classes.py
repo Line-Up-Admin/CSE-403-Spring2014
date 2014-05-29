@@ -119,7 +119,8 @@ class Queue(object):
       #  times the proportion of the queue remaining.
       avg_wait = self.get_avg_wait()
       position = self.get_position(member)
-
+      if position == None:
+         return None
       if position == 0:
          return 0
       if avg_wait and position:
@@ -460,15 +461,15 @@ class QueueServer(object):
             q_set.disclaimer, q_set.website, q_set.location, q_set.active)
 
    def get_all_queues_info(self):
-      """ (not in UML) """
-      result = list()
+      """ returns a list of all the info for all queues """
+      result = []
       for queue in self.table.values():
          q_info = self.get_info(None, queue.id)
          result.append(q_info)
       return result
 
    def get_queue_info_list(self, userid):
-      """ UML
+      """
       Args:
          q_member: a QueueMember object. QueueMembers are defined by uid, 
          so if uname and optional_data is not known, just create a 
@@ -479,12 +480,13 @@ class QueueServer(object):
       """
       if not self.index.has_key(userid):
          return None
-      queue_list = list()
+      queue_list = []
       for qid in self.index[userid]:
          queue_list.append(self.get_info(QueueMember(uid=userid), qid))
       return queue_list
 
    def is_active(self, qid):
+      """ Returns true if the queue is active """
       if self.table.has_key(qid):
          q = self.table[qid]
          return q.q_settings.active

@@ -27,9 +27,15 @@ class SomeTest(unittest.TestCase):
 
    def test_add_get_members(self):
       """ Tests create, add, get_members, 
-      and get_member_queues on a QueueServer object. """
-      # This is set to false so the Server doesn't talk to the database
-      qs = QueueServer(False)
+      and get_member_queues on a QueueServer object. 
+      methods tested:
+         add 
+         create
+         get_members
+         get_member_queues
+      """
+      print "testing add_get_members"
+      qs = QueueServer(sync_db = False)
       m1 = QueueMember("bob", 123)
       m2 = QueueMember("carol", 124)
       m3 = QueueMember("doug", 125)
@@ -57,9 +63,11 @@ class SomeTest(unittest.TestCase):
       assert len(dougs_qs) == 2
 
    def test_search(self):
-      # Note: This test currently does not pass, since the search
-      #  functionality has not been implemented.
-      # create queues with keywords
+      """
+      methods tested:
+         search 
+      """
+      print "testing search"
       qs = QueueServer(False)
 
       #queue settings for some queues with different names and locations
@@ -98,7 +106,6 @@ class SomeTest(unittest.TestCase):
       assert res3[1] == qid_4
       assert qid_1 in res3
       assert qid_6 in res3
-
 
 if __name__ == '__main__':
    unittest.main()
