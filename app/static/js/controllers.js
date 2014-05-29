@@ -26,6 +26,7 @@ angular.module('LineUpApp.controllers', []).
             // load the queue admin page
             $location.path('/admin/' + data.qid);
           } else {
+            $scope.error = data;
             console.log(data)
           }
         }).
