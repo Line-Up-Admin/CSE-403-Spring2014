@@ -269,11 +269,14 @@ class QueueServer(object):
          if time_rows == None:
             return {}
          result = {}
+         i = 0
          for row in time_rows:
-            uid = row[uid]
+            i = i + 1
+            uid = row['uid']
             if uid not in result:
-               result[uid] = []
-            result[uid].append( (row['join_time'], row['leave_time']) )
+               result['uid'] = []
+            result['uid'].append( (row['join_time'], row['leave_time']) )
+         print 'loaded', i, 'history elements for queue', qid
          return result
 
       # read all the queues from the database, and put them into the tables

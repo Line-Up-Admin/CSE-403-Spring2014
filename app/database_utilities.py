@@ -14,6 +14,7 @@ GET_MEMBER_DATA_BY_QID = 'select qi.uid, u.uname, qi.relative_position, qi.optio
 GET_PERMISSIONED_QIDS_BY_UID = 'select qid from permissions where pid=? and permission_level=?'
 GET_POSITION = 'select relative_position from qindex where uid=? and qid=?'
 GET_PROFILED_USER_BY_USERNAME = 'select * from users where temp=0 and uname=?'
+GET_Q_HISTORY_BY_QID = 'select * from qhistory where qid=? and join_time is not null and leave_time is not null'
 GET_QUEUES_BY_UID = 'select * from qindex where uid=?'
 GET_QUEUE_SETTINGS_BY_ID = 'select * from qsettings where qid=?'
 GET_TEMP_USER_BY_ID = 'select * from users where temp=1 and id=?'
@@ -242,7 +243,8 @@ def get_temp_user(temp_uid):
 
 def get_history(qid):
    # This will be expanded upon
-   return None
+   rows = query_db(GET_Q_HISTORY_BY_QID, (qid,))
+   return rows
 
 def create_queue(q_settings):
   """Creates a new queue with the defined settings. All settings except qid must exist.
