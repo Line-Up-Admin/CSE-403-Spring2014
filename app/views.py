@@ -129,15 +129,14 @@ def enqueue(qid):
       return jsonify(Failure('The queue is not active.'))
    temp_user = dict()
    optional_data = None
-   try:
-      data = request.get_json()
-      if data.has_key('optional_data'):
-         optional_data = data['optional_data']
-         temp_user['uname'] = data['uname']
-      else:
-         temp_user['uname'] = data
-   except:
+   data = request.get_json()
+   if data is None:
       return jsonify({'SUCCESS':False, 'uname':'Name is required'})
+   if type(data) is str:
+      temp_user['uname'] = data
+   elif data.has_key('optional_data'):
+      optional_data = data['optional_data']
+      temp_user['uname'] = data['uname']
    try:
       settings = queue_server.get_settings(None, qid)
       if settings.prompt is not None and len(settings.prompt) > 0:
