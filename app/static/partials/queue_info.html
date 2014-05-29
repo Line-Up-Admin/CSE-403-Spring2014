@@ -5,6 +5,7 @@
   <div class="panel-heading">
     <h3>{{ queue.qname }}</h3>
     <h4>{{ queue.organization }}: {{ queue.location }}</h4>
+    <a ng-if="queue.website != null" href="http://{{ queue.website }}">{{ queue.website }}</a>
   </div>
   <div class="panel-body">
     <div class="queue-portrait">
@@ -40,7 +41,6 @@
       </div>
     </div>
   </div>
-  <p> {{ queue.website }} </p>
   <div class="panel-footer">{{ queue.disclaimer }}</div>
 </div>
 

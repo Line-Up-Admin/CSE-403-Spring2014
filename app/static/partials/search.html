@@ -16,7 +16,12 @@
 		<div ng-repeat="queueInfo in queueInfos">
 			<a href="#/queue_info/{{ queueInfo.qid }}">
 			<div class="queue">
-				<img class="queue-img" src="img/CLUE_phys.png"/>{{ queueInfo.qname }}: {{ queueInfo.expected_wait }} min
+				<img class="queue-img" src="img/CLUE_phys.png"/>{{ queueInfo.qname }}: {{ queueInfo.location }}
+				<br /> {{ queueInfo.organization }}
+				<div ng-if="queueInfo.expected_wait > 0">{{ queueInfo.size }} in Line - Expected Wait: {{ queueInfo.expected_wait }} minutes
+				</div>
+				<div ng-if="queueInfo.expected_wait <= 0">{{ queueInfo.size }} in Line
+				</div>
 			</div>
 			</a>
 		</div>

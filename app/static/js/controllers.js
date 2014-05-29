@@ -85,6 +85,7 @@ angular.module('LineUpApp.controllers', []).
     // Upon error: TODO: Do something smart to handle the error
     $scope.createUser = function () {
       if ($scope.user.pw != $scope.user.pwx2) {
+        $scope.errors = {};
         $scope.errors.pw = "Passwords do not match.";
         return;
       }
@@ -355,9 +356,9 @@ angular.module('LineUpApp.controllers', []).
 					alert("Are you logged in as an existing user? If not, that might be an issue.\nStatus: " + status);
 				});
 		}();
-		/* 
+		/*
 		$scope.setActiveButton = function (int active) {
-			
+
 		} */
 
 		// Sends a dequeue request to the server.
