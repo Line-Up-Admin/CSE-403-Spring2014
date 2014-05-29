@@ -23,7 +23,7 @@ INSERT_MEMBER_INTO_QUEUE = 'insert into QIndex values(?, ?, (select ending_index
 INSERT_PROFILED_USER = 'insert into users values(?, ?, ?, ?, ?, ?, ?, ?)'
 INSERT_QUEUE = 'insert into queues values(?, 0, 0)'
 INSERT_QUEUE_SETTINGS = 'insert into qsettings values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-INSERT_TEMP_USER = 'insert into users values(?, 1, ?, NULL, NULL, NULL, NULL)'
+INSERT_TEMP_USER = 'insert into users values(?, 1, ?, NULL, NULL, NULL, NULL, NULL)'
 REMOVE_MEMBER_FROM_QUEUE = 'delete from qindex where uid=? and qid=?'
 UPDATE_POSITION = 'update qindex set relative_position=? where uid=? and qid=?'
 UPDATE_QUEUE_FOR_ADD = 'update Queues set ending_index=ending_index+1 where id=?'

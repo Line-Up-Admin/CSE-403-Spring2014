@@ -33,30 +33,7 @@ def root():
 def create_queue():
    """Creates a queue. If the user is logged in, they will become an admin for the queue.
 
-   Args:
-   {
-      active: 0 or 1
-      admins: 1 string, comma separated list.
-      blocked_users: 1 string, comma separated list.
-      managers: 1 string, comma separated list.
-      keywords: 1 string. will be handled by search later.
-      location:
-      max_size:
-      qname:
-   }
-
-   Returns:
-      {
-         active:
-         admins: [] (optional, a list of usernames)
-         blocked_users: [] (optional, a list of usernames)
-         managers: [] (optional, a list of usernames)
-         keywords:
-         location:
-         max_size:
-         qid:
-         qname:
-      }
+   
 
    """
    try:
@@ -114,7 +91,6 @@ def add_to_queue():
    qid = int(request.json['qid'])
    if request.json.has_key('optional_data'):
       optional_data = request.json['optional_data']
-      qid = int(request.json['qid'])
    if not queue_server.is_active(qid):
       return jsonify(Failure('The queue is not active!'))
    temp = None
@@ -128,9 +104,12 @@ def add_to_queue():
       try:
          temp_user['id'] = db_util.create_temp_user(temp_user)
       except sqlite3.Error as e:
-         return e.message
+         return abort(500)
       username = temp_user['uname']
       uid = temp_user['id']
+      session['logged_in'] = True
+      session['id'] = uid
+      session['uname'] = username
    if not permissions.has_flag(uid, qid, permissions.BLOCKED_USER):
       q_member = QueueMember(username, uid, optional_data)
       queue_server.add(q_member, qid)
@@ -696,6 +675,7 @@ def set_active():
       }
 
    """
+   print "enter setActive route"
    uid = None
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['id']
@@ -704,12 +684,16 @@ def set_active():
       if permissions.has_flag(uid, qid, permissions.MANAGER):
         try:
           queue_server.set_active(qid, active)
+          print "exit setActive route"
           return jsonify({'SUCCESS':True})
         except QueueNotFoundException as e:
+          print "queuenotfound exception"
           return jsonify(Failure(e.message))
       else:
+        print "bad permissions"
         return jsonify(Failure("You must be logged in as an manager to open or close a queue."))
    else:
+     print "not logged in"
      return jsonify(Failure("You must at least be logged in to open or close a queue."))
 
       

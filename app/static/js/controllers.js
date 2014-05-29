@@ -336,17 +336,29 @@ angular.module('LineUpApp.controllers', []).
 		$scope.getDetailedQueueInfo = function () {
 			lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
 				success(function (data, status, headers, config) {
-					console.log(data.queue_info);
 					$scope.queueInfo = data.queue_info;
-					console.log($scope.queueInfo);
 					$scope.member_list = data.member_list;
 					document.getElementById("list-group").size=$scope.member_list.length+1;
+					var button = document.getElementById("btn-close-queue");
+					console.log($scope.queueInfo.active);
+					if( $scope.queueInfo.active == 0 ) {
+						$scope.setActiveStatusTo = "Open Queue";
+						button.value = 1;
+					} else {
+						$scope.setActiveStatusTo = "Close Queue";
+						button.value = 0;
+					}
+					console.log("button value  = " + button.value);
 				}).
 				error(function (data, status, headers, config) {
 					console.log($routeParams.qid);
 					alert("Are you logged in as an existing user? If not, that might be an issue.\nStatus: " + status);
 				});
 		}();
+		/* 
+		$scope.setActiveButton = function (int active) {
+			
+		} */
 
 		// Sends a dequeue request to the server.
     // Upon success: Dequeues the first person in line.
@@ -414,6 +426,7 @@ angular.module('LineUpApp.controllers', []).
 					$scope.queueInfo = data.queue_info;
 					$scope.member_list = data.member_list;
 					$route.reload();
+					document.getElementById("list-group").selectedIndex = selectIndex + 1;
 				}).
 				error(function (data, status, headers, config) {
 					alert(data);
@@ -424,12 +437,12 @@ angular.module('LineUpApp.controllers', []).
     // Upon success: toggles the queue to open or closed depending on prev state.
     // Upon error: Alert message.
 		$scope.setActive = function() {
-			var prevActiveStatus = document.getElementById("btn-close-queue").value;
-			console.log(prevActiveStatus + "," + $routeParams.qid);
-			lineUpAPIService.setActive({ 'qid': $routeParams.qid, 'active': prevActiveStatus }).
+			var button = document.getElementById("btn-close-queue");
+			var targetActiveStatus = button.value;
+			console.log(targetActiveStatus + "," + $routeParams.qid);
+			lineUpAPIService.setActive({ 'qid': $routeParams.qid, 'active': targetActiveStatus }).
         success(function (data, status, headers, config) {
-					var button = document.getElementById("btn-close-queue");
-					if( prevActiveStatus == 0 ) {
+					if( targetActiveStatus == 0 ) {
 						$scope.setActiveStatusTo = "Open Queue";
 						button.value = 1;
 					} else {
