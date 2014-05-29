@@ -5,6 +5,7 @@ angular.module('LineUpApp.controllers', []).
 
   // Controller for the #/create_queue route
   controller('createQueueController', function ($scope, lineUpAPIService, $location, $route) {
+    $scope.queue = {};
 
     // hide the edit button if we are on the create queue page
     // call on page load with ng-init="init()"
