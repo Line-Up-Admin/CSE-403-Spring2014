@@ -95,12 +95,14 @@ angular.module('LineUpApp.controllers', []).
       lineUpUserService.createUser($scope.user).
         success(function (data, status, headers, config) {
           // account created successfully, redirect to the login page
-          $location.path("/");
+          if (data.SUCCESS) {
+            $location.path("/");
+          }
+
+          $scope.error = data;
         }).
         error(function (data, status, headers, config) {
-					$scope.error = "User name already taken!";
-          document.getElementById('error').classList.remove('hide');
-					//alert("Something went wrong with the create account request!\nStatus: " + status);
+          $location.path("/error");
         });
       }
   }).
