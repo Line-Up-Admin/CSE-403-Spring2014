@@ -223,6 +223,47 @@ def add_to_queue_debug(qid):
    else:
       return 'User is blocked from this queue.'
 
+@app.route('/debug/enqueue/<int:qid>', methods=['GET', 'POST'])
+def enqueue_debug(qid):
+   if not session.has_key('logged_in') or not session['logged_in']:
+      return jsonify(Failure('You are not logged in!'))
+   if not queue_server.is_active(qid):
+      return jsonify(Failure('The queue is not active.'))
+   temp_user = dict()
+   optional_data = None
+   try:
+      data = request.args
+      if data.has_key('optional_data'):
+         optional_data = data['optional_data']
+         temp_user['uname'] = data['uname']
+      else:
+         temp_user['uname'] = data
+   except:
+      return jsonify({'SUCCESS':False, 'uname':'Name is required'})
+   try:
+      settings = queue_server.get_settings(None, qid)
+      if settings.prompt is not None and len(settings.prompt) > 0:
+         if optional_data is None:
+            return jsonify({'SUCCESS':False, 'optional_data':'Required'})
+   except QueueNotFoundException as e:
+      return jsonify(Failure(e.message))
+   if not permissions.has_flag(session['id'], qid, permissions.MANAGER):
+      return jsonify(Failure('You must be logged in as a manager to enqueue.'))
+   # got the temp uname, manager logged in and confirmed.
+   try:
+      temp_user['id'] = db_util.create_temp_user(temp_user)
+   except sqlite3.Error as e:
+      return abort(500)
+   try:
+      queue_server.add(QueueMember(temp_user['uname'], temp_user['id'], optional_data), qid)
+      return jsonify(Success({}))
+   except sqlite3.Error:
+      return abort(500)
+   except QueueNotFoundException as e:
+      return jsonify(Failure(e.message))
+   except QueueFullException as e:
+      return jsonify(Failure(e.message))
+
 @app.route('/debug/dequeue/<int:qid>', methods=['GET', 'POST'])
 def dequeue_debug(qid):
    if not app.debug:
