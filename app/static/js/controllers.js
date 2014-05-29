@@ -22,17 +22,17 @@ angular.module('LineUpApp.controllers', []).
       $scope.queue.active = 1;
 			lineUpAPIService.createQueue($scope.queue).
         success(function (data, status, headers, config) {
-
-          if (data.error_message) {
-            alert(data.error_message);
-          } else {
+          if (data.SUCCESS) {
             // load the queue admin page
             $location.path('/admin/' + data.qid);
+          } else {
+            $scope.error = data;
+            console.log(data)
           }
         }).
         error(function (data, status, headers, config) {
-          alert("Database error: could not create queue.\nStatus: " + status);
-          console.log(data);
+          // not an error we are prepared to handle
+          $location.path("/error");
         });
     }
   }).
@@ -190,11 +190,38 @@ angular.module('LineUpApp.controllers', []).
       }
     };
 
+    $scope.queueStatus = function () {
+      lineUpAPIService.queueStatus($routeParams.qid).
+        success(function (data, status, headers, config) {
+          $scope.queue = data;
+          console.log(data);
+          document.getElementById('enqueued').classList.add('hide');
+          document.getElementById('notEnqueued').classList.add('hide');
+          if (data.member_position == null) {
+            document.getElementById('notEnqueued').classList.remove('hide');
+          } else {
+            document.getElementById('enqueued').classList.remove('hide');
+            // if (data.member_position == data.size) {
+              // document.getElementById('btn-postpone').disabled = true;
+            // }
+          }
+        }).
+        error(function (data, status, headers, config) {
+          alert("Something went wrong with the queue lookup request!\nStatus: " + status);
+        });
+    };
+
+    // This should load immediately when this controller is used
+    $scope.queueStatus();
+
+    // used for self-removal of user from the queue
     $scope.leaveQueue = function () {
       lineUpAPIService.leaveQueue($routeParams.qid).
-      sucess(function (data, status, header, config) {
+      success(function (data, status, header, config) {
         if(data.SUCCESS) {
+          // reset the client data and reset the page
           $scope.queue = data;
+          $scope.queueStatus();
         }
       }).
       error(function (data, status, header, config) {
@@ -214,27 +241,6 @@ angular.module('LineUpApp.controllers', []).
           alert("Something went wrong with your request to postpone!\nStatus: " + status);
         });
     };
-
-    $scope.queueStatus = function () {
-      lineUpAPIService.queueStatus($routeParams.qid).
-        success(function (data, status, headers, config) {
-          $scope.queue = data;
-          console.log(data);
-          document.getElementById('enqueued').classList.add('hide');
-          document.getElementById('notEnqueued').classList.add('hide');
-          if (data.member_position == null) {
-            document.getElementById('notEnqueued').classList.remove('hide');
-          } else {
-            document.getElementById('enqueued').classList.remove('hide');
-						// if (data.member_position == data.size) {
-							// document.getElementById('btn-postpone').disabled = true;
-						// }
-          }
-        }).
-        error(function (data, status, headers, config) {
-          alert("Something went wrong with the queue lookup request!\nStatus: " + status);
-        });
-    }();
 
     $scope.promptForData = function () {
       if ($scope.queue.logged_in) {
