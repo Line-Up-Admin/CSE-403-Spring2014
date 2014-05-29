@@ -35,7 +35,7 @@ class Queue(object):
       # This is the actual Queue field of the object. It stores the
       # QueueMemeber as well as the time the Queue was entered. 
       # (Time entered is for the purposes of analytics.)
-      self.my_q = deque()
+      self.storage = deque()
 
       # This q_settings object defaults to None if it is not
       # passed in to the constructor. A Queue with no
@@ -56,7 +56,7 @@ class Queue(object):
    def __len__(self):
       """ This allows the size of the queue object 'q' to be
          obtained by calling len(q) """
-      return len(self.my_q)
+      return len(self.storage)
 
    def get_avg_wait(self):
       """ This currently returns the average wait time in minutes 
@@ -77,10 +77,10 @@ class Queue(object):
 
    def add(self, member):
       """ Adds a Queue Member to a Queue. (If there is room.) """
-      if self.q_settings and len(self.my_q) >= self.q_settings.max_size:
+      if self.q_settings and len(self.storage) >= self.q_settings.max_size:
          raise QueueFullException("Queue is already at maximum size")
       else:
-         self.my_q.append( (member, datetime.now()) )
+         self.storage.append( (member, datetime.now()) )
 
    def remove(self, member):
       """ Removes a Queue Member from a Queue """
@@ -89,7 +89,7 @@ class Queue(object):
          return False
       # if someone is removed from the middle, we do not take their
       # wait time into account for analytics.
-      q = self.my_q
+      q = self.storage
       del q[pos]
       return True
 
@@ -100,14 +100,14 @@ class Queue(object):
       pos = self.get_position(member)
       if pos == None:
          raise MemberNotFoundException("Member is not in queue.")
-      elif pos + 1 < len(self.my_q):
+      elif pos + 1 < len(self.storage):
          #There is room to move the user back a position in the queue.
-         temp = self.my_q[pos]
-         next_member = self.my_q[pos + 1]
+         temp = self.storage[pos]
+         next_member = self.storage[pos + 1]
          if sync_db:
             db_util.swap(temp[0].uid, next_member[0].uid, self.id)
-         self.my_q[pos] = self.my_q[pos + 1]
-         self.my_q[pos + 1] = temp
+         self.storage[pos] = self.storage[pos + 1]
+         self.storage[pos + 1] = temp
       #else: member is already at the end of the queue
 
    def get_expected_wait(self, member):
@@ -124,7 +124,7 @@ class Queue(object):
          return 0
       if avg_wait and position:
          #avg_wait is already in minutes
-         ex_wait = avg_wait * (position + 0.5)/len(self.my_q)
+         ex_wait = avg_wait * (position + 0.5)/len(self.storage)
          return ex_wait
       else:
          # This is currently fake data for demoing purposes.
@@ -132,8 +132,8 @@ class Queue(object):
 
    def dequeue(self):
       """ Dequeues the next QueueMember from the Queue. """
-      if len(self.my_q) > 0:
-         item = self.my_q.popleft()
+      if len(self.storage) > 0:
+         item = self.storage.popleft()
          # Record the wait time of the person dequeued.
          member = item[0]
          in_time = item[1]
@@ -151,7 +151,7 @@ class Queue(object):
          of the line. """
       if member is None:
          return None
-      for i, j in enumerate(self.my_q):
+      for i, j in enumerate(self.storage):
          if j[0].uid == member.uid:
             return i
       return None
@@ -161,7 +161,7 @@ class Queue(object):
       Returns:
          the saved QueueMember object associated with the uid."""
       q_member = QueueMember(uid=userid)
-      for item in self.my_q:
+      for item in self.storage:
          # QueueMember equality is defined by having the same id.
          if item[0] == q_member:
             return item[0]
@@ -171,7 +171,7 @@ class Queue(object):
       """ 
       Returns: a list of copies of all of the members of the queue """
       members = list()
-      for member in self.my_q:
+      for member in self.storage:
          # remove the time from result
          members.append(member[0])
       return members
