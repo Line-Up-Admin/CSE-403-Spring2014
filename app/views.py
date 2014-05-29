@@ -702,6 +702,7 @@ def set_active():
       }
 
    """
+   print "enter setActive route"
    uid = None
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['id']
@@ -710,12 +711,16 @@ def set_active():
       if permissions.has_flag(uid, qid, permissions.MANAGER):
         try:
           queue_server.set_active(qid, active)
+          print "exit setActive route"
           return jsonify({'SUCCESS':True})
         except QueueNotFoundException as e:
+          print "queuenotfound exception"
           return jsonify(Failure(e.message))
       else:
+        print "bad permissions"
         return jsonify(Failure("You must be logged in as an manager to open or close a queue."))
    else:
+     print "not logged in"
      return jsonify(Failure("You must at least be logged in to open or close a queue."))
 
       
