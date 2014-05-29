@@ -77,13 +77,14 @@ angular.module('LineUpApp.controllers', []).
   // Controller for the #/create_account route
   controller('userCreateController', function ($scope, lineUpUserService, $location) {
     $scope.user = lineUpUserService.getUser();
+    $scope.errors = {};
 
     // Sends a user account creation request to the server.
     // Upon success: Redirects the browser to the login page.
     // Upon error: TODO: Do something smart to handle the error
     $scope.createUser = function () {
       if ($scope.user.pw != $scope.user.pwx2) {
-        alert("Passwords do not match, please retype and try again.");
+        $scope.errors.pw = "Passwords do not match.";
         return;
       }
 
@@ -99,7 +100,7 @@ angular.module('LineUpApp.controllers', []).
             $location.path("/");
           }
 
-          $scope.error = data;
+          $scope.errors = data;
         }).
         error(function (data, status, headers, config) {
           $location.path("/error");
