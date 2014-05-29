@@ -83,8 +83,7 @@ angular.module('LineUpApp.controllers', []).
     // Upon error: TODO: Do something smart to handle the error
     $scope.createUser = function () {
       if ($scope.user.pw != $scope.user.pwx2) {
-        $scope.error = "Passwords do not match, please retype and try again.";
-				document.getElementById('error').classList.remove('hide');
+        alert("Passwords do not match, please retype and try again.");
         return;
       }
 

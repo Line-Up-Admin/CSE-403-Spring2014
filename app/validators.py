@@ -1,8 +1,10 @@
 from os import urandom
 from struct import unpack
 from flask import session
+import re
+import hashlib
 
-MAX_STR_LEN = {
+Q_MAX_STR_LEN = {
    'qname': 32,
    'keywords': 256,
    'location': 64,
@@ -12,17 +14,33 @@ MAX_STR_LEN = {
    'prompt': 512
 }
 
-def check_max_str_len(key, dictionary):
+USER_MAX_STR_LEN = {
+   'uname': 32,
+   'fname': 20,
+   'lname': 20,
+   'email': 32,
+   'pw': 32
+}
+
+def check_max_str_len(key, dictionary, max_dict):
    if dictionary.has_key(key):
-      if len(dictionary[key]) > MAX_STR_LEN[key]:
-         dictionary[key] = key + ' text is too long. Max length is ' + MAX_STR_LEN[key]
+      if len(dictionary[key]) > max_dict[key]:
+         dictionary[key] = key + ' text is too long. Max length is ' + max_dict[key]
          dictionary['SUCCESS'] = False
    
-def are_matching(encrypted_password, given_password):
-   return encrypted_password == given_password
+def are_matching(encrypted_password, salt, given_password):
+   given_password = given_password + unicode(salt)
+   given_password_encrypted = hashlib.sha224(given_password).hexdigest()
+   print 'salt is ', salt, 'given password is', given_password
+   return encrypted_password == given_password_encrypted
 
 def encrypt_password(password):
-   return password
+   print 'given password = ', password
+   salt = unpack('L', urandom(4))[0]
+   print 'salt created', salt
+   password = password + unicode(salt)
+   encrypted_pw = hashlib.sha224(password).hexdigest()
+   return (encrypted_pw, salt)
 
 def get_unique_user_id():
    return unpack("<L", urandom(4))[0]
@@ -31,22 +49,18 @@ def get_unique_queue_id():
    return unpack("<L", urandom(4))[0]
 
 def validate_q_settings(q_settings):
-   """
-   Args:
-   the jsonified dictionary
-   """
    q_settings['SUCCESS'] = True
    if not q_settings.has_key('qname') or q_settings['qname'] is None or len(q_settings['qname']) == 0:
       q_settings['qname'] = 'Required'
       q_settings['SUCCESS'] = False
    else:
-      check_max_str_len('qname', q_settings)
-   check_max_str_len('keywords', q_settings)
-   check_max_str_len('location', q_settings)  
-   check_max_str_len('website', q_settings)
-   check_max_str_len('organization', q_settings)
-   check_max_str_len('disclaimer', q_settings)
-   check_max_str_len('prompt', q_settings)
+      check_max_str_len('qname', q_settings, Q_MAX_STR_LEN)
+   check_max_str_len('keywords', q_settings, Q_MAX_STR_LEN)
+   check_max_str_len('location', q_settings, Q_MAX_STR_LEN)  
+   check_max_str_len('website', q_settings, Q_MAX_STR_LEN)
+   check_max_str_len('organization', q_settings, Q_MAX_STR_LEN)
+   check_max_str_len('disclaimer', q_settings, Q_MAX_STR_LEN)
+   check_max_str_len('prompt', q_settings, Q_MAX_STR_LEN)
    if q_settings.has_key('max_size'):
       try:
          max_size = int(q_settings['max_size'])
@@ -76,3 +90,40 @@ def validate_q_settings(q_settings):
    if q_settings.has_key('blocked_users'):
       q_settings['blocked_users'] = list(set(b.strip() for b in q_settings['blocked_users'].split(',')))
    return q_settings
+
+def validate_user(user):
+   """
+	id INTEGER PRIMARY KEY,
+	temp int,
+	uname varchar(32),
+	fname varchar(20),
+	lname varchar(20),
+	email varchar(32),
+	pw varchar(32),
+   """
+   user['SUCCESS'] = True
+   if not user.has_key('uname') or user['uname'] is None or len(user['uname']) == 0:
+      user['uname'] = 'Required'
+      user['SUCCESS'] = False
+   elif ',' in user['uname']:
+      user['uname'] = 'commas are not allowed in the username.'
+      user['SUCCESS'] = False
+   else:
+      check_max_str_len('uname', user, USER_MAX_STR_LEN)
+   check_max_str_len('fname', user, USER_MAX_STR_LEN)
+   check_max_str_len('lname', user, USER_MAX_STR_LEN)
+   check_max_str_len('email', user, USER_MAX_STR_LEN)
+   """The next line should be removed once the proper regex is found."""
+   check_max_str_len('pw', user, USER_MAX_STR_LEN)
+   """
+   if user.has_key('pw'):
+      if not re.match('NEED REGEX HERE', user['pw']):
+         user['pw'] = 'password does not meet complexity requirements.'
+         user['SUCCESS'] = False
+      else:
+         check_max_str_len('pw', user, USER_MAX_STR_LEN)
+   else:
+      user['pw'] = 'Required.'
+      user['SUCCESS'] = False
+   """
+   return user

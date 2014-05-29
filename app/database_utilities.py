@@ -19,7 +19,7 @@ GET_QUEUE_SETTINGS_BY_ID = 'select * from qsettings where qid=?'
 GET_TEMP_USER_BY_ID = 'select * from users where temp=1 and id=?'
 INSERT_INTO_QUEUE_HISTORY = 'insert into QHistory values (?, ?, ?, ?)'
 INSERT_MEMBER_INTO_QUEUE = 'insert into QIndex values(?, ?, (select ending_index from Queues where id=?), ?)'
-INSERT_PROFILED_USER = 'insert into users values(?, ?, ?, ?, ?, ?, ?)'
+INSERT_PROFILED_USER = 'insert into users values(?, ?, ?, ?, ?, ?, ?, ?)'
 INSERT_QUEUE = 'insert into queues values(?, 0, 0)'
 INSERT_QUEUE_SETTINGS = 'insert into qsettings values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
 INSERT_TEMP_USER = 'insert into users values(?, 1, ?, NULL, NULL, NULL, NULL)'
@@ -45,7 +45,8 @@ def user_dict_to_db_tuple(user_dict):
           user_dict['fname'] if user_dict.has_key('fname') else None,
           user_dict['lname'] if user_dict.has_key('lname') else None,
           user_dict['email'] if user_dict.has_key('email') else None,
-          user_dict['pw']
+          user_dict['pw'],
+          user_dict['salt']
           )
 
 def qsettings_dict_to_db_tuple(qsettings):
@@ -110,7 +111,9 @@ def create_user_profile(user_dict):
     rows = query_db(GET_PROFILED_USER_BY_USERNAME, (user_dict['uname'],))
     if (rows and (len(rows) > 0)):
       raise ValidationException('The given username is already in use.')
-    user_dict['pw'] = validators.encrypt_password(user_dict['pw'])
+    result = validators.encrypt_password(user_dict['pw'])
+    user_dict['pw'] = result[0]
+    user_dict['salt'] = result[1]
     user_dict['id'] = validators.get_unique_user_id()
     user_dict['temp'] = 0
     db.execute(INSERT_PROFILED_USER, user_dict_to_db_tuple(user_dict))
@@ -201,15 +204,18 @@ def get_user(username, given_password):
     sqlite3.Error: database operation failed.
     ValidationException: the username password combination is invalid.
   """
+  err = 'The username password combination is invalid.'
   rows = query_db(GET_PROFILED_USER_BY_USERNAME, (username,))
   if (not rows) or (len(rows) == 0):
-    raise ValidationException('The username password combination is invalid.')
+    raise ValidationException(err)
   else:
     encrypted_password = rows[0]['pw']
-    if validators.are_matching(encrypted_password, given_password):
+    salt = rows[0]['salt']
+    if validators.are_matching(encrypted_password, salt, given_password):
       return rows[0]
     else:
-      raise ValidationException('the username password combination is invalid.')
+      print 'passwords did not match.'
+      raise ValidationException(err)
 
 def get_user_by_uid(uid):
   rows = query_db('select * from users where uid=?', (uid,))
