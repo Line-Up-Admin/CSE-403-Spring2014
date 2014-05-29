@@ -77,24 +77,6 @@ def create_queue():
    except sqlite3.Error as e:
       return abort(500)
 
-@app.route('/modifyQueue', methods=['POST'])
-def modify_queue_settings():
-   if not session.has_key('logged_in') or not session['logged_in']:
-      return jsonify(Failure('You cannot modify queue settings if you are not logged in as an admin!'))
-   uid = session['id']
-   try:
-      q_settings = request.get_json()
-   except:
-      return abort(500)
-   q_settings = validators.validate_q_settings(q_settings)
-   if not permissions.has_flag(uid, q_settings['qid'], permissions.ADMIN):
-      return jsonify(Failure('You cannot modify queue settings if you are not an admin of the queue.'))
-   try:
-      db_util.modify_queue_settings(q_settings)
-      return jsonify(Success({}))
-   except sqlite3.Error as e:
-      return jsonify(Failure('Failed to update queue settings.'))
-
 @app.route('/join', methods=['POST'])
 def add_to_queue():
    """Joins a queue.
@@ -541,6 +523,9 @@ def edit_queue():
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['id']
       qsettings = request.json['q_settings']
+      qsettings = validators.validate_q_settings(qsettings)
+      if not qsettings['SUCCESS']:
+         return jsonify(qsettings)
       if permissions.has_flag(uid, qsettings['qid'], permissions.ADMIN):
          try:
             queue_server.edit_queue(qsettings['qid'], qsettings)

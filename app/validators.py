@@ -25,7 +25,7 @@ USER_MAX_STR_LEN = {
 def check_max_str_len(key, dictionary, max_dict, fail):
    if dictionary.has_key(key):
       if len(dictionary[key]) > max_dict[key]:
-         fail[key] = key + ' text is too long. Max length is ' + max_dict[key]
+         fail[key] = str(key) + ' text is too long. Max length is ' + str(max_dict[key])
          dictionary['SUCCESS'] = False
    
 def are_matching(encrypted_password, salt, given_password):
