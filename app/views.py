@@ -82,7 +82,11 @@ def modify_queue_settings():
    if not session.has_key('logged_in') or not session['logged_in']:
       return jsonify(Failure('You cannot modify queue settings if you are not logged in as an admin!'))
    uid = session['id']
-   q_settings = request.json
+   try:
+      q_settings = request.get_json()
+   except:
+      return abort(500)
+   q_settings = validators.validate_q_settings(q_settings)
    if not permissions.has_flag(uid, q_settings['qid'], permissions.ADMIN):
       return jsonify(Failure('You cannot modify queue settings if you are not an admin of the queue.'))
    try:
@@ -674,14 +678,20 @@ def create_user():
 
    """
    print 'enter createUser route'
-   user_data = request.json
+   try:
+      user_data = request.get_json()
+   except:
+      abort(500)
+   user_data = validators.validate_user(user_data)
+   if not user_data['SUCCESS']:
+      return jsonify(user_data)
    try:
       user_data['id'] = db_util.create_user(user_data)
       print 'exit create user route sucess.'
       return jsonify({'SUCCESS':True})
    except sqlite3.Error as e:
       print 'exit create user route failure.'
-      return jsonify(Failure('Failed to create user.'))
+      return abort(500)
    except db_util.ValidationException as e:
       return jsonify(Failure(e.message))
 

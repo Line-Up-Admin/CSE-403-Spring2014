@@ -6,7 +6,8 @@ CREATE TABLE Users (
 	fname varchar(20),
 	lname varchar(20),
 	email varchar(32),
-	pw varchar(32)
+	pw varchar(56),
+	salt int
 );
 
 CREATE TABLE Queues (
