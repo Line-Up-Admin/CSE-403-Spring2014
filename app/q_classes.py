@@ -11,7 +11,7 @@ actual data structures involved.
 from collections import deque
 
 #Used for analytics of wait times
-from datetime import datetime
+import time
 
 import database_utilities as db_util
 import re
@@ -35,7 +35,7 @@ class Queue(object):
       # This is the actual Queue field of the object. It stores the
       # QueueMemeber as well as the time the Queue was entered. 
       # (Time entered is for the purposes of analytics.)
-      self.my_q = deque()
+      self.storage = deque()
 
       # This q_settings object defaults to None if it is not
       # passed in to the constructor. A Queue with no
@@ -56,7 +56,7 @@ class Queue(object):
    def __len__(self):
       """ This allows the size of the queue object 'q' to be
          obtained by calling len(q) """
-      return len(self.my_q)
+      return len(self.storage)
 
    def get_avg_wait(self):
       """ This currently returns the average wait time in minutes 
@@ -71,16 +71,16 @@ class Queue(object):
          for waits in self.wait_times.values():
             for wait in waits:
                total_num += 1
-               total_time += (wait[1] - wait[0]).total_seconds()
+               total_time += (wait[1] - wait[0])
          # divide by 60 because time() is in seconds.
          return total_time / float(total_num * 60)
 
    def add(self, member):
       """ Adds a Queue Member to a Queue. (If there is room.) """
-      if self.q_settings and len(self.my_q) >= self.q_settings.max_size:
+      if self.q_settings and len(self.storage) >= self.q_settings.max_size:
          raise QueueFullException("Queue is already at maximum size")
       else:
-         self.my_q.append( (member, datetime.now()) )
+         self.storage.append( (member, time.time()) )
 
    def remove(self, member):
       """ Removes a Queue Member from a Queue """
@@ -89,7 +89,7 @@ class Queue(object):
          return False
       # if someone is removed from the middle, we do not take their
       # wait time into account for analytics.
-      q = self.my_q
+      q = self.storage
       del q[pos]
       return True
 
@@ -100,14 +100,14 @@ class Queue(object):
       pos = self.get_position(member)
       if pos == None:
          raise MemberNotFoundException("Member is not in queue.")
-      elif pos + 1 < len(self.my_q):
+      elif pos + 1 < len(self.storage):
          #There is room to move the user back a position in the queue.
-         temp = self.my_q[pos]
-         next_member = self.my_q[pos + 1]
+         temp = self.storage[pos]
+         next_member = self.storage[pos + 1]
          if sync_db:
             db_util.swap(temp[0].uid, next_member[0].uid, self.id)
-         self.my_q[pos] = self.my_q[pos + 1]
-         self.my_q[pos + 1] = temp
+         self.storage[pos] = self.storage[pos + 1]
+         self.storage[pos + 1] = temp
       #else: member is already at the end of the queue
 
    def get_expected_wait(self, member):
@@ -124,7 +124,7 @@ class Queue(object):
          return 0
       if avg_wait and position:
          #avg_wait is already in minutes
-         ex_wait = avg_wait * (position + 0.5)/len(self.my_q)
+         ex_wait = avg_wait * (position + 0.5)/len(self.storage)
          return ex_wait
       else:
          # This is currently fake data for demoing purposes.
@@ -132,12 +132,12 @@ class Queue(object):
 
    def dequeue(self):
       """ Dequeues the next QueueMember from the Queue. """
-      if len(self.my_q) > 0:
-         item = self.my_q.popleft()
+      if len(self.storage) > 0:
+         item = self.storage.popleft()
          # Record the wait time of the person dequeued.
          member = item[0]
          in_time = item[1]
-         out_time = datetime.now()
+         out_time = time.time()
          if member not in self.wait_times:
             self.wait_times[member] = []
          self.wait_times[member].append( (in_time, out_time) )
@@ -151,7 +151,7 @@ class Queue(object):
          of the line. """
       if member is None:
          return None
-      for i, j in enumerate(self.my_q):
+      for i, j in enumerate(self.storage):
          if j[0].uid == member.uid:
             return i
       return None
@@ -161,7 +161,7 @@ class Queue(object):
       Returns:
          the saved QueueMember object associated with the uid."""
       q_member = QueueMember(uid=userid)
-      for item in self.my_q:
+      for item in self.storage:
          # QueueMember equality is defined by having the same id.
          if item[0] == q_member:
             return item[0]
@@ -170,11 +170,8 @@ class Queue(object):
    def get_members(self):
       """ 
       Returns: a list of copies of all of the members of the queue """
-      members = list()
-      for member in self.my_q:
-         # remove the time from result
-         members.append(member[0])
-      return members
+      # member[0] is to remove the time from the result
+      return [member[0] for member in self.storage]
 
    def get_popularity(self):
         """
@@ -183,6 +180,8 @@ class Queue(object):
         total = 0
         for item in self.wait_times.values():
            total += len(item)
+        #also count people currently in the queue
+        total += len(self.storage)
         return total
 
 class QueueMember(object):
@@ -458,7 +457,7 @@ class QueueServer(object):
       position = q.get_position(member)
       return QueueInfo(qname, qid, size, ex_wait, avg_wait, 
             position, q_set.organization, q_set.prompt, 
-            q_set.disclaimer, q_set.website, q_set.location)
+            q_set.disclaimer, q_set.website, q_set.location, q_set.active)
 
    def get_all_queues_info(self):
       """ (not in UML) """
@@ -507,7 +506,7 @@ class QueueInfo(object):
       about a queue. This info will be sent back to the client
       as JSON, and rendered in the browser."""
    def __init__(self, qname, qid, size, expected_wait, avg_wait_time,
-         member_position, organization, prompt, disclaimer, website, location):
+         member_position, organization, prompt, disclaimer, website, location, active):
       self.qname = qname
       self.qid = qid
       self.size = size
@@ -519,3 +518,4 @@ class QueueInfo(object):
       self.disclaimer = disclaimer
       self.website = website
       self.location = location
+      self.active = active
