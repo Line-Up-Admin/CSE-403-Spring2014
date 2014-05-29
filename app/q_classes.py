@@ -11,7 +11,7 @@ actual data structures involved.
 from collections import deque
 
 #Used for analytics of wait times
-from datetime import datetime
+import time
 
 import database_utilities as db_util
 import re
@@ -71,7 +71,7 @@ class Queue(object):
          for waits in self.wait_times.values():
             for wait in waits:
                total_num += 1
-               total_time += (wait[1] - wait[0]).total_seconds()
+               total_time += (wait[1] - wait[0])
          # divide by 60 because time() is in seconds.
          return total_time / float(total_num * 60)
 
@@ -80,7 +80,7 @@ class Queue(object):
       if self.q_settings and len(self.storage) >= self.q_settings.max_size:
          raise QueueFullException("Queue is already at maximum size")
       else:
-         self.storage.append( (member, datetime.now()) )
+         self.storage.append( (member, time.time()) )
 
    def remove(self, member):
       """ Removes a Queue Member from a Queue """
@@ -137,7 +137,7 @@ class Queue(object):
          # Record the wait time of the person dequeued.
          member = item[0]
          in_time = item[1]
-         out_time = datetime.now()
+         out_time = time.time()
          if member not in self.wait_times:
             self.wait_times[member] = []
          self.wait_times[member].append( (in_time, out_time) )
@@ -170,11 +170,8 @@ class Queue(object):
    def get_members(self):
       """ 
       Returns: a list of copies of all of the members of the queue """
-      members = list()
-      for member in self.storage:
-         # remove the time from result
-         members.append(member[0])
-      return members
+      # member[0] is to remove the time from the result
+      return [member[0] for member in self.storage]
 
    def get_popularity(self):
         """
@@ -183,6 +180,8 @@ class Queue(object):
         total = 0
         for item in self.wait_times.values():
            total += len(item)
+        #also count people currently in the queue
+        total += len(self.storage)
         return total
 
 class QueueMember(object):
