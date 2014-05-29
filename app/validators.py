@@ -36,7 +36,7 @@ def are_matching(encrypted_password, salt, given_password):
 
 def encrypt_password(password):
    print 'given password = ', password
-   salt = unpack('L', urandom(4))[0]
+   salt = unpack('I', urandom(4))[0]
    print 'salt created', salt
    password = password + unicode(salt)
    encrypted_pw = hashlib.sha224(password).hexdigest()
