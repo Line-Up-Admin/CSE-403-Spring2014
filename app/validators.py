@@ -118,15 +118,15 @@ def validate_user(user):
       check_max_str_len('uname', user, USER_MAX_STR_LEN, fail)
    check_max_str_len('fname', user, USER_MAX_STR_LEN, fail)
    check_max_str_len('lname', user, USER_MAX_STR_LEN, fail)
-   if user.has_key('email') or user['email'] is None or len(user['email']) == 0:
+   if not user.has_key('email') or user['email'] is None or len(user['email']) == 0:
+      fail['email'] = 'Required'
+      user['SUCCESS'] = False
+   else:
       if not re.match('.+\@.+\..+', user['email']):
          fail['email'] = 'Invalid Email'
          user['SUCCESS'] = False
       else:
          check_max_str_len('email', user, USER_MAX_STR_LEN, fail)
-   else:
-      fail['email'] = 'Required'
-      user['SUCCESS'] = False
    """The next line should be removed once the proper regex is found."""
    check_max_str_len('pw', user, USER_MAX_STR_LEN, fail)
    """
