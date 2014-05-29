@@ -33,30 +33,7 @@ def root():
 def create_queue():
    """Creates a queue. If the user is logged in, they will become an admin for the queue.
 
-   Args:
-   {
-      active: 0 or 1
-      admins: 1 string, comma separated list.
-      blocked_users: 1 string, comma separated list.
-      managers: 1 string, comma separated list.
-      keywords: 1 string. will be handled by search later.
-      location:
-      max_size:
-      qname:
-   }
-
-   Returns:
-      {
-         active:
-         admins: [] (optional, a list of usernames)
-         blocked_users: [] (optional, a list of usernames)
-         managers: [] (optional, a list of usernames)
-         keywords:
-         location:
-         max_size:
-         qid:
-         qname:
-      }
+   
 
    """
    try:
@@ -76,20 +53,6 @@ def create_queue():
       return jsonify(q_settings)
    except sqlite3.Error as e:
       return abort(500)
-
-@app.route('/modifyQueue', methods=['POST'])
-def modify_queue_settings():
-   if not session.has_key('logged_in') or not session['logged_in']:
-      return jsonify(Failure('You cannot modify queue settings if you are not logged in as an admin!'))
-   uid = session['id']
-   q_settings = request.json
-   if not permissions.has_flag(uid, q_settings['qid'], permissions.ADMIN):
-      return jsonify(Failure('You cannot modify queue settings if you are not an admin of the queue.'))
-   try:
-      db_util.modify_queue_settings(q_settings)
-      return jsonify(Success({}))
-   except sqlite3.Error as e:
-      return jsonify(Failure('Failed to update queue settings.'))
 
 @app.route('/join', methods=['POST'])
 def add_to_queue():
@@ -128,7 +91,6 @@ def add_to_queue():
    qid = int(request.json['qid'])
    if request.json.has_key('optional_data'):
       optional_data = request.json['optional_data']
-      qid = int(request.json['qid'])
    if not queue_server.is_active(qid):
       return jsonify(Failure('The queue is not active!'))
    temp = None
@@ -142,9 +104,12 @@ def add_to_queue():
       try:
          temp_user['id'] = db_util.create_temp_user(temp_user)
       except sqlite3.Error as e:
-         return e.message
+         return abort(500)
       username = temp_user['uname']
       uid = temp_user['id']
+      session['logged_in'] = True
+      session['id'] = uid
+      session['uname'] = username
    if not permissions.has_flag(uid, qid, permissions.BLOCKED_USER):
       q_member = QueueMember(username, uid, optional_data)
       queue_server.add(q_member, qid)
@@ -310,7 +275,7 @@ def leave_queue():
    if not session.has_key('logged_in') and session['logged_in']:
       return jsonify(Failure('You are not logged in!'))
    uid=session['id']
-   qid=request.json['qid']
+   qid=request.json
    try:
       queue_server.remove(QueueMember(uid=uid), qid)
       return jsonify(Success({}))
@@ -537,6 +502,9 @@ def edit_queue():
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['id']
       qsettings = request.json['q_settings']
+      qsettings = validators.validate_q_settings(qsettings)
+      if not qsettings['SUCCESS']:
+         return jsonify(qsettings)
       if permissions.has_flag(uid, qsettings['qid'], permissions.ADMIN):
          try:
             queue_server.edit_queue(qsettings['qid'], qsettings)
@@ -674,15 +642,20 @@ def create_user():
 
    """
    print 'enter createUser route'
-   user_data = request.json
+   try:
+      user_data = request.get_json()
+   except:
+      abort(500)
+   user_data = validators.validate_user(user_data)
+   if not user_data['SUCCESS']:
+      return jsonify(user_data)
    try:
       user_data['id'] = db_util.create_user(user_data)
       print 'exit create user route sucess.'
       return jsonify({'SUCCESS':True})
    except sqlite3.Error as e:
       print 'exit create user route failure.'
-
-      return jsonify(Failure('Failed to create user.'))
+      return abort(500)
    except db_util.ValidationException as e:
       return jsonify(Failure(e.message))
 
