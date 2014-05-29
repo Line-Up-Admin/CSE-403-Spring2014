@@ -100,7 +100,7 @@ angular.module('LineUpApp.controllers', []).
           if (data.SUCCESS) {
             $location.path("/");
           }
-
+          // display the returned error messages
           $scope.errors = data;
         }).
         error(function (data, status, headers, config) {
