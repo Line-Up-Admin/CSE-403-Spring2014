@@ -43,8 +43,8 @@ angular.module('LineUpApp.services', []).
       return $http.post('/search', query);
     }
 
-		lineUpAPI.setActive = function (data) {
-			return $http.post('/setActive', data);
+		lineUpAPI.setActive = function (qid, data) {
+			return $http.post('/setActive/' + qid, data);
 		}
 
     lineUpAPI.joinQueue = function (data) {

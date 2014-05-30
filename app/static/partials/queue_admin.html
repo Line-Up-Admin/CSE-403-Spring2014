@@ -27,7 +27,7 @@
 				<span class="glyphicon glyphicon-arrow-up"></span></br>
 				First Person
 			</button>
-			<button id="btn-view-details" class="btn btn-line-up btn-lg" role="button" disabled>
+			<button id="btn-view-details" class="btn btn-line-up btn-lg" role="button" ng-click="viewDetails()">
 				<span class="glyphicon glyphicon-zoom-in"></span></br>
 				View Details
 			</button>
@@ -54,14 +54,14 @@
 		</p>
 	</div>
 </div>
-	
+
 <!-- Modal Window -->
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 <div class="modal-dialog">
   <div class="modal-content">
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-      <h4 class="modal-title" id="myModalLabel">Add a Person to This Line</h4>
+      <h4 class="modal-title" id="myModalLabel">Add a person to this line</h4>
     </div>
     <div class="modal-body">
     	<div id="error" class=" col-md-6 col-md-offset-3 alert alert-danger hide">
@@ -90,4 +90,27 @@
   </div>
 </div>
 </div>
+
+<!-- Modal Window -->
+<div class="modal fade" id="details-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h4 class="modal-title" id="myModalLabel">Details</h4>
+    </div>
+    <div class="modal-body">
+    	<p> <strong>Name:</strong> {{ userDetails.uname }}
+    	<p>
+    		<strong>{{ queueInfo.prompt }}</strong> {{ userDetails.optional_data }}
+    	</p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+    </div>
+  </div>
+</div>
+</div>
+
+
 <!-- Version 9:22pm -->
