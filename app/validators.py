@@ -25,7 +25,7 @@ USER_MAX_STR_LEN = {
 def check_max_str_len(key, dictionary, max_dict, fail):
    if dictionary.has_key(key):
       if len(dictionary[key]) > max_dict[key]:
-         fail[key] = key + ' text is too long. Max length is ' + max_dict[key]
+         fail[key] = str(key) + ' text is too long. Max length is ' + str(max_dict[key])
          dictionary['SUCCESS'] = False
    
 def are_matching(encrypted_password, salt, given_password):
@@ -36,7 +36,7 @@ def are_matching(encrypted_password, salt, given_password):
 
 def encrypt_password(password):
    print 'given password = ', password
-   salt = unpack('L', urandom(4))[0]
+   salt = unpack('I', urandom(4))[0]
    print 'salt created', salt
    password = password + unicode(salt)
    encrypted_pw = hashlib.sha224(password).hexdigest()
@@ -67,16 +67,16 @@ def validate_q_settings(q_settings):
       try:
          max_size = int(q_settings['max_size'])
       except ValueError:
-         fail['max_size'] = 'Invalid maximum size.'
+         fail['max_size'] = 'Maximum size must be an int.'
          q_settings['SUCCESS'] = False
       if max_size < 1:
-         fail['max_size'] = 'Max size must be greater than zero.'
+         fail['max_size'] = 'Maximum size must be greater than zero.'
          q_settings['SUCCESS'] = False
    if q_settings.has_key('min_wait_rejoin'):
       try:
          mwr = int(q_settings['min_wait_rejoin'])
       except ValueError:
-         fail['min_wait_rejoin'] = 'Invalid minimum wait to rejoin queue.'
+         fail['min_wait_rejoin'] = 'Minimum wait to rejoin queue must be an int.'
          q_settings['SUCCESS'] = False
       if mwr < 0:
          fail['min_wait_rejoin'] = 'Minimum wait to rejoin queue must be non-negative.'
@@ -112,24 +112,32 @@ def validate_user(user):
       fail['uname'] = 'Required'
       user['SUCCESS'] = False
    elif ',' in user['uname']:
-      fail['uname'] = 'commas are not allowed in the username.'
+      fail['uname'] = 'commas are not allowed in the User Name.'
       user['SUCCESS'] = False
    else:
       check_max_str_len('uname', user, USER_MAX_STR_LEN, fail)
    check_max_str_len('fname', user, USER_MAX_STR_LEN, fail)
    check_max_str_len('lname', user, USER_MAX_STR_LEN, fail)
-   check_max_str_len('email', user, USER_MAX_STR_LEN, fail)
+   if not user.has_key('email') or user['email'] is None or len(user['email']) == 0:
+      fail['email'] = 'Required'
+      user['SUCCESS'] = False
+   else:
+      if not re.match('.+\@.+\..+', user['email']):
+         fail['email'] = 'Invalid Email'
+         user['SUCCESS'] = False
+      else:
+         check_max_str_len('email', user, USER_MAX_STR_LEN, fail)
    """The next line should be removed once the proper regex is found."""
    check_max_str_len('pw', user, USER_MAX_STR_LEN, fail)
    """
    if user.has_key('pw'):
       if not re.match('NEED REGEX HERE', user['pw']):
-         user['pw'] = 'password does not meet complexity requirements.'
+         fail['pw'] = 'password does not meet complexity requirements.'
          user['SUCCESS'] = False
       else:
          check_max_str_len('pw', user, USER_MAX_STR_LEN, fail)
    else:
-      user['pw'] = 'Required.'
+      fail['pw'] = 'Required.'
       user['SUCCESS'] = False
    """
    if not user['SUCCESS']:

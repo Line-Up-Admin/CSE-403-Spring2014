@@ -66,6 +66,11 @@ hr.bar1 {
 	margin-right: auto;
 }
 
+.form-group  > div {
+	margin-left: 4%;
+	margin-right: 4%;
+}
+
 .info-box { /* login_home, create_account, search_queues */
 	background-color: #76ADA9;
 	border: 0px solid black;
@@ -138,7 +143,7 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 	background-color: #76ADA9;
 	border: 4px solid #3C3940;
 	border-radius:25px;
-	max-width: 1000px;
+	max-width: 500px;
 }
 
 /* user_home css */
@@ -174,7 +179,9 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 
 .queue-portrait, .button-join {
 	float: left;
-	margin: 10px;
+	margin-top: 10px;
+	margin-left: 10px;
+	margin-right: 10px;
 }
 
 h1.queue-page-header {
@@ -314,4 +321,12 @@ body {
 }
 
 #footer {
+}
+
+.error-field {
+	color: red;
+}
+
+.buttons_control {
+	margin-top: 20px;
 }

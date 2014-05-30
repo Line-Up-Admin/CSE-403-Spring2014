@@ -190,6 +190,23 @@ def get_queue_info_and_members(qid):
         q_info = queue_server.get_info(None, qid)
         return jsonify(queue_info=q_info.__dict__, member_list=[member.__dict__ for member in members])
 
+@app.route('/debug/setActive/<int:qid>', methods=['GET', 'POST'])
+def set_active_debug(qid):
+   if not session.has_key('logged_in') or not session['logged_in']:
+      return jsonify(Failure('You are not logged in!'))
+   if not permissions.has_flag(session['id'], qid, permissions.MANAGER):
+      return jsonify(Failure('You must be logged in as a manager to deactivate the queue.'))
+   active = int(request.args['active'])
+   if active is None or type(active) is not int:
+      return abort(500)
+   try:
+      queue_server.set_active(qid, active)
+      return jsonify(Success({}))
+   except sqlite3.Error:
+      abort(500)
+   except QueueNotFoundException as e:
+      return jsonify(Failure('The queue was not found.'))
+
 @app.route('/debug/join/<int:qid>', methods=['GET', 'POST'])
 def add_to_queue_debug(qid):
    if not app.debug:
@@ -222,6 +239,58 @@ def add_to_queue_debug(qid):
       return jsonify(q_info_dict)
    else:
       return 'User is blocked from this queue.'
+
+@app.route('/debug/enqueue/<int:qid>', methods=['GET', 'POST'])
+def enqueue_debug(qid):
+   if not session.has_key('logged_in') or not session['logged_in']:
+      return jsonify(Failure('You are not logged in!'))
+   if not queue_server.is_active(qid):
+      return jsonify(Failure('The queue is not active.'))
+   temp_user = dict()
+   optional_data = None
+   data = request.args
+   fail = dict()
+   fail['SUCCESS'] = True
+   uname_msg = 'Name is required.'
+   optional_data_required = False
+   try:
+      settings = queue_server.get_settings(None, qid)
+      if settings.prompt is not None and len(settings.prompt) > 0:
+         optional_data_required = True
+   except QueueNotFoundException as e:
+      return jsonify(Failure(e.message))
+   if data is None or len(data) == 0:
+      fail['SUCCESS'] = False
+      fail['uname'] = uname_msg
+   else:
+      if data.has_key('optional_data') and len(data['optional_data']) > 0:
+         optional_data = data['optional_data']
+      if data.has_key('uname') and len(data['uname']) > 0:
+         temp_user['uname'] = data['uname']
+   if not temp_user.has_key('uname'):
+      fail['SUCCESS'] = False
+      fail['uname'] = uname_msg
+   if optional_data is None and optional_data_required:
+      fail['SUCCESS'] = False
+      fail['optional_data'] = 'Required'
+   if not fail['SUCCESS']:
+      return jsonify(fail)
+   if not permissions.has_flag(session['id'], qid, permissions.MANAGER):
+      return jsonify(Failure('You must be logged in as a manager to enqueue.'))
+   # got the temp uname, manager logged in and confirmed.
+   try:
+      temp_user['id'] = db_util.create_temp_user(temp_user)
+   except sqlite3.Error as e:
+      return abort(500)
+   try:
+      queue_server.add(QueueMember(temp_user['uname'], temp_user['id'], optional_data), qid)
+      return jsonify(Success({}))
+   except sqlite3.Error:
+      return abort(500)
+   except QueueNotFoundException as e:
+      return jsonify(Failure(e.message))
+   except QueueFullException as e:
+      return jsonify(Failure(e.message))
 
 @app.route('/debug/dequeue/<int:qid>', methods=['GET', 'POST'])
 def dequeue_debug(qid):

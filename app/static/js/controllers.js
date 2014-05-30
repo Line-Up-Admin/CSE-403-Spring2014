@@ -11,6 +11,7 @@ angular.module('LineUpApp.controllers', []).
 
   // Controller for the #/create_queue route
   controller('createQueueController', function ($scope, lineUpAPIService, $location, $route) {
+    $scope.queue = {};
 
     // hide the edit button if we are on the create queue page
     // call on page load with ng-init="init()"
@@ -83,13 +84,15 @@ angular.module('LineUpApp.controllers', []).
   // Controller for the #/create_account route
   controller('userCreateController', function ($scope, lineUpUserService, $location) {
     $scope.user = lineUpUserService.getUser();
+    $scope.errors = {};
 
     // Sends a user account creation request to the server.
     // Upon success: Redirects the browser to the login page.
     // Upon error: TODO: Do something smart to handle the error
     $scope.createUser = function () {
       if ($scope.user.pw != $scope.user.pwx2) {
-        alert("Passwords do not match, please retype and try again.");
+        $scope.errors = {};
+        $scope.errors.pw = "Passwords do not match.";
         return;
       }
 
@@ -101,12 +104,14 @@ angular.module('LineUpApp.controllers', []).
       lineUpUserService.createUser($scope.user).
         success(function (data, status, headers, config) {
           // account created successfully, redirect to the login page
-          $location.path("/");
+          if (data.SUCCESS) {
+            $location.path("/");
+          }
+          // display the returned error messages
+          $scope.errors = data;
         }).
         error(function (data, status, headers, config) {
-					$scope.error = "User name already taken!";
-          document.getElementById('error').classList.remove('hide');
-					//alert("Something went wrong with the create account request!\nStatus: " + status);
+          $location.path("/error");
         });
       }
   }).
@@ -327,6 +332,7 @@ angular.module('LineUpApp.controllers', []).
 	controller('adminViewController', function ($scope, lineUpAPIService, $location, $routeParams, $route) {
 		$scope.user = {};
 		$scope.queueInfo = {};
+    $scope.errors = {};
 		$scope.member_list = [];
 		$scope.setActiveStatusTo = "Close Queue";
 
@@ -341,17 +347,30 @@ angular.module('LineUpApp.controllers', []).
 		$scope.getDetailedQueueInfo = function () {
 			lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
 				success(function (data, status, headers, config) {
-					console.log(data.queue_info);
 					$scope.queueInfo = data.queue_info;
-					console.log($scope.queueInfo);
 					$scope.member_list = data.member_list;
 					document.getElementById("list-group").size=$scope.member_list.length+1;
+					var button = document.getElementById("btn-close-queue");
+					console.log($scope.queueInfo.active);
+					if( $scope.queueInfo.active == 0 ) {
+						$scope.setActiveStatusTo = "Open Queue";
+						button.value = 1;
+					} else {
+						$scope.setActiveStatusTo = "Close Queue";
+						button.value = 0;
+					}
+					console.log("button value  = " + button.value);
 				}).
 				error(function (data, status, headers, config) {
 					console.log($routeParams.qid);
 					alert("Are you logged in as an existing user? If not, that might be an issue.\nStatus: " + status);
 				});
-		}();
+		}
+    $scope.getDetailedQueueInfo();
+		/*
+		$scope.setActiveButton = function (int active) {
+
+		} */
 
 		// Sends a dequeue request to the server.
     // Upon success: Dequeues the first person in line.
@@ -359,17 +378,19 @@ angular.module('LineUpApp.controllers', []).
 		$scope.dequeueFirstPerson = function () {
 			lineUpAPIService.dequeueFirstPerson($routeParams.qid).
 				success(function (data, status, headers, config) {
-					$scope.queueInfo = data.queue_info;
-					$scope.member_list = data.member_list;
-					$route.reload();
-					if(data.optional_data != null) {
+          // refresh the queue data
+          $scope.getDetailedQueueInfo();
+
+          // display the dequeued user and info
+					if (data.optional_data) {
 						alert(data.uname + " was removed, information: " + data.optional_data);
 					} else {
 						alert(data.uname + " was removed.");
 					}
 				}).
 				error(function (data, status, headers, config) {
-					alert("Something went wrong with the dequeue request!\nStatus: " + status);
+					// not an error we are prepared to handle
+          $location.path("/error");
 				});
 		}
 
@@ -382,35 +403,63 @@ angular.module('LineUpApp.controllers', []).
 				success(function (data, status, headers, config) {
 					$scope.queueInfo = data.queue_info;
 					$scope.member_list = data.member_list;
-					$route.reload();
+					$scope.getDetailedQueueInfo();
 				}).
 				error(function (data, status, headers, config) {
 					alert(data);
 				});
 		}
 
-		// Sends an enqueue request to the server.
-    // Upon success: currently, enqueues the admin and updates the admin view.
-    // Upon error: TODO: Do something smart to handle the error
+		// Opens a modal dialog that prompts for the name and the optional data.
+    // Sends a request to the server to add that name to the queue.
+    // Upon Success: the name has been added to the queue
+    // Upon Error: redirect to the error page.
 		$scope.adminAdd = function () {
-			lineUpAPIService.joinQueue({ 'qid': $routeParams.qid, 'uname': $scope.user.uname }).
+
+      // ensure that we send json data with both values
+      if (!$scope.user.uname) {
+        $scope.user.uname = "";
+      }
+      if (!$scope.user.optional_data) {
+        $scope.user.optional_data = "";
+      }
+
+      // send the request
+			lineUpAPIService.enqueue($routeParams.qid, $scope.user).
         success(function (data, status, headers, config) {
 
-					// loads the latest queue info, then reloads the page
-					lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
-						success(function (data, status, headers, config) {
-							$scope.queueInfo = data.queue_info;
-							$scope.member_list = data.member_list;
-							$route.reload();
-						}).
-						error(function (data, status, headers, config) {
-							alert("Could not load latest queue information from server.\nStatus: " + status);
-						});
+          if (data.SUCCESS) {
+            // refresh the queue
+            $scope.getDetailedQueueInfo();
+
+            // close the window
+            $("#addModal").modal('toggle');
+            $scope.errors = {};
+            $scope.user = {};
+
+          } else {
+            // display error messages
+            $scope.errors = data;
+            if (data.error_message) {
+              document.getElementById('error').classList.remove('hide');
+            }
+          }
 				}).
         error(function (data, status, headers, config) {
-          alert("Something went wrong with the join queue request! \nStatus: " + status);
+          // this is not an error we are prepared to handle
+          $location.path("/error");
         });
 		}
+
+    $scope.dismissModal = function () {
+      // clear the error messsages
+      $scope.errors = {};
+      $scope.user = {};
+
+      // close the modal window
+      $("#addModal").modal('toggle');
+    }
+
 
 		$scope.demoteSelectPerson = function () {
 			var selectIndex = document.getElementById("list-group").options.selectedIndex;
@@ -419,6 +468,7 @@ angular.module('LineUpApp.controllers', []).
 					$scope.queueInfo = data.queue_info;
 					$scope.member_list = data.member_list;
 					$route.reload();
+					document.getElementById("list-group").selectedIndex = selectIndex + 1;
 				}).
 				error(function (data, status, headers, config) {
 					alert(data);
@@ -429,12 +479,12 @@ angular.module('LineUpApp.controllers', []).
     // Upon success: toggles the queue to open or closed depending on prev state.
     // Upon error: Alert message.
 		$scope.setActive = function() {
-			var prevActiveStatus = document.getElementById("btn-close-queue").value;
-			console.log(prevActiveStatus + "," + $routeParams.qid);
-			lineUpAPIService.setActive({ 'qid': $routeParams.qid, 'active': prevActiveStatus }).
+			var button = document.getElementById("btn-close-queue");
+			var targetActiveStatus = button.value;
+			console.log(targetActiveStatus + "," + $routeParams.qid);
+			lineUpAPIService.setActive({ 'qid': $routeParams.qid, 'active': targetActiveStatus }).
         success(function (data, status, headers, config) {
-					var button = document.getElementById("btn-close-queue");
-					if( prevActiveStatus == 0 ) {
+					if( targetActiveStatus == 0 ) {
 						$scope.setActiveStatusTo = "Open Queue";
 						button.value = 1;
 					} else {

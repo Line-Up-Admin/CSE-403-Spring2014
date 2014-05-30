@@ -1,16 +1,17 @@
 <!-- Header -->
 <div class="header-content" ng-include src="'partials/header.html'"></div>
 
-<div class="panel panel-default">
+<div class="main-page-content container">
   <div class="panel-heading">
     <h3>{{ queue.qname }}</h3>
     <h4>{{ queue.organization }}: {{ queue.location }}</h4>
+    <a ng-if="queue.website != null" href="http://{{ queue.website }}">{{ queue.website }}</a>
   </div>
   <div class="panel-body">
     <div class="queue-portrait">
       <img src="img/default.png"/>
     </div>
-    <div id="enqueued" class="queue_control container text-center hide">
+    <div id="enqueued" class="queue_control text-center hide">
       <div class="queue-status">
         {{ queue.expected_wait }} min</br>
         <div class="progress queue-position">
@@ -29,7 +30,7 @@
         </a>
       </p>
     </div>
-    <div id="notEnqueued" class="queue-control container hide">
+    <div id="notEnqueued" class="queue-control hide">
       <p class="button-join"><button id="btn-join" class="btn btn-line-up btn-lg btn-block" role="button" ng-click="promptForData()">
         <span class="glyphicon glyphicon-send"></span></br>
         Join Queue
@@ -40,7 +41,6 @@
       </div>
     </div>
   </div>
-  <p> {{ queue.website }} </p>
   <div class="panel-footer">{{ queue.disclaimer }}</div>
 </div>
 

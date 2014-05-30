@@ -29,7 +29,7 @@ angular.module('LineUpApp.services', []).
 		lineUpAPI.dequeueFirstPerson = function (qid) {
 			return $http.post('/dequeue/' + qid);
 		}
-		
+
 		lineUpAPI.dequeueSelectPerson = function (data) {
 			return $http.post('/remove', data);
 		}
@@ -70,13 +70,17 @@ angular.module('LineUpApp.services', []).
     lineUpAPI.postpone = function (qid) {
       return $http.post('/postpone', qid);
     }
-		
+
 		lineUpAPI.demoteSelectPerson = function (data) {
 			return $http.post('/managerPostpone', data);
 		}
 
     lineUpAPI.leaveQueue = function (qid) {
       return $http.post('/leaveQueue', qid);
+    }
+
+    lineUpAPI.enqueue = function (qid, user) {
+      return $http.post('/enqueue/' + qid, user);
     }
 
     return lineUpAPI;
