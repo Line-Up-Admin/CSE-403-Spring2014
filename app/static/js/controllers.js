@@ -3,6 +3,12 @@
 /* Controllers */
 angular.module('LineUpApp.controllers', []).
 
+  
+  controller('headerController', function ($scope, lineUpAPIService, $location, $route) {
+     $scope.displayHelp = $scope.$parent.displayHelp;
+    }).
+
+
   // Controller for the #/create_queue route
   controller('createQueueController', function ($scope, lineUpAPIService, $location, $route) {
 
@@ -116,6 +122,9 @@ angular.module('LineUpApp.controllers', []).
       }
     };
 
+    $scope.displayHelp = function () {
+            $("#help-modal").modal('toggle');
+    };
 		// Sends a user queue request to the server.
     // Upon success: Loads the user queues to the requisite scope fields.
     // Upon error: TODO: Do something smart to handle the error
