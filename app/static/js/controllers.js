@@ -403,6 +403,7 @@ angular.module('LineUpApp.controllers', []).
 
   // Controller for the #/admin route
 	controller('adminViewController', function ($scope, lineUpAPIService, $location, $routeParams, $route) {
+		$scope.selectedUser;
 		$scope.activeStatus = "OPEN";
 		$scope.user = {};
 		$scope.queueInfo = {};
@@ -415,10 +416,6 @@ angular.module('LineUpApp.controllers', []).
 			$location.path('/edit/' + $routeParams.qid);
 		}
 
-		$scope.setSelected = function() {
-			console.log(document.getElementById("list-group").options);
-		}
-
     // show the help slide-in modal
     $scope.displayHelp = function () {
             $("#help-modal").modal('toggle');
@@ -428,7 +425,6 @@ angular.module('LineUpApp.controllers', []).
     // Upon success: Shows the admin view for the given queue id.
     // Upon error: TODO: Do something smart to handle the error
 		$scope.getDetailedQueueInfo = function () {
-			var selectIndex = document.getElementById("list-group").options.selectedIndex;
 			lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
 				success(function (data, status, headers, config) {
 					$scope.queueInfo = data.queue_info;
@@ -450,7 +446,8 @@ angular.module('LineUpApp.controllers', []).
 						$scope.setActiveStatusTo = "Close Queue";
 						button.value = 0;
 					}
-					memberList.options.selectedIndex = selectIndex;
+					// removes empty option at beginning of list
+					$scope.selectedUser = $scope.member_list[0];
 				}).
 				error(function (data, status, headers, config) {
 					// not an error we are prepared to handle
@@ -458,7 +455,12 @@ angular.module('LineUpApp.controllers', []).
 				});
 		}
     $scope.getDetailedQueueInfo();
-		$scope.setSelected();
+		
+		$scope.toggleRemoveButton = function () {
+			var rButton = document.getElementById("btn-remove");
+			console.log(rButton.disabled);
+			rButton.disabled=!rButton.disabled;
+		}
 
 		// Sends a dequeue request to the server.
     // Upon success: Dequeues the first person in line.
@@ -486,8 +488,7 @@ angular.module('LineUpApp.controllers', []).
     // Upon success: Dequeues the selected person in line.
     // Upon error: TODO: Do something smart to handle the error
 		$scope.dequeueSelectPerson = function () {
-			var selectIndex = document.getElementById("list-group").options.selectedIndex;
-			lineUpAPIService.dequeueSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.member_list[selectIndex].uid }).
+			lineUpAPIService.dequeueSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.selectedUser.uid }).
 				success(function (data, status, headers, config) {
 					$scope.queueInfo = data.queue_info;
 					$scope.member_list = data.member_list;
@@ -542,6 +543,7 @@ angular.module('LineUpApp.controllers', []).
     $scope.dismissModal = function () {
       // clear the error messsages
       $scope.errors = {};
+			document.getElementById('error').classList.add('hide');
       $scope.user = {};
 
       // close the modal window
@@ -551,23 +553,28 @@ angular.module('LineUpApp.controllers', []).
 
 		$scope.demoteSelectPerson = function () {
 			var selectIndex = document.getElementById("list-group").options.selectedIndex;
-			lineUpAPIService.demoteSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.member_list[selectIndex].uid }).
-				success(function (data, status, headers, config) {
-					// refresh the queue
-					$scope.getDetailedQueueInfo();
-					var list = document.getElementById("list-group");
-					console.log("selected index should be " + selectIndex + 1);
-					console.log("list index 0 = " + list.options[0].text);
-					list.options[2].selected = true;
-					console.log("list index 1 = " + list.options[1].text);
-					console.log("list index 2 = " + list.options[2].text);
-					console.log("selected item should be " + document.getElementById("list-group").options[selectIndex + 1].text);
-					document.getElementById("list-group").options[0].selected="selected";
-				}).
-				error(function (data, status, headers, config) {
-					// this is not an error we are prepared to handle
-          $location.path("/error");
-				});
+			if( selectIndex != $scope.member_list.length - 1 ) {
+				lineUpAPIService.demoteSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.selectedUser.uid }).
+					success(function (data, status, headers, config) {
+						// refresh the queue
+						$scope.getDetailedQueueInfo();
+	/*  					var list = document.getElementById("list-group");
+						console.log("selected index should be " + selectIndex + 1);
+						console.log("list index 0 = " + list.options[0].text);
+						list.options[2].selected = true;
+						console.log("list index 1 = " + list.options[1].text);
+						console.log("list index 2 = " + list.options[2].text);
+						console.log("selected item should be " + document.getElementById("list-group").options[selectIndex + 1].text);
+						document.getElementById("list-group").options[3].selected="selected"; */
+						document.getElementById("list-group").options[selectIndex + 1].selected="selected";
+					}).
+					error(function (data, status, headers, config) {
+						// this is not an error we are prepared to handle
+						$location.path("/error");
+					});
+			} else {
+				alert("user is already at end of queue!");
+			}
 		}
 
 		// Sends a request to toggle the queue's active status to the server.
@@ -602,7 +609,7 @@ angular.module('LineUpApp.controllers', []).
     $scope.viewDetails = function () {
       var selectedIndex = document.getElementById("list-group").options.selectedIndex;
       if (selectedIndex != -1) {
-        $scope.userDetails = $scope.member_list[selectedIndex];
+        $scope.userDetails = $scope.selectedUser;
         $("#details-modal").modal('toggle');
       }
     }

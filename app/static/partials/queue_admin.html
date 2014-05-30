@@ -11,9 +11,7 @@
 			Line: {{ queueInfo.size }} people
 		</div>
 		<div class="queue-member-listing">
-			<select id="list-group" size="12">
-				<option class="list-group-item" id={{ person.uname}} ng-repeat='person in member_list'>{{ person.uname }}</option>
-			</select>
+			<select id="list-group" size="12" ng-model="selectedUser" ng-options="member.uname for member in member_list"></select>
 		</div>
 	</div>
 	<div class="control-options container text-center">
