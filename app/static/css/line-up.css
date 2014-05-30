@@ -142,7 +142,7 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 	margin-top: 40px;
 	background-color: #76ADA9;
 	border: 4px solid #3C3940;
-	border-radius:25px;
+	border-radius:0px;
 	max-width: 500px;
 }
 
@@ -329,4 +329,9 @@ body {
 
 .buttons_control {
 	margin-top: 20px;
+}
+
+.container {
+	padding-left: 0px;
+	padding-right: 0px;
 }
