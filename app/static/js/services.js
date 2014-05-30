@@ -39,7 +39,6 @@ angular.module('LineUpApp.services', []).
     }
 
     lineUpAPI.search = function (query) {
-      console.log(query);
       return $http.post('/search', query);
     }
 
@@ -98,12 +97,10 @@ angular.module('LineUpApp.services', []).
     };
 
     this.login = function (user) {
-      console.log(user);
       return $http.post('/login', user);
     };
 
     this.createUser = function (user) {
-      console.log(user);
       return $http.post('/createUser', user);
     }
   });

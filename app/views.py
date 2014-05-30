@@ -726,7 +726,7 @@ def create_user():
       print 'exit create user route failure.'
       return abort(500)
    except db_util.ValidationException as e:
-      return jsonify(Failure(e.message))
+      return jsonify({'SUCCESS':False, 'uname':'The User Name is already taken'})
       
 @app.route('/login', methods=['GET', 'POST'])
 def login():

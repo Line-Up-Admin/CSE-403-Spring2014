@@ -5,7 +5,7 @@ angular.module('LineUpApp.controllers', []).
 
 
   controller('headerController', function ($scope, lineUpAPIService, $location, $route) {
-     // this assignment gives the headerController's $scope access to the displayHelp function 
+     // this assignment gives the headerController's $scope access to the displayHelp function
      // of whichever page loaded it.
      $scope.displayHelp = $scope.$parent.displayHelp;
     }).
@@ -26,7 +26,7 @@ angular.module('LineUpApp.controllers', []).
     // Sends a request to the server to create a new queue. The request
     // contains the new queue settings.
     // Upon success: Updates the current queue model to include the new ID.
-    // Upon error: TODO: Do something smart to handle the error
+    // Upon error: redirect to the error page
     $scope.createNewQueue = function () {
 
       // clear any previous errors
@@ -63,7 +63,6 @@ angular.module('LineUpApp.controllers', []).
 
     $scope.signUp = function () {
       // save the username and password to populate the create user form
-      //lineUpUserService.saveUser($scope.user);
       $location.path("/create_account");
     };
 
@@ -73,19 +72,18 @@ angular.module('LineUpApp.controllers', []).
     $scope.login = function () {
       lineUpUserService.login($scope.user).
         success(function (data, status, headers, config) {
-          if (data.SUCCESS == false) {
-            // login unsuccessful, display error
-						$scope.error = data.error_message;
-            document.getElementById('error').classList.remove('hide');
+          if (data.SUCCESS) {
+            // successful login
+            $location.path("/home");
           } else {
-						// successful login
-						$location.path("/home");
+            // login unsuccessful, display error
+            $scope.error = data.error_message;
+            document.getElementById('error').classList.remove('hide');
 					}
         }).
         error(function (data, status, headers, config) {
-					$location.path("/");
+          $location.path("/");
 					document.getElementById('error').classList.remove('hide');
-          alert("Something went wrong with the login request!\nStatus: " + status);
         });
     };
   }).
@@ -112,6 +110,7 @@ angular.module('LineUpApp.controllers', []).
       // send the new account info to the server
       lineUpUserService.createUser($scope.user).
         success(function (data, status, headers, config) {
+          console.log(data);
           // account created successfully, redirect to the login page
           if (data.SUCCESS) {
             $location.path("/");
