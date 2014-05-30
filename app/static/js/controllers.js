@@ -323,6 +323,7 @@ angular.module('LineUpApp.controllers', []).
 	controller('adminViewController', function ($scope, lineUpAPIService, $location, $routeParams, $route) {
 		$scope.user = {};
 		$scope.queueInfo = {};
+    $scope.errors = {};
 		$scope.member_list = [];
 		$scope.setActiveStatusTo = "Close Queue";
 
@@ -355,7 +356,8 @@ angular.module('LineUpApp.controllers', []).
 					console.log($routeParams.qid);
 					alert("Are you logged in as an existing user? If not, that might be an issue.\nStatus: " + status);
 				});
-		}();
+		}
+    $scope.getDetailedQueueInfo();
 		/*
 		$scope.setActiveButton = function (int active) {
 
@@ -367,17 +369,19 @@ angular.module('LineUpApp.controllers', []).
 		$scope.dequeueFirstPerson = function () {
 			lineUpAPIService.dequeueFirstPerson($routeParams.qid).
 				success(function (data, status, headers, config) {
-					$scope.queueInfo = data.queue_info;
-					$scope.member_list = data.member_list;
-					$route.reload();
-					if(data.optional_data != null) {
+          // refresh the queue data
+          $scope.getDetailedQueueInfo();
+
+          // display the dequeued user and info
+					if (data.optional_data) {
 						alert(data.uname + " was removed, information: " + data.optional_data);
 					} else {
 						alert(data.uname + " was removed.");
 					}
 				}).
 				error(function (data, status, headers, config) {
-					alert("Something went wrong with the dequeue request!\nStatus: " + status);
+					// not an error we are prepared to handle
+          $location.path("/error");
 				});
 		}
 
@@ -390,35 +394,63 @@ angular.module('LineUpApp.controllers', []).
 				success(function (data, status, headers, config) {
 					$scope.queueInfo = data.queue_info;
 					$scope.member_list = data.member_list;
-					$route.reload();
+					$scope.getDetailedQueueInfo();
 				}).
 				error(function (data, status, headers, config) {
 					alert(data);
 				});
 		}
 
-		// Sends an enqueue request to the server.
-    // Upon success: currently, enqueues the admin and updates the admin view.
-    // Upon error: TODO: Do something smart to handle the error
+		// Opens a modal dialog that prompts for the name and the optional data.
+    // Sends a request to the server to add that name to the queue.
+    // Upon Success: the name has been added to the queue
+    // Upon Error: redirect to the error page.
 		$scope.adminAdd = function () {
-			lineUpAPIService.joinQueue({ 'qid': $routeParams.qid, 'uname': $scope.user.uname }).
+
+      // ensure that we send json data with both values
+      if (!$scope.user.uname) {
+        $scope.user.uname = "";
+      }
+      if (!$scope.user.optional_data) {
+        $scope.user.optional_data = "";
+      }
+
+      // send the request
+			lineUpAPIService.enqueue($routeParams.qid, $scope.user).
         success(function (data, status, headers, config) {
 
-					// loads the latest queue info, then reloads the page
-					lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
-						success(function (data, status, headers, config) {
-							$scope.queueInfo = data.queue_info;
-							$scope.member_list = data.member_list;
-							$route.reload();
-						}).
-						error(function (data, status, headers, config) {
-							alert("Could not load latest queue information from server.\nStatus: " + status);
-						});
+          if (data.SUCCESS) {
+            // refresh the queue
+            $scope.getDetailedQueueInfo();
+
+            // close the window
+            $("#addModal").modal('toggle');
+            $scope.errors = {};
+            $scope.user = {};
+
+          } else {
+            // display error messages
+            $scope.errors = data;
+            if (data.error_message) {
+              document.getElementById('error').classList.remove('hide');
+            }
+          }
 				}).
         error(function (data, status, headers, config) {
-          alert("Something went wrong with the join queue request! \nStatus: " + status);
+          // this is not an error we are prepared to handle
+          $location.path("/error");
         });
 		}
+
+    $scope.dismissModal = function () {
+      // clear the error messsages
+      $scope.errors = {};
+      $scope.user = {};
+
+      // close the modal window
+      $("#addModal").modal('toggle');
+    }
+
 
 		$scope.demoteSelectPerson = function () {
 			var selectIndex = document.getElementById("list-group").options.selectedIndex;
