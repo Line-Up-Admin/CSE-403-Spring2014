@@ -231,22 +231,33 @@ def enqueue_debug(qid):
       return jsonify(Failure('The queue is not active.'))
    temp_user = dict()
    optional_data = None
-   try:
-      data = request.args
-      if data.has_key('optional_data'):
-         optional_data = data['optional_data']
-         temp_user['uname'] = data['uname']
-      else:
-         temp_user['uname'] = data
-   except:
-      return jsonify({'SUCCESS':False, 'uname':'Name is required'})
+   data = request.args
+   fail = dict()
+   fail['SUCCESS'] = True
+   uname_msg = 'Name is required.'
+   optional_data_required = False
    try:
       settings = queue_server.get_settings(None, qid)
       if settings.prompt is not None and len(settings.prompt) > 0:
-         if optional_data is None:
-            return jsonify({'SUCCESS':False, 'optional_data':'Required'})
+         optional_data_required = True
    except QueueNotFoundException as e:
       return jsonify(Failure(e.message))
+   if data is None or len(data) == 0:
+      fail['SUCCESS'] = False
+      fail['uname'] = uname_msg
+   else:
+      if data.has_key('optional_data') and len(data['optional_data']) > 0:
+         optional_data = data['optional_data']
+      if data.has_key('uname') and len(data['uname']) > 0:
+         temp_user['uname'] = data['uname']
+   if not temp_user.has_key('uname'):
+      fail['SUCCESS'] = False
+      fail['uname'] = uname_msg
+   if optional_data is None and optional_data_required:
+      fail['SUCCESS'] = False
+      fail['optional_data'] = 'Required'
+   if not fail['SUCCESS']:
+      return jsonify(fail)
    if not permissions.has_flag(session['id'], qid, permissions.MANAGER):
       return jsonify(Failure('You must be logged in as a manager to enqueue.'))
    # got the temp uname, manager logged in and confirmed.
