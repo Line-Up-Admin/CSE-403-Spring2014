@@ -366,7 +366,7 @@ angular.module('LineUpApp.controllers', []).
           }
 
           if (data.managers) {
-            var managers_str = data.admins[0];
+            var managers_str = data.managers[0];
             for (var i = 1; i < data.managers.length; i++) {
               managers_str += ", " + data.managers[i];
             }
@@ -429,7 +429,7 @@ angular.module('LineUpApp.controllers', []).
 				success(function (data, status, headers, config) {
 					$scope.queueInfo = data.queue_info;
 					$scope.member_list = data.member_list;
-					
+
 					var dequeueButton = document.getElementById("btn-remove-first");
 					if( $scope.member_list.length == 0 ) {
 							dequeueButton.disabled = true;
@@ -455,7 +455,7 @@ angular.module('LineUpApp.controllers', []).
 				});
 		}
     $scope.getDetailedQueueInfo();
-		
+
 		$scope.toggleRemoveButton = function () {
 			var rButton = document.getElementById("btn-remove");
 			console.log(rButton.disabled);
