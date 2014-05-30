@@ -1,58 +1,60 @@
 <!-- Header -->
 <div class="header-content" ng-include src="'partials/header.html'"></div>
 
-<div class="queue-face container text-center">
-	<img class="queue-portrait" src="img/default.png"/>
-	<h1 class="queue-page-header">{{queueInfo.qname}}</h1>
-</div>
-<div class="control-list container text-center">
-	<div class="queue-status">
-		Expected Wait Time: {{ queueInfo.expected_wait }} minutes</br>
-		People In Line: {{ queueInfo.size }}
+<div class="main-page-content container">
+	<div class="queue-face text-center">
+		<img class="queue-portrait" src="img/default.png"/>
+		<h1 class="queue-page-header">{{queueInfo.qname}}</h1>
 	</div>
-	<div class="queue-member-listing">
-		<select id="list-group">
-			<option class="list-group-item" ng-repeat='person in member_list'>{{ person.uname }}</option>
-		</select>
+	<div class="control-list container text-center">
+		<div class="queue-status">
+			Expected Wait Time: {{ queueInfo.expected_wait }} minutes</br>
+			People In Line: {{ queueInfo.size }}
+		</div>
+		<div class="queue-member-listing">
+			<select id="list-group">
+				<option class="list-group-item" ng-repeat='person in member_list'>{{ person.uname }}</option>
+			</select>
+		</div>
+	</div>
+	<div class="control-options container text-center">
+		<p class="control-buttons">
+			<button id="btn-settings" class="btn btn-line-up btn-lg" role="button" ng-click='redirectToEditQueue()'>
+				<span class="glyphicon glyphicon-cog"></span></br>
+				Settings
+			</button>
+			<button id="btn-view-details" class="btn btn-line-up btn-lg" role="button" ng-click='dequeueFirstPerson()'>
+				<span class="glyphicon glyphicon-arrow-up"></span></br>
+				First Person
+			</button>
+			<button id="btn-view-details" class="btn btn-line-up btn-lg" role="button" disabled>
+				<span class="glyphicon glyphicon-zoom-in"></span></br>
+				View Details
+			</button>
+			<button id="btn-add" class="btn btn-line-up btn-lg" role="button" data-toggle="modal" data-target="#addModal">
+				<span class="glyphicon glyphicon-plus"></span></br>
+				Add
+			</button>
+			<button id="btn-remove" class="btn btn-line-up btn-lg" role="button" ng-click='dequeueSelectPerson()'>
+				<span class="glyphicon glyphicon-minus"></span></br>
+				Remove
+			</button>
+			<button id="btn-demote" class="btn btn-line-up btn-lg" role="button" ng-click='demoteSelectPerson()'>
+				<span class="glyphicon glyphicon-star"></span></br>
+				Demote
+			</button>
+			<!-- <button id="btn-begin-closing" class="btn btn-line-up btn-lg" role="button" disabled>
+				<span class="glyphicon glyphicon-ban-circle"></span></br>
+				Begin Closing
+			</button> -->
+			<button id="btn-close-queue" class="btn btn-line-up btn-lg" role="button" ng-click='setActive()' value=0>
+				<span class="glyphicon glyphicon-remove"></span></br>
+				{{ setActiveStatusTo }}
+			</button>
+		</p>
 	</div>
 </div>
-<div class="control-options container text-center">
-	<p class="control-buttons">
-		<button id="btn-settings" class="btn btn-line-up btn-lg" role="button" ng-click='redirectToEditQueue()'>
-			<span class="glyphicon glyphicon-cog"></span></br>
-			Settings
-		</button>
-		<button id="btn-view-details" class="btn btn-line-up btn-lg" role="button" ng-click='dequeueFirstPerson()'>
-			<span class="glyphicon glyphicon-arrow-up"></span></br>
-			First Person
-		</button>
-		<button id="btn-view-details" class="btn btn-line-up btn-lg" role="button" disabled>
-			<span class="glyphicon glyphicon-zoom-in"></span></br>
-			View Details
-		</button>
-		<button id="btn-add" class="btn btn-line-up btn-lg" role="button" data-toggle="modal" data-target="#addModal">
-			<span class="glyphicon glyphicon-plus"></span></br>
-			Add
-		</button>
-		<button id="btn-remove" class="btn btn-line-up btn-lg" role="button" ng-click='dequeueSelectPerson()'>
-			<span class="glyphicon glyphicon-minus"></span></br>
-			Remove
-		</button>
-		<button id="btn-demote" class="btn btn-line-up btn-lg" role="button" ng-click='demoteSelectPerson()'>
-			<span class="glyphicon glyphicon-star"></span></br>
-			Demote
-		</button>
-		<!-- <button id="btn-begin-closing" class="btn btn-line-up btn-lg" role="button" disabled>
-			<span class="glyphicon glyphicon-ban-circle"></span></br>
-			Begin Closing
-		</button> -->
-		<button id="btn-close-queue" class="btn btn-line-up btn-lg" role="button" ng-click='setActive()' value=0>
-			<span class="glyphicon glyphicon-remove"></span></br>
-			{{ setActiveStatusTo }}
-		</button>
-	</p>
-</div>
-
+	
 <!-- Modal Window -->
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 <div class="modal-dialog">
