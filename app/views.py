@@ -129,7 +129,14 @@ def add_to_queue():
       session['uname'] = username
    if not permissions.has_flag(uid, qid, permissions.BLOCKED_USER):
       q_member = QueueMember(username, uid, optional_data)
-      queue_server.add(q_member, qid)
+      try:
+         queue_server.add(q_member, qid)
+      except sqlite3.Error:
+         return abort(500)
+      except QueueFullException as e:
+         return jsonify(Failure(e.message))
+      except QueueNotFoundException as e:
+         return jsonify(Failure(e.message))
       q_info = queue_server.get_info(q_member, qid)
       q_info_dict = dict(q_info.__dict__)
       if temp:

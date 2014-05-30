@@ -559,13 +559,13 @@ angular.module('LineUpApp.controllers', []).
 					success(function (data, status, headers, config) {
 						// refresh the queue
 						$scope.getDetailedQueueInfo();
-						console.log($scope.member_list);
+/* 						console.log($scope.member_list);
 						console.log(document.getElementById("list-group").options);
 						document.getElementById("list-group").options[selectIndex+1].selected="selected";
 						//$scope.selectedUser = $scope.member_list[selectIndex];
 						//WHY DOESN'T THIS WORK!??!?!?!
 						console.log("selected index after function is " + document.getElementById("list-group").options.selectedIndex);
-						console.log($scope.selectedUser);
+						console.log($scope.selectedUser); */
 					}).
 					error(function (data, status, headers, config) {
 						// this is not an error we are prepared to handle
