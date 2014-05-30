@@ -129,14 +129,7 @@ def add_to_queue():
       session['uname'] = username
    if not permissions.has_flag(uid, qid, permissions.BLOCKED_USER):
       q_member = QueueMember(username, uid, optional_data)
-      try:
-         queue_server.add(q_member, qid)
-      except sqlite3.Error:
-         return abort(500)
-      except QueueFullException as e:
-         return jsonify(Failure(e.message))
-      except QueueNotFoundException as e:
-         return jsonify(Failure(e.message))
+      queue_server.add(q_member, qid)
       q_info = queue_server.get_info(q_member, qid)
       q_info_dict = dict(q_info.__dict__)
       if temp:
@@ -485,13 +478,15 @@ def get_manager_queue(qid):
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['id']
    else:
-      return jsonify(Failure("You must be logged in as an manager to dequeue."))
+      return jsonify({'SUCCESS':False, 'error_message':'You must be logged in as a manager!'})
+      #return jsonify(Failure("You must be logged in as an manager to dequeue."))
    if permissions.has_flag(uid, qid, permissions.MANAGER):
       members = queue_server.get_members(qid)
       q_info = queue_server.get_info(None, qid)
-      return jsonify(queue_info=q_info.__dict__, member_list=[member.__dict__ for member in members])
+      return jsonify({'SUCCESS':True, 'queue_info':q_info.__dict__, 'member_list':[member.__dict__ for member in members]})
    else:
-      return jsonify(Failure('You must be a manager of the queue to view queue members.'))
+      return jsonify({'SUCCESS':False, 'error_message':'You must be a manager of the queue to view queue members'})
+      #return jsonify(Failure('You must be a manager of the queue to view queue members.'))
 
 @app.route('/getQueueSettings', methods=['POST'])
 def get_queue_settings():
@@ -718,13 +713,6 @@ def create_user():
 
    """
    print 'enter createUser route'
-#   print 'header:'
-#   print request.headers
-#   print 'data:'
-#   print request.data
-#   print 'json:'
-#   print request.json
-   
    try:
       user_data = request.get_json()
    except:
@@ -734,7 +722,7 @@ def create_user():
       return jsonify(user_data)
    try:
       user_data['id'] = db_util.create_user(user_data)
-      print 'exit create user route sucess.'
+      print 'exit create user route success.'
       return jsonify({'SUCCESS':True})
    except sqlite3.Error as e:
       print 'exit create user route failure.'
