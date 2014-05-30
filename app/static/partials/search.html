@@ -9,7 +9,7 @@
 		</form>
 	</div>
 
-	<h1 id="results">Popular Queues</h1>
+	<h3 id="results">Popular Queues</h3>
 	<div class="popular-queues">
 		<div ng-repeat="queueInfo in queueInfos">
 			<a href="#/queue_info/{{ queueInfo.qid }}">
@@ -18,7 +18,7 @@
 				{{ queueInfo.organization }}
 				<div class="position-info" ng-if="queueInfo.expected_wait > 0">{{ queueInfo.size }} in Line - Expected Wait: {{ queueInfo.expected_wait }} minutes
 				</div>
-				<div class="position-info" ng-if="queueInfo.expected_wait <= 0">{{ queueInfo.size }} in Line
+				<div class="position-info" ng-if="queueInfo.expected_wait <= 0">{{ queueInfo.size }} in Line - Expected Wait: less than 1 minute
 				</div>
 			</div>
 			</a>

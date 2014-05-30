@@ -10,6 +10,12 @@ var roundTimes = function (data) {
   }
 }
 
+var roundMultipleTimes = function (data) {
+  for (var i = 0; i < data.length; i++) {
+    roundTimes(data[i]);
+  }
+}
+
 /* Controllers */
 angular.module('LineUpApp.controllers', []).
 
@@ -199,20 +205,27 @@ angular.module('LineUpApp.controllers', []).
 
     // show the help slide-in modal
     $scope.displayHelp = function () {
-            $("#help-modal").modal('toggle');
+      $("#help-modal").modal('toggle');
     };
 
     // Sends search query to the server and fills the search results in the
     // HTML
     $scope.search = function () {
+      if (!$scope.query || $scope.queury == "") {
+        document.getElementById("results").innerHTML="Popular Queues";
+        $scope.getPopularQueues();
+        return;
+      }
+
       lineUpAPIService.search($scope.query).
         success(function (data, status, headers, config) {
             document.getElementById("results").innerHTML="Search Results";
+            roundMultipleTimes(data.queue_info_list);
             $scope.queueInfos = data.queue_info_list;
           }).
           error(function (data, status, headers, config) {
-            console.log(data);
-            alert("Something went wrong with the search request! \nStatus: " + status);
+            // not an error we are prepared to handle
+            $location.path("/error");
         });
     }
 
@@ -224,18 +237,21 @@ angular.module('LineUpApp.controllers', []).
     $scope.getPopularQueues = function () {
       lineUpAPIService.getPopularQueues().
         success(function (data, status, headers, config) {
+          roundMultipleTimes(data.queue_info_list);
           $scope.queueInfos = data.queue_info_list;
         }).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the popular queue request! \nStatus: " + status);
       });
-    }();
+    };
+    $scope.getPopularQueues();
   }).
 
   // Controller for the #/queue_info route
   controller('queueInfoController', function ($scope, $route, lineUpAPIService, $routeParams) {
     $scope.optional_data = "";
     $scope.uname = "";
+		$scope.range = [];
 
     // hide the edit button if we are on the create queue page
     // called on element load with ng-init="init()"
@@ -266,7 +282,14 @@ angular.module('LineUpApp.controllers', []).
               // document.getElementById('btn-postpone').disabled = true;
             // }
           }
-        }).
+					for(var i=0; i<$scope.queue.size; i++) {
+						$scope.range.push(i);
+					}
+					console.log($scope.range.length);
+					var sections = $("#progress").children();
+					console.log($scope.queue.member_position);
+					$(sections[$scope.queue.member_position]).id = "current-user";
+					}).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the queue lookup request!\nStatus: " + status);
         });
@@ -366,7 +389,7 @@ angular.module('LineUpApp.controllers', []).
           }
 
           if (data.managers) {
-            var managers_str = data.admins[0];
+            var managers_str = data.managers[0];
             for (var i = 1; i < data.managers.length; i++) {
               managers_str += ", " + data.managers[i];
             }
@@ -429,7 +452,7 @@ angular.module('LineUpApp.controllers', []).
 				success(function (data, status, headers, config) {
 					$scope.queueInfo = data.queue_info;
 					$scope.member_list = data.member_list;
-					
+
 					var dequeueButton = document.getElementById("btn-remove-first");
 					if( $scope.member_list.length == 0 ) {
 							dequeueButton.disabled = true;
@@ -455,7 +478,7 @@ angular.module('LineUpApp.controllers', []).
 				});
 		}
     $scope.getDetailedQueueInfo();
-		
+
 		$scope.toggleRemoveButton = function () {
 			var rButton = document.getElementById("btn-remove");
 			console.log(rButton.disabled);
