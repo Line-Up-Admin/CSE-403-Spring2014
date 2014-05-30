@@ -360,6 +360,11 @@ angular.module('LineUpApp.controllers', []).
 			$location.path('/edit/' + $routeParams.qid);
 		}
 
+    // show the help slide-in modal
+    $scope.displayHelp = function () {
+            $("#help-modal").modal('toggle');
+    };
+
 		// Sends an admin view request to the server.
     // Upon success: Shows the admin view for the given queue id.
     // Upon error: TODO: Do something smart to handle the error
