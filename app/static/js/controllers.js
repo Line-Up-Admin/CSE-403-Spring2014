@@ -36,8 +36,13 @@ angular.module('LineUpApp.controllers', []).
       $scope.queue.active = 1;
 
       // send the request
+
+      console.log("sending:");
+      console.log($scope.queue);
 			lineUpAPIService.createQueue($scope.queue).
         success(function (data, status, headers, config) {
+          console.log("recieved:");
+          console.log(data);
           if (data.SUCCESS) {
             // load the queue admin page
             $location.path('/admin/' + data.qid);
