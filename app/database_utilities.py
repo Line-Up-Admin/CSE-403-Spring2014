@@ -39,6 +39,16 @@ def query_db(query, args=()):
   cursor.close()
   return rows
 
+def check_usernames(usernames):
+  result = {'SUCCESS': False}
+  for username in usernames:
+    rows = query_db(GET_PROFILED_USER_BY_USERNAME, (username,))
+    if (not rows) or (len(rows) == 0):
+      result['username'] = username
+      return result
+  result['SUCCESS'] = True
+  return result
+
 def user_dict_to_db_tuple(user_dict):
   return (user_dict['id'],
           user_dict['temp'] if user_dict.has_key('temp') else 0,
@@ -183,17 +193,13 @@ def get_user_by_uname(username):
   else:
     return rows[0]
 
-def check_usernames(usernames):
-  result = {'SUCCESS': False, 'uids':list()}
+def get_uids(usernames):
+  uids = list()
   for username in usernames:
     rows = query_db(GET_PROFILED_USER_BY_USERNAME, (username,))
-    if (not rows) or (len(rows) == 0):
-      result['username'] = username
-      return result
-    else:
-      result['uids'].append(rows[0]['id'])
-  result['SUCCESS'] = True
-  return result
+    if rows is not None and len(rows) > 0:
+      uids.append(rows[0]['id'])
+  return uids
 
 def get_user(username, given_password):
   """Retrieves the User associated with this user.
@@ -260,26 +266,11 @@ def create_queue(q_settings):
   """
   q_settings['qid'] = validators.get_unique_queue_id()
   if q_settings.has_key('admins'):
-    result = check_usernames(q_settings['admins'])
-    if not result['SUCCESS']:
-      err = 'The username ' + result['username'] + ' was not found.'
-      q_settings['admins'] = err
-      raise ValidationException(err)
-    permissions.add_permission_list(result['uids'], q_settings['qid'], permissions.ADMIN)
+    permissions.add_permission_list(get_uids(q_settings['admins']), q_settings['qid'], permissions.ADMIN)
   if q_settings.has_key('managers'):
-    result = check_usernames(q_settings['managers'])
-    if not result['SUCCESS']:
-      err = 'The username' + result['username'] + 'was not found.'
-      q_settings['managers'] = err
-      raise ValidationException(err)
-    permissions.add_permission_list(result['uids'], q_settings['qid'], permissions.MANAGER)
+    permissions.add_permission_list(get_uids(q_settings['managers']), q_settings['qid'], permissions.MANAGER)
   if q_settings.has_key('blocked_users'):
-    result = check_usernames(q_settings['blocked_users'])
-    if not result['SUCCESS']:
-      err = 'The username ' + result['username'] + ' was not found.'
-      q_settings['blocked_users'] = err
-      raise ValidationException(err)
-    permissions.add_permission_list(result['uids'], q_settings['qid'], permissions.BLOCKED_USER)
+    permissions.add_permission_list(get_uids(q_settings['blocked_users']), q_settings['qid'], permissions.BLOCKED_USER)
   db = get_db()
   db.execute(INSERT_QUEUE, (q_settings['qid'],))
   db.execute(INSERT_QUEUE_SETTINGS, qsettings_dict_to_db_tuple(q_settings))
