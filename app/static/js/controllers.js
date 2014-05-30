@@ -23,6 +23,11 @@ angular.module('LineUpApp.controllers', []).
       }
     };
 
+    // show the help slide-in modal
+    $scope.displayHelp = function () {
+            $("#help-modal").modal('toggle');
+    };
+
     // Sends a request to the server to create a new queue. The request
     // contains the new queue settings.
     // Upon success: Updates the current queue model to include the new ID.
@@ -168,6 +173,11 @@ angular.module('LineUpApp.controllers', []).
       if ($route.current.loadedTemplateUrl == "partials/search.html") {
         document.getElementById("edit-button").classList.add("hide");
       }
+    };
+
+    // show the help slide-in modal
+    $scope.displayHelp = function () {
+            $("#help-modal").modal('toggle');
     };
 
     // Sends search query to the server and fills the search results in the
