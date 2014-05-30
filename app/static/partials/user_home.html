@@ -15,6 +15,9 @@
 						<img class="queue-img" src="img/default.png"/>{{ queue.qname }}: Position {{queue.member_position + 1 }} of {{ queue.size }} Estimated Wait: {{ queue.expected_wait }} min
 					</a>
 				</ul>
+				<div id="empty-in" class="hide">
+					<p>You are not in any queues right now.</p>
+				</div>
 			</div>
 		</div>
 		<div class="panel panel-default">
@@ -25,6 +28,9 @@
 						<img class="queue-img" src="img/default.png"/>{{ queue.qname }}: Current Size: {{ queue.size }}
 					</a>
 				</ul>
+				<div id="empty-admin" class="hide">
+					<p>You do not own any queues right now.</p>
+				</div>
 			</div>
 		</div>
 		<div class="panel panel-default">
@@ -35,6 +41,9 @@
 						<img class="queue-img" src="img/default.png"/>{{ queue.qname }}: Current Size: {{ queue.size }}
 					</a>
 				</ul>
+				<div id="empty-manager" class="hide">
+					<p>You do not manage any queues right now.</p>
+				</div>
 			</div>
 		</div>
 	</div>

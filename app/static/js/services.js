@@ -15,16 +15,7 @@ angular.module('LineUpApp.services', []).
 		}
 
     lineUpAPI.getQueueSettings = function (qid) {
-      var data = $http.post('/getQueueSettings', qid);
-
-      // round the time values to the nearest integer
-      if (data.expected_wait){
-        data.expected_wait = parseInt(data.expected_wait);
-      }
-      if (data.avg_wait_time) {
-        data.avg_wait_time = parseInt(data.avg_wait_time);
-      }
-      return data;
+      return $http.post('/getQueueSettings', qid);
     }
 
     lineUpAPI.modifyQueue = function (queueSettings) {

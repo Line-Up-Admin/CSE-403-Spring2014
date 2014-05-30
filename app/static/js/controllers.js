@@ -1,5 +1,15 @@
 'use strict';
 
+// round the time values to the nearest integer
+var roundTimes = function (data) {
+  if (data.expected_wait){
+    data.expected_wait = parseInt(data.expected_wait);
+  }
+  if (data.avg_wait_time) {
+    data.avg_wait_time = parseInt(data.avg_wait_time);
+  }
+}
+
 /* Controllers */
 angular.module('LineUpApp.controllers', []).
 
@@ -9,7 +19,6 @@ angular.module('LineUpApp.controllers', []).
      // of whichever page loaded it.
      $scope.displayHelp = $scope.$parent.displayHelp;
     }).
-
 
   // Controller for the #/create_queue route
   controller('createQueueController', function ($scope, lineUpAPIService, $location, $route) {
@@ -105,7 +114,7 @@ angular.module('LineUpApp.controllers', []).
 
     // Sends a user account creation request to the server.
     // Upon success: Redirects the browser to the login page.
-    // Upon error: TODO: Do something smart to handle the error
+    // Upon error: Redirect to the error page.
     $scope.createUser = function () {
       if ($scope.user.pw != $scope.user.pwx2) {
         $scope.errors = {};
@@ -155,11 +164,19 @@ angular.module('LineUpApp.controllers', []).
     $scope.getUsersQueues = function () {
       lineUpAPIService.getUsersQueues().
         success(function (data, status, headers, config) {
-          console.log(data);
           if (data.SUCCESS) {
+            roundTimes(data);
+            if (data.queues_in.length == 0) {
+              document.getElementById('empty-in').classList.remove('hide');
+            }
+            if (data.queues_admin.length == 0) {
+              document.getElementById('empty-admin').classList.remove('hide');
+            }
+            if (data.queues_manager.length == 0) {
+              document.getElementById('empty-manager').classList.remove('hide');
+            }
             $scope.queueInfos = data;
           } else {
-            console.log(data);
             $location.path("/");
           }
         }).
@@ -236,6 +253,7 @@ angular.module('LineUpApp.controllers', []).
     $scope.queueStatus = function () {
       lineUpAPIService.queueStatus($routeParams.qid).
         success(function (data, status, headers, config) {
+          roundTimes(data);
           $scope.queue = data;
 
           document.getElementById('enqueued').classList.add('hide');
@@ -263,7 +281,6 @@ angular.module('LineUpApp.controllers', []).
       success(function (data, status, header, config) {
         if(data.SUCCESS) {
           // reset the client data and reset the page
-          $scope.queue = data;
           $scope.queueStatus();
         }
       }).
@@ -276,6 +293,7 @@ angular.module('LineUpApp.controllers', []).
       lineUpAPIService.postpone($routeParams.qid).
         success(function (data, status, header, config) {
           if(data.SUCCESS) {
+            roundTimes(data);
             $scope.queue = data;
           }
         }).
@@ -396,7 +414,7 @@ angular.module('LineUpApp.controllers', []).
 		$scope.redirectToEditQueue = function () {
 			$location.path('/edit/' + $routeParams.qid);
 		}
-		
+
 		$scope.setSelected = function() {
 			console.log(document.getElementById("list-group").options);
 		}
@@ -421,7 +439,7 @@ angular.module('LineUpApp.controllers', []).
 					} else {
 						memberList.size = $scope.member_list.length + 1;
 					}
-					
+
 					var button = document.getElementById("btn-close-queue");
 					if( $scope.queueInfo.active == 0 ) {
 						$scope.setActiveStatusTo = "Open Queue";
@@ -440,7 +458,7 @@ angular.module('LineUpApp.controllers', []).
 		}
     $scope.getDetailedQueueInfo();
 		$scope.setSelected();
-		
+
 		// Sends a dequeue request to the server.
     // Upon success: Dequeues the first person in line.
     // Upon error: TODO: Do something smart to handle the error
@@ -565,7 +583,7 @@ angular.module('LineUpApp.controllers', []).
 					if (targetActiveStatus == 0) {
             // the queue is closed
 						$scope.setActiveStatusTo = "Open Queue";
-						button.value = 1;		
+						button.value = 1;
 						$scope.activeStatus = "CLOSED";
 					} else {
             // the queue is open
