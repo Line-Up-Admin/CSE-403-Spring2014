@@ -220,14 +220,14 @@ angular.module('LineUpApp.controllers', []).
 
     // show the help slide-in modal
     $scope.displayHelp = function () {
-            $("#help-modal").modal('toggle');
+      $("#help-modal").modal('toggle');
     };
 
     $scope.queueStatus = function () {
       lineUpAPIService.queueStatus($routeParams.qid).
         success(function (data, status, headers, config) {
           $scope.queue = data;
-          console.log(data);
+
           document.getElementById('enqueued').classList.add('hide');
           document.getElementById('notEnqueued').classList.add('hide');
           if (data.member_position == null) {
@@ -265,7 +265,6 @@ angular.module('LineUpApp.controllers', []).
     $scope.postpone = function () {
       lineUpAPIService.postpone($routeParams.qid).
         success(function (data, status, header, config) {
-          console.log(data);
           if(data.SUCCESS) {
             $scope.queue = data;
           }
