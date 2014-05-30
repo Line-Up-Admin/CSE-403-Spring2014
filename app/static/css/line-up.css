@@ -262,7 +262,7 @@ h1.queue-page-header {
   border: 3px solid #3C3940;
 }
 
-.panel-default > .panel-heading {
+.panel-default > a .panel-heading {
   color: #333;
   background-color: #CEBB7B;
   border-bottom: 3px solid #3C3940;
