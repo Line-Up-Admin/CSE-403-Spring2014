@@ -326,14 +326,30 @@ angular.module('LineUpApp.controllers', []).
 		$scope.fillFormFields = function () {
 			lineUpAPIService.getQueueSettings($routeParams.qid).
 				success(function (data, status, headers, config) {
-					console.log(data);
+          // convert the arrays of users to a string of comma seperated values
+          if (data.admins) {
+            var admins_str = data.admins[0];
+            for (var i = 1; i < data.admins.length; i++) {
+              admins_str += ", " + data.admins[i];
+            }
+            data.admins = admins_str;
+          }
+
+          if (data.managers) {
+            var managers_str = data.admins[0];
+            for (var i = 1; i < data.managers.length; i++) {
+              managers_str += ", " + data.managers[i];
+            }
+            data.managers = managers_str;
+          }
+
 					$scope.queue = data;
-					console.log($scope.queue);
 				}).
 				error(function (data, status, headers, config) {
 					alert("Something went wrong with the form fill request!\nStatus: " + status);
 				});
-		}();
+		};
+    $scope.fillFormFields();
 
 		$scope.editQueue = function () {
 		lineUpAPIService.editQueue({ 'qid': $routeParams.qid, 'q_settings': $scope.queue }).
