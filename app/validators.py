@@ -74,19 +74,19 @@ def validate_q_settings(q_settings):
       try:
          q_settings['max_size'] = int(q_settings['max_size'])
          if q_settings['max_size'] < 1:
-            fail['max_size'] = 'Maximum size must be greater than zero.'
+            fail['max_size'] = 'Maximum size must be a number greater than zero.'
             q_settings['SUCCESS'] = False
       except ValueError:
-         fail['max_size'] = 'Maximum size must be an int.'
+         fail['max_size'] = 'Maximum size must be a number.'
          q_settings['SUCCESS'] = False
    if q_settings.has_key('min_wait_rejoin') and q_settings['min_wait_rejoin'] is not None:
       try:
          q_settings['min_wait_rejoin'] = int(q_settings['min_wait_rejoin'])
          if q_settings['min_wait_rejoin'] < 0:
-            fail['min_wait_rejoin'] = 'Minimum wait to rejoin queue must be non-negative.'
+            fail['min_wait_rejoin'] = 'Minimum wait to rejoin queue must be a non-negative number.'
             q_settings['SUCCESS'] = False
       except ValueError:
-         fail['min_wait_rejoin'] = 'Minimum wait to rejoin queue must be an int.'
+         fail['min_wait_rejoin'] = 'Minimum wait to rejoin queue must be an number.'
          q_settings['SUCCESS'] = False
    if not q_settings.has_key('admins') or q_settings['admins'] is None:
       q_settings['admins']= list()
