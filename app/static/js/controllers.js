@@ -433,11 +433,12 @@ angular.module('LineUpApp.controllers', []).
 				success(function (data, status, headers, config) {
 					$scope.queueInfo = data.queue_info;
 					$scope.member_list = data.member_list;
-					var memberList = document.getElementById("list-group");
-					if( $scope.member_list.length < 10 ) {
-						memberList.size = 10;
+					
+					var dequeueButton = document.getElementById("btn-remove-first");
+					if( $scope.member_list.length == 0 ) {
+							dequeueButton.disabled = true;
 					} else {
-						memberList.size = $scope.member_list.length + 1;
+						dequeueButton.disabled = false;
 					}
 
 					var button = document.getElementById("btn-close-queue");
