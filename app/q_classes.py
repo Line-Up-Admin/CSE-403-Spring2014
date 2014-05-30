@@ -114,21 +114,23 @@ class Queue(object):
       """ Returns the estimated wait time of a user in a Queue in minutes
          (not in UML)"""
 
-      # the expected wait time here could be improved to be something
-      #  more intelligent. Currently, it is average wait time of the queue
+      #  Currently, the expected wait is average wait time of the queue
       #  times the proportion of the queue remaining.
       avg_wait = self.get_avg_wait()
       position = self.get_position(member)
       if position == None:
-         return None
+         # here we "expect" the user is thinking about joining at the end
+         position = len(self.storage)
       if position == 0:
          return 0
-      if avg_wait and position:
+      if avg_wait:
          #avg_wait is already in minutes
          ex_wait = avg_wait * (position + 0.5)/len(self.storage)
          return ex_wait
       else:
-         # This is currently fake data for demoing purposes.
+         # Here we have no data, because no one has left the queue yet.
+         #  There isn't really a great answer for what the expected wait
+         #  is.
          return 10
 
    def dequeue(self):

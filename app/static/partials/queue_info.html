@@ -3,7 +3,7 @@
 <div class="header-content" ng-include src="'partials/header.html'"></div>
   <div class="panel-heading">
     <h3>{{ queue.qname }}</h3>
-    <h4>{{ queue.organization }}: {{ queue.location }}</h4>
+    <h4>{{ queue.organization }} {{ queue.location }}</h4>
     <a ng-if="queue.website != null" href="http://{{ queue.website }}">{{ queue.website }}</a>
   </div>
   <div class="panel-body">
@@ -12,7 +12,7 @@
     </div>
     <div id="enqueued" class="queue_control text-center hide">
       <div class="queue-status">
-        {{ queue.expected_wait }} min</br>
+        Expected Wait: {{ queue.expected_wait }} minutes</br>
         <div class="progress queue-position">
           <div class="progress-bar" style="width: 60%;"></div>
         </div>
@@ -35,8 +35,8 @@
         Join Queue
       </button></p>
       <div class="queue-status">
-        {{ queue.expected_wait }} min wait</br>
-        {{ queue.size }} people
+        Expected Wait: {{ queue.expected_wait }} minutes</br>
+        People: {{ queue.size }}
       </div>
     </div>
   </div>
