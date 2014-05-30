@@ -133,10 +133,20 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 	width: 40px;
 }
 
-.progress { /* user_home */
+#progress { /* user_home */
+	text-align: justify;
 	width: 20%;
 	display: inline-block;
 	margin: 0px;
+}
+
+#progress .progress-bar-section {
+	display: inline-block;
+	background-color: BLUE;
+}
+
+#progress #current-user {
+	background-color: YELLOW;
 }
 
 .queue-name, .time-left { /* user_home, search_queues, found_queues */

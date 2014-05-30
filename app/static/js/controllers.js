@@ -251,6 +251,7 @@ angular.module('LineUpApp.controllers', []).
   controller('queueInfoController', function ($scope, $route, lineUpAPIService, $routeParams) {
     $scope.optional_data = "";
     $scope.uname = "";
+		$scope.range = [];
 
     // hide the edit button if we are on the create queue page
     // called on element load with ng-init="init()"
@@ -281,7 +282,14 @@ angular.module('LineUpApp.controllers', []).
               // document.getElementById('btn-postpone').disabled = true;
             // }
           }
-        }).
+					for(var i=0; i<$scope.queue.size; i++) {
+						$scope.range.push(i);
+					}
+					console.log($scope.range.length);
+					var sections = $("#progress").children();
+					console.log($scope.queue.member_position);
+					$(sections[$scope.queue.member_position]).id = "current-user";
+					}).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the queue lookup request!\nStatus: " + status);
         });
