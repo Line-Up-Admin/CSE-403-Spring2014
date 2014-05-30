@@ -10,6 +10,12 @@ var roundTimes = function (data) {
   }
 }
 
+var roundMultipleTimes = function (data) {
+  for (var i = 0; i < data.length; i++) {
+    roundTimes(data[i]);
+  }
+}
+
 /* Controllers */
 angular.module('LineUpApp.controllers', []).
 
@@ -214,6 +220,7 @@ angular.module('LineUpApp.controllers', []).
       lineUpAPIService.search($scope.query).
         success(function (data, status, headers, config) {
             document.getElementById("results").innerHTML="Search Results";
+            roundMultipleTimes(data.queue_info_list);
             $scope.queueInfos = data.queue_info_list;
           }).
           error(function (data, status, headers, config) {
@@ -230,6 +237,7 @@ angular.module('LineUpApp.controllers', []).
     $scope.getPopularQueues = function () {
       lineUpAPIService.getPopularQueues().
         success(function (data, status, headers, config) {
+          roundMultipleTimes(data.queue_info_list);
           $scope.queueInfos = data.queue_info_list;
         }).
         error(function (data, status, headers, config) {
