@@ -4,6 +4,7 @@ import database_utilities as db_util
 import sqlite3
 from flask import request, session, g, redirect, url_for, abort, jsonify
 import permissions
+import validators
 
 from q_classes import QueueServer, QueueMember, QueueSettings, QueueNotFoundException
 
@@ -93,15 +94,25 @@ def get_queue_settings_debug():
 
 @app.route('/debug/modifyQueue', methods=['GET', 'POST'])
 def debug_modify_queue_settings():
+   uid = None
    if not session.has_key('logged_in') or not session['logged_in']:
-      return jsonify(Failure('You cannot modify queue settings if you are not logged in as an admin!'))
+      return jsonify(Failure('You are not logged in!'))
    uid = session['id']
-   q_settings = copy_request_args(request)
-   q_settings['qid'] = int(q_settings['qid'])
-   if not permissions.has_flag(uid, q_settings['qid'], permissions.ADMIN):
-      return jsonify(Failure('You cannot modify queue settings if you are not an admin of the queue.'))
-   db_util.modify_queue_settings(q_settings)
-   return {'SUCCESS':True}
+   try:
+      qsettings = copy_request_args(request)
+      print qsettings
+   except:
+      return abort(500)
+   if not permissions.has_flag(uid, qsettings['qid'], permissions.ADMIN):
+      return jsonify(Failure('You must own this queue to modify settings!'))
+   qsettings = validators.validate_q_settings(qsettings)
+   if not qsettings['SUCCESS']:
+      return jsonify(qsettings)
+   try:
+      queue_server.edit_queue(qsettings['qid'], qsettings)
+      return jsonify({'SUCCESS':True})
+   except QueueNotFoundException as e:
+      return jsonify(Failure(e.message))
 
 @app.route('/debug/search', methods=['GET'])
 def search_debug():

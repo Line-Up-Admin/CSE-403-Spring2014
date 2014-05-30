@@ -24,7 +24,7 @@ USER_MAX_STR_LEN = {
 }
 
 def check_max_str_len(key, dictionary, max_dict, fail):
-   if dictionary.has_key(key):
+   if dictionary.has_key(key) and dictionary[key] is not None:
       if len(dictionary[key]) > max_dict[key]:
          fail[key] = str(key) + ' text is too long. Max length is ' + str(max_dict[key])
          dictionary['SUCCESS'] = False
@@ -70,36 +70,38 @@ def validate_q_settings(q_settings):
    check_max_str_len('organization', q_settings, Q_MAX_STR_LEN, fail)
    check_max_str_len('disclaimer', q_settings, Q_MAX_STR_LEN, fail)
    check_max_str_len('prompt', q_settings, Q_MAX_STR_LEN, fail)
-   if q_settings.has_key('max_size'):
+   if q_settings.has_key('max_size') and q_settings['max_size'] is not None:
       try:
-         max_size = int(q_settings['max_size'])
-         if max_size < 1:
+         q_settings['max_size'] = int(q_settings['max_size'])
+         if q_settings['max_size'] < 1:
             fail['max_size'] = 'Maximum size must be greater than zero.'
             q_settings['SUCCESS'] = False
       except ValueError:
          fail['max_size'] = 'Maximum size must be an int.'
          q_settings['SUCCESS'] = False
-   if q_settings.has_key('min_wait_rejoin'):
+   if q_settings.has_key('min_wait_rejoin') and q_settings['min_wait_rejoin'] is not None:
       try:
-         mwr = int(q_settings['min_wait_rejoin'])
-         if mwr < 0:
+         q_settings['min_wait_rejoin'] = int(q_settings['min_wait_rejoin'])
+         if q_settings['min_wait_rejoin'] < 0:
             fail['min_wait_rejoin'] = 'Minimum wait to rejoin queue must be non-negative.'
             q_settings['SUCCESS'] = False
       except ValueError:
          fail['min_wait_rejoin'] = 'Minimum wait to rejoin queue must be an int.'
          q_settings['SUCCESS'] = False
-   if not q_settings.has_key('admins'):
+   if not q_settings.has_key('admins') or q_settings['admins'] is None:
       q_settings['admins']= list()
-   else:
+   elif type(q_settings['admins']) is str:
       q_settings['admins'] = list(set(admin.strip() for admin in q_settings['admins'].split(',')))
    validate_usernames('admins', q_settings, fail)
    if not session['uname'] in q_settings['admins']:
       q_settings['admins'].append(session['uname'])
-   if q_settings.has_key('managers'):
-      q_settings['managers'] = list(set(e.strip() for e in q_settings['managers'].split(',')))
+   if q_settings.has_key('managers') and q_settings['managers'] is not None:
+      if type(q_settings['managers']) is str:
+         q_settings['managers'] = list(set(e.strip() for e in q_settings['managers'].split(',')))
       validate_usernames('managers', q_settings, fail)
-   if q_settings.has_key('blocked_users'):
-      q_settings['blocked_users'] = list(set(b.strip() for b in q_settings['blocked_users'].split(',')))
+   if q_settings.has_key('blocked_users') and q_settings['blocked_users'] is not None:
+      if type(q_settings['blocked_users']) is str:
+         q_settings['blocked_users'] = list(set(b.strip() for b in q_settings['blocked_users'].split(',')))
       validate_usernames('blocked_users', q_settings, fail)
    if not q_settings['SUCCESS']:
       return fail

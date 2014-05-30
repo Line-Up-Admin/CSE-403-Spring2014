@@ -485,7 +485,7 @@ def get_manager_queue(qid):
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['id']
    else:
-      return jsonify(Failure("You must be logged in as an manager to dequeue."))
+      return jsonify(Failure("You must be logged in as an manager to view queue members."))
    if permissions.has_flag(uid, qid, permissions.MANAGER):
       members = queue_server.get_members(qid)
       q_info = queue_server.get_info(None, qid)
@@ -575,22 +575,25 @@ def edit_queue():
       }
    """
    uid = None
-   if session.has_key('logged_in') and session['logged_in']:
-      uid = session['id']
+   if not session.has_key('logged_in') or not session['logged_in']:
+      return jsonify(Failure('You are not logged in!'))
+   uid = session['id']
+   try:
       qsettings = request.json['q_settings']
-      qsettings = validators.validate_q_settings(qsettings)
-      if not qsettings['SUCCESS']:
-         return jsonify(qsettings)
-      if permissions.has_flag(uid, qsettings['qid'], permissions.ADMIN):
-         try:
-            queue_server.edit_queue(qsettings['qid'], qsettings)
-            return jsonify({'SUCCESS':True})
-         except QueueNotFoundException as e:
-            return jsonify(Failure(e.message))
-      else:
-        return jsonify(Failure("You must be logged in as an admin to edit queue settings."))
-   else:
-     return jsonify(Failure("You must at least be logged in to edit queue settings."))
+      qsettings['qid'] = int(request.json['qid'])
+      print qsettings
+   except:
+      return abort(500)
+   if not permissions.has_flag(uid, qsettings['qid'], permissions.ADMIN):
+      return jsonify(Failure('You must own this queue to modify settings!'))
+   qsettings = validators.validate_q_settings(qsettings)
+   if not qsettings['SUCCESS']:
+      return jsonify(qsettings)
+   try:
+      queue_server.edit_queue(qsettings['qid'], qsettings)
+      return jsonify({'SUCCESS':True})
+   except QueueNotFoundException as e:
+      return jsonify(Failure(e.message))
       
 @app.route('/myQueues', methods=['GET', 'POST'])
 def get_my_queues():
