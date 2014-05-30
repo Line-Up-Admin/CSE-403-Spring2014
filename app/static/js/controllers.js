@@ -553,20 +553,19 @@ angular.module('LineUpApp.controllers', []).
 
 		$scope.demoteSelectPerson = function () {
 			var selectIndex = document.getElementById("list-group").options.selectedIndex;
+			console.log("selected index on trigger is " + selectIndex);
 			if( selectIndex != $scope.member_list.length - 1 ) {
 				lineUpAPIService.demoteSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.selectedUser.uid }).
 					success(function (data, status, headers, config) {
 						// refresh the queue
 						$scope.getDetailedQueueInfo();
-	/*  					var list = document.getElementById("list-group");
-						console.log("selected index should be " + selectIndex + 1);
-						console.log("list index 0 = " + list.options[0].text);
-						list.options[2].selected = true;
-						console.log("list index 1 = " + list.options[1].text);
-						console.log("list index 2 = " + list.options[2].text);
-						console.log("selected item should be " + document.getElementById("list-group").options[selectIndex + 1].text);
-						document.getElementById("list-group").options[3].selected="selected"; */
-						document.getElementById("list-group").options[selectIndex + 1].selected="selected";
+						console.log($scope.member_list);
+						console.log(document.getElementById("list-group").options);
+						document.getElementById("list-group").options[selectIndex+1].selected="selected";
+						//$scope.selectedUser = $scope.member_list[selectIndex];
+						//WHY DOESN'T THIS WORK!??!?!?!
+						console.log("selected index after function is " + document.getElementById("list-group").options.selectedIndex);
+						console.log($scope.selectedUser);
 					}).
 					error(function (data, status, headers, config) {
 						// this is not an error we are prepared to handle
