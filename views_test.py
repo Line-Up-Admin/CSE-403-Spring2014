@@ -1,24 +1,28 @@
 import os
-import app
+from app import app
 import unittest
 import tempfile
-from flask import jsonify
+from flask import request, jsonify
 
 class ViewsTestCase(unittest.TestCase):
 
    def setUp(self):
-      self.db_fd, app.app.config['DATABASE'] = tempfile.mkstemp()
-      app.app.config['TESTING'] = True
-      self.app = app.app.test_client()
+      self.db_fd, app.config['DATABASE'] = app.get_db()
+      app.config['TESTING'] = True
+      self.appTest = app.test_client()
       #app.init_db()
 
    def tearDown(self):
       os.close(self.db_fd)
-      os.unlink(app.app.config['DATABASE'])
+      os.unlink(app.config['DATABASE'])
 
    def test_create_user(self):
-      result = self.app.post('/createUser', data=jsonify(dict(uname='testUser',pw='testPassword')))
-      assert result['SUCCESS'] == True
+      with app.test_request_context('/createUser', method='POST'):
+         dataTest = dict()
+         dataTest['uname'] = 'testUser'
+         dataTest['pw'] = 'testPassword'
+         result = self.appTest.post('/createUser', data=dataTest)
+         assert result.data['SUCCESS'] == True
 
    #def test_create_duplicate_user
    #def test_login_correct
