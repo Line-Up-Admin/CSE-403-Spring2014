@@ -17,10 +17,6 @@
 	</div>
 	<div class="control-options container text-center">
 		<p class="control-buttons">
-			<button id="btn-settings" class="btn btn-line-up btn-lg" role="button" ng-click='redirectToEditQueue()'>
-				<span class="glyphicon glyphicon-cog"></span></br>
-				Settings
-			</button>
 			<button id="btn-view-details" class="btn btn-line-up btn-lg" role="button" ng-click='dequeueFirstPerson()'>
 				<span class="glyphicon glyphicon-arrow-up"></span></br>
 				First Person
@@ -38,7 +34,7 @@
 				Remove
 			</button>
 			<button id="btn-demote" class="btn btn-line-up btn-lg" role="button" ng-click='demoteSelectPerson()'>
-				<span class="glyphicon glyphicon-star"></span></br>
+				<span class="glyphicon glyphicon-arrow-down"></span></br>
 				Demote
 			</button>
 			<!-- <button id="btn-begin-closing" class="btn btn-line-up btn-lg" role="button" disabled>
@@ -48,6 +44,10 @@
 			<button id="btn-close-queue" class="btn btn-line-up btn-lg" role="button" ng-click='setActive()' value=0>
 				<span class="glyphicon glyphicon-remove"></span></br>
 				{{ setActiveStatusTo }}
+			</button>
+			<button id="btn-settings" class="btn btn-line-up btn-lg" role="button" ng-click='redirectToEditQueue()'>
+				<span class="glyphicon glyphicon-cog"></span></br>
+				Settings
 			</button>
 		</p>
 	</div>

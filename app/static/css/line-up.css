@@ -79,6 +79,10 @@ hr.bar1 {
 	margin-bottom: 15px;
 }
 
+.info-box  h1{ /* search_queues */
+	font-size: 36px;
+}
+
 .login-input { /* login_home, create_account, search_queues */
 	height: 20px;
 	width: 70px;
@@ -119,6 +123,7 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 
 .queue-img { /* user_home, search_queues, found_queues */
 	margin-right: 10px;
+	width: 40px;
 }
 
 .progress { /* user_home */
@@ -138,6 +143,10 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 	color: #3C3940;
 }
 
+.about {
+	margin-right: 10px;
+}
+
 .main-page-content {
 	margin-top: 40px;
 	background-color: #76ADA9;
@@ -147,6 +156,12 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 }
 
 /* user_home css */
+.user-home-btn {
+	width: 30%; /* if we scale the main-page-content width */
+	display: inline-block;
+	min-width: 150px; /* any less and words overflow */
+}
+
 .recent-queues {
 	margin-bottom: 20px;
 }
@@ -166,7 +181,7 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 	margin-top: 20px;
 }
 
-/* example_admin_queue_page css */
+/* queue_admin css */
 .queue-face, .queue-control, .control-options {
 	margin-top: 25px;
 	margin-bottom: 25px;
@@ -222,6 +237,14 @@ h1.queue-page-header {
 	padding: 25px;
 }
 
+#btn-close-queue {
+	margin-top: 30px;
+}
+
+#list-group {
+	height: 500px;
+}
+
 /* create_queue css */
 .panel {
 	background-color: #99D1C6;
@@ -262,6 +285,27 @@ h1.queue-page-header {
 
 .create-queue-button {
 	margin-bottom: 15px;
+}
+
+/* search css */
+
+#submit-search-info {
+	width: 20%;
+	min-width: 100px;
+}
+
+#input-search-info {
+	display: inline-block;
+	width: 60%;
+}
+
+#search-content {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.position-info {
+	display: inline-block;
 }
 
 /* extra css ids */
