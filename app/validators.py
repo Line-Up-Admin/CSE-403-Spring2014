@@ -90,18 +90,18 @@ def validate_q_settings(q_settings):
          q_settings['SUCCESS'] = False
    if not q_settings.has_key('admins') or q_settings['admins'] is None:
       q_settings['admins']= list()
-   elif type(q_settings['admins']) is str:
-      q_settings['admins'] = list(set(admin.strip() for admin in q_settings['admins'].split(',')))
+   if type(q_settings['admins']) is not list:
+      q_settings['admins'] = list(set([admin.strip() for admin in q_settings['admins'].split(',')]))
    validate_usernames('admins', q_settings, fail)
    if not session['uname'] in q_settings['admins']:
       q_settings['admins'].append(session['uname'])
    if q_settings.has_key('managers') and q_settings['managers'] is not None:
-      if type(q_settings['managers']) is str:
-         q_settings['managers'] = list(set(e.strip() for e in q_settings['managers'].split(',')))
+      if type(q_settings['managers']) is not list:
+         q_settings['managers'] = list(set([e.strip() for e in q_settings['managers'].split(',')]))
       validate_usernames('managers', q_settings, fail)
    if q_settings.has_key('blocked_users') and q_settings['blocked_users'] is not None:
-      if type(q_settings['blocked_users']) is str:
-         q_settings['blocked_users'] = list(set(b.strip() for b in q_settings['blocked_users'].split(',')))
+      if type(q_settings['blocked_users']) is not list:
+         q_settings['blocked_users'] = list(set([b.strip() for b in q_settings['blocked_users'].split(',')]))
       validate_usernames('blocked_users', q_settings, fail)
    if not q_settings['SUCCESS']:
       return fail

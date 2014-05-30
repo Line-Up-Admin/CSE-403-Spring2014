@@ -581,7 +581,6 @@ def edit_queue():
    try:
       qsettings = request.json['q_settings']
       qsettings['qid'] = int(request.json['qid'])
-      print qsettings
    except:
       return abort(500)
    if not permissions.has_flag(uid, qsettings['qid'], permissions.ADMIN):
