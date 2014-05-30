@@ -152,7 +152,7 @@ def enqueue(qid):
    uname_msg = 'Name is required.'
    optional_data_required = False
    try:
-      settings = queue_server.get_settings(None, qid)
+      settings = queue_server.get_settings(qid)
       if settings.prompt is not None and len(settings.prompt) > 0:
          optional_data_required = True
    except QueueNotFoundException as e:
@@ -511,12 +511,12 @@ def get_queue_settings():
       return jsonify(Failure('You must be logged in with an admin account to view queue settings.'))
    try:
       if permissions.has_flag(uid, qid, permissions.ADMIN):
-         queue = db_util.get_queue_settings(qid)
-         return jsonify(queue)
+         queue = queue_server.get_settings(qid)
+         return jsonify(queue.__dict__)
       else:
          return jsonify(Failure('You must be an admin of the queue to see queue settings.'))
    except sqlite3.Error as e:
-      return jsonify(Failure(e.message))
+      return abort(500)
 
 @app.route('/queueStatus/<int:qid>')
 def get_queue_status(qid):

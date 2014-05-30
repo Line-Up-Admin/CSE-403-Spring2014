@@ -16,6 +16,7 @@ import time
 import database_utilities as db_util
 import re
 from operator import itemgetter
+import permissions
 
 # Custom Exception
 class QueueFullException(Exception):
@@ -277,7 +278,6 @@ class QueueServer(object):
             if uid not in result:
                result['uid'] = []
             result['uid'].append( (row['join_time'], row['leave_time']) )
-         print 'loaded', i, 'history elements for queue', qid
          return result
 
       # read all the queues from the database, and put them into the tables
@@ -289,6 +289,9 @@ class QueueServer(object):
       for q_settings_row in q_settings_rows:
          q_settings = QueueSettings.from_dict(q_settings_row)
          qid = q_settings_row['qid']
+         q_settings.admins = db_util.get_special_users(qid, permissions.ADMIN)
+         q_settings.managers = db_util.get_special_users(qid, permissions.MANAGER)
+         q_settings.blocked_users = db_util.get_special_users(qid, permissions.BLOCKED_USER)
          q = Queue(qid, q_settings)
          #reattach the time history to the queue
          q.wait_times = get_q_history(qid)
@@ -439,9 +442,8 @@ class QueueServer(object):
          raise QueueNotFoundException('Queue not found')
       return self.table[qid].postpone(member, self.sync_db)
 
-   def get_settings(self, member, qid):
+   def get_settings(self, qid):
       """ This method gets the settings associated with a queue."""
-      q = self.table[qid]
       if qid not in self.table:
          raise QueueNotFoundException('Queue not found')
       return self.table[qid].q_settings

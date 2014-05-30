@@ -19,6 +19,8 @@ insert into Permissions values (0, 3, 1);
 insert into Permissions values (1, 0, 1);
 insert into Permissions values (1, 1, 3);
 insert into Permissions values (1, 2, 1);
+insert into Permissions values (3, 4, 3);
+insert into Permissions values (4, 3, 3);
 insert into QIndex values(0, 0, (select ending_index from Queues where id=0), 'Thomas');
 update Queues set ending_index=ending_index+1 where id=0;
 insert into QHistory values (0, 0, 1400884418, null);
