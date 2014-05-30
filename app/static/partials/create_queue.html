@@ -5,7 +5,7 @@
   <div id="title" class="text-center pagination-centered">
     <h1>Create a Queue</h1>
   </div>
-  <div class="panel-group col-md-10 col-md-offset-1">
+  <div class="panel-group">
     <div class="panel panel-default">
       <div class="panel-heading">
         <h4 class="panel-title">
@@ -16,24 +16,24 @@
         <div class="panel-body">
           <form class="form-horizontal" role="form">
             <div class="form-group">
-              <label class="col-sm-4 control-label text-right">Name</label>
-              <div class="col-sm-5">
+              <label class=" control-label text-right">Name</label>
+              <div>
                 <input type="text" class="form-control" id="name" placeholder="LineUp Queue" ng-model="queue.qname">
-              </div> <div class="error-field col-sm-2">{{ error.qname }}</div>
+              </div> <div class="error-field ">{{ error.qname }}</div>
             </div>
 
             <div class="form-group">
-              <label class="col-sm-4 control-label text-right">Location</label>
-              <div class="col-sm-5">
+              <label class="control-label text-right">Location</label>
+              <div>
                 <input type="text" class="form-control" id="location" placeholder="CSE Atrium" ng-model="queue.location">
-              </div> <div class="error-field col-sm-2">{{ error.location }}</div>
+              </div> <div class="error-field">{{ error.location }}</div>
             </div>
 
             <div class="form-group">
-              <label class="col-sm-4 control-label text-right">Keywords</label>
-              <div class="col-sm-5">
+              <label class="control-label text-right">Keywords</label>
+              <div>
                 <textarea  class="form-control" rows="3" id="keywords" placeholder="CSE403, Project, Aphrodite" ng-model="queue.keywords"></textarea>Enter as a list seperated by commas.
-              </div> <div class="error-field col-sm-2">{{ error.keywords }}</div>
+              </div> <div class="error-field">{{ error.keywords }}</div>
             </div>
           </form>
         </div>
@@ -49,16 +49,16 @@
         <div class="panel-body">
           <form class="form-horizontal" role="form">
             <div class="form-group">
-              <label class="col-sm-5 control-label text-right">Max Queue Size</label>
-              <div class="col-sm-3">
+              <label class="control-label text-right">Max Queue Size</label>
+              <div>
                 <input type="text" class="form-control" id="maxsize" placeholder="42" ng-model="queue.max_size">
-              </div> <div class="error-field col-sm-2">{{ error.keywords }}</div>
+              </div> <div class="error-field">{{ error.keywords }}</div>
             </div>
             <div class="form-group">
-              <label class="col-sm-5 control-label text-right">Minimum Time Before Re-Join Queue</label>
-              <div class="col-sm-3">
+              <label class="control-label text-right">Minimum Time Before Re-Join Queue</label>
+              <div>
                 <input type="text" ng-model='queue.min_wait_rejoin' class="form-control" id="minwait" placeholder="10"> In Minutes.
-              </div> <div class="error-field col-sm-2">{{ error.keywords }}</div>
+              </div> <div class="error-field">{{ error.keywords }}</div>
             </div>
           </form>
         </div>
@@ -74,30 +74,30 @@
         <div class="panel-body">
           <form class="form-horizontal" role="form">
             <div class="form-group">
-              <label class="col-sm-4 control-label text-right">Website</label>
-              <div class="col-sm-6">
+              <label class="control-label text-right">Website</label>
+              <div>
                 <input type="text" class="form-control" id="website" placeholder="https://courses.cs.washington.edu/courses/cse403/14sp/" ng-model="queue.website">
-              </div> <div class="error-field col-sm-2">{{ error.website }}</div>
+              </div> <div class="error-field">{{ error.website }}</div>
             </div>
 
             <div class="form-group">
-              <label class="col-sm-4 control-label text-right">Organization</label>
-              <div class="col-sm-6">
+              <label class="control-label text-right">Organization</label>
+              <div>
                 <input type="text" class="form-control" id="organization" placeholder="UW Computer Science and Engineering" ng-model="queue.organization">
-              </div> <div class="error-field col-sm-2">{{ error.organization }}</div>
+              </div> <div class="error-field">{{ error.organization }}</div>
             </div>
 
             <div class="form-group">
-              <label class="col-sm-4 control-label text-right">Queue Entry Disclaimer</label>
-              <div class="col-sm-6">
+              <label class="control-label text-right">Queue Entry Disclaimer</label>
+              <div>
                 <textarea class="form-control" rows="3" id="minwait" placeholder="If something happens, it is not our fault." ng-model="queue.disclaimer"></textarea>Will be displayed when users view your queue.
-              </div> <div class="error-field col-sm-2">{{ error.disclaimer }}</div>
+              </div> <div class="error-field">{{ error.disclaimer }}</div>
             </div>
             <div class="form-group">
-              <label class="col-sm-4 control-label text-right">Prompt For Information</label>
-              <div class="col-sm-6">
+              <label class="control-label text-right">Prompt For Information</label>
+              <div>
                 <textarea class="form-control" rows="3" id="addinfo" placeholder="Anything else?" ng-model="queue.prompt"></textarea>Will be displayed when users join your queue.
-              </div> <div class="error-field col-sm-2">{{ error.prompt }}</div>
+              </div> <div class="error-field">{{ error.prompt }}</div>
             </div>
           </form>
         </div>
@@ -113,17 +113,17 @@
         <div class="panel-body">
           <form class="form-horizontal" role="form">
             <div class="form-group">
-              <label class="col-sm-4 control-label text-right">Administrators</label>
-              <div class="col-sm-5">
+              <label class="control-label text-right">Administrators</label>
+              <div>
                 <textarea class="form-control" rows="3" id="admins" placeholder="Cleopatra" ng-model="queue.admins"></textarea>Enter as a list seperated by commas.
-              </div> <div class="error-field col-sm-2">{{ error.admins }}</div>
+              </div> <div class="error-field">{{ error.admins }}</div>
             </div>
 
             <div class="form-group">
-              <label class="col-sm-4 control-label text-right">Managers</label>
-              <div class="col-sm-5">
+              <label class="control-label text-right">Managers</label>
+              <div>
                 <textarea class="form-control" rows="3" id="managers" placeholder="Ramesses" ng-model="queue.managers"></textarea>Enter as a list seperated by commas.
-              </div> <div class="error-field col-sm-2">{{ error.managers }}</div>
+              </div> <div class="error-field">{{ error.managers }}</div>
             </div>
           </form>
         </div>
