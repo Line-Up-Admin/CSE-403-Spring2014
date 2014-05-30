@@ -54,6 +54,23 @@ def create_queue():
    except sqlite3.Error as e:
       return abort(500)
 
+@app.route('/setActive/<int:qid>', methods=['POST'])
+def set_active(qid):
+   if not session.has_key('logged_in') or not session['logged_in']:
+      return jsonify(Failure('You are not logged in!'))
+   if not permissions.has_flag(session['id'], qid, permissions.MANAGER):
+      return jsonify(Failure('You must be logged in as a manager to deactivate the queue.'))
+   active = request.get_json()
+   if active is None or type(active) is not int:
+      return abort(500)
+   try:
+      queue_server.set_active(qid, active)
+      return jsonify(Success({}))
+   except sqlite3.Error:
+      abort(500)
+   except QueueNotFoundException as e:
+      return jsonify(Failure('The queue was not found.'))
+
 @app.route('/join', methods=['POST'])
 def add_to_queue():
    """Joins a queue.
@@ -710,44 +727,6 @@ def create_user():
       return abort(500)
    except db_util.ValidationException as e:
       return jsonify(Failure(e.message))
-
-@app.route('/setActive', methods=['POST'])
-def set_active():
-   """ Sets a queue's active status. 
-   Args:
-      {
-         qid:
-         active:
-      }
-
-   Returns:
-      {
-         SUCCESS:
-         error_message: (only if failure)
-      }
-
-   """
-   print "enter setActive route"
-   uid = None
-   if session.has_key('logged_in') and session['logged_in']:
-      uid = session['id']
-      qid = request.json['qid']
-      active = request.json['active']
-      if permissions.has_flag(uid, qid, permissions.MANAGER):
-        try:
-          queue_server.set_active(qid, active)
-          print "exit setActive route"
-          return jsonify({'SUCCESS':True})
-        except QueueNotFoundException as e:
-          print "queuenotfound exception"
-          return jsonify(Failure(e.message))
-      else:
-        print "bad permissions"
-        return jsonify(Failure("You must be logged in as an manager to open or close a queue."))
-   else:
-     print "not logged in"
-     return jsonify(Failure("You must at least be logged in to open or close a queue."))
-
       
 @app.route('/login', methods=['GET', 'POST'])
 def login():

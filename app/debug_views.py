@@ -190,6 +190,23 @@ def get_queue_info_and_members(qid):
         q_info = queue_server.get_info(None, qid)
         return jsonify(queue_info=q_info.__dict__, member_list=[member.__dict__ for member in members])
 
+@app.route('/debug/setActive/<int:qid>', methods=['GET', 'POST'])
+def set_active_debug(qid):
+   if not session.has_key('logged_in') or not session['logged_in']:
+      return jsonify(Failure('You are not logged in!'))
+   if not permissions.has_flag(session['id'], qid, permissions.MANAGER):
+      return jsonify(Failure('You must be logged in as a manager to deactivate the queue.'))
+   active = int(request.args['active'])
+   if active is None or type(active) is not int:
+      return abort(500)
+   try:
+      queue_server.set_active(qid, active)
+      return jsonify(Success({}))
+   except sqlite3.Error:
+      abort(500)
+   except QueueNotFoundException as e:
+      return jsonify(Failure('The queue was not found.'))
+
 @app.route('/debug/join/<int:qid>', methods=['GET', 'POST'])
 def add_to_queue_debug(qid):
    if not app.debug:
