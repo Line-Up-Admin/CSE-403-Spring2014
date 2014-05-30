@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('LineUpApp.controllers', []).
 
-  
+
   controller('headerController', function ($scope, lineUpAPIService, $location, $route) {
      // this assignment gives the headerController's $scope access to the displayHelp function 
      // of whichever page loaded it.
@@ -28,15 +28,22 @@ angular.module('LineUpApp.controllers', []).
     // Upon success: Updates the current queue model to include the new ID.
     // Upon error: TODO: Do something smart to handle the error
     $scope.createNewQueue = function () {
+
+      // clear any previous errors
+      $scope.errors = {};
+
+      // all new queues start as active
       $scope.queue.active = 1;
+
+      // send the request
 			lineUpAPIService.createQueue($scope.queue).
         success(function (data, status, headers, config) {
           if (data.SUCCESS) {
             // load the queue admin page
             $location.path('/admin/' + data.qid);
           } else {
-            $scope.error = data;
-            console.log(data)
+            // display errors
+            $scope.errors = data;
           }
         }).
         error(function (data, status, headers, config) {

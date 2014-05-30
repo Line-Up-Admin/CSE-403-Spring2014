@@ -3,6 +3,7 @@ from struct import unpack
 from flask import session
 import re
 import hashlib
+from database_utilities import check_usernames
 
 Q_MAX_STR_LEN = {
    'qname': 32,
@@ -48,6 +49,12 @@ def get_unique_user_id():
 def get_unique_queue_id():
    return unpack("<L", urandom(4))[0]
 
+def validate_usernames(key, dictionary, fail):
+   result = check_usernames(dictionary[key])
+   if not result['SUCCESS']:
+      dictionary['SUCCESS'] = False
+      fail[key] = 'The User Name ' + result['username'] + ' was not found.'
+
 def validate_q_settings(q_settings):
    q_settings['SUCCESS'] = True
    fail = dict()
@@ -85,12 +92,15 @@ def validate_q_settings(q_settings):
       q_settings['admins']= list()
    else:
       q_settings['admins'] = list(set(admin.strip() for admin in q_settings['admins'].split(',')))
+   validate_usernames('admins', q_settings, fail)
    if not session['uname'] in q_settings['admins']:
       q_settings['admins'].append(session['uname'])
    if q_settings.has_key('managers'):
       q_settings['managers'] = list(set(e.strip() for e in q_settings['managers'].split(',')))
+      validate_usernames('managers', q_settings, fail)
    if q_settings.has_key('blocked_users'):
       q_settings['blocked_users'] = list(set(b.strip() for b in q_settings['blocked_users'].split(',')))
+      validate_usernames('blocked_users', q_settings, fail)
    if not q_settings['SUCCESS']:
       return fail
    return q_settings
