@@ -3,7 +3,7 @@
 /* Controllers */
 angular.module('LineUpApp.controllers', []).
 
-
+  // controller for the main header
   controller('headerController', function ($scope, lineUpAPIService, $location, $route) {
      // this assignment gives the headerController's $scope access to the displayHelp function
      // of whichever page loaded it.
@@ -313,6 +313,7 @@ angular.module('LineUpApp.controllers', []).
     }
   }).
 
+  // Controller for the edit/queueID route
 	controller('editQueueController', function($scope, lineUpAPIService, $routeParams, $location, $route) {
     // hide the edit button if we are on the create queue page
     // call on page load with ng-init="init()"
@@ -323,6 +324,7 @@ angular.module('LineUpApp.controllers', []).
     }
 		$scope.queue = {};
 
+    // populate the form fields with the existing queue settings
 		$scope.fillFormFields = function () {
 			lineUpAPIService.getQueueSettings($routeParams.qid).
 				success(function (data, status, headers, config) {
@@ -351,15 +353,24 @@ angular.module('LineUpApp.controllers', []).
 		};
     $scope.fillFormFields();
 
+    // send the updated settings to the server
 		$scope.editQueue = function () {
-		lineUpAPIService.editQueue({ 'qid': $routeParams.qid, 'q_settings': $scope.queue }).
+      // clear any old errors
+      $scope.errors = {};
+		  lineUpAPIService.editQueue({ 'qid': $routeParams.qid, 'q_settings': $scope.queue }).
 				success(function (data, status, headers, config) {
-					$location.path('/admin/' + $routeParams.qid);
+          if (data.SUCCESS) {
+            // redirect back to the admin view
+            $location.path('/admin/' + $routeParams.qid);
+          } else {
+            $scope.errors = data;
+          }
 				}).
 				error(function (data, status, headers, config) {
-					alert("Something went wrong with the edit queue request!\nStatus: " + status);
+					// not an error we are prepared to handle
+          $location.path("/error");
 				});
-		}
+		  }
   }).
 
   // Controller for the #/admin route
