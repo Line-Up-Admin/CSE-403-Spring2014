@@ -1,4 +1,7 @@
 import os
+import sys
+sys.path.insert(0, '../..')
+sys.path.insert(0, '..')
 from app import app
 import unittest
 from flask import json
@@ -6,7 +9,7 @@ from app import get_db
 from app import init_db
 import sqlite3
 
-sys.path.insert(0, '../..')
+
 test_db_file = os.path.join(app.root_path, 'apptest.db')
 
 class ViewsTestCase(unittest.TestCase):

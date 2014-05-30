@@ -8,12 +8,12 @@ from flask import Flask, request, session, g, redirect, url_for, abort
 app = Flask(__name__, static_url_path='')
 app.secret_key = os.urandom(24)
 
-database_file = os.path.join(app.root_path, 'app.db')
+app.config['DB_FILE'] = os.path.join(app.root_path, 'app.db')
 schema_file = os.path.join(app.root_path, 'schema.sql')
 
 def connect_db():
   """Connects to the specific database."""
-  rv = sqlite3.connect(database_file)
+  rv = sqlite3.connect(app.config['DB_FILE'])
   rv.row_factory = sqlite3.Row
   return rv
 
@@ -46,7 +46,7 @@ def close_db(error):
     g.sqlite_db.close()
 
 # only init the db if it doesn't exist.
-if not os.path.isfile(database_file):
+if not os.path.isfile(app.config['DB_FILE']):
   init_db()
 
 from q_classes import *
