@@ -32,13 +32,10 @@ def check_max_str_len(key, dictionary, max_dict, fail):
 def are_matching(encrypted_password, salt, given_password):
    given_password = given_password + unicode(salt)
    given_password_encrypted = hashlib.sha224(given_password).hexdigest()
-   print 'salt is ', salt, 'given password is', given_password
    return encrypted_password == given_password_encrypted
 
 def encrypt_password(password):
-   print 'given password = ', password
    salt = unpack('I', urandom(4))[0]
-   print 'salt created', salt
    password = password + unicode(salt)
    encrypted_pw = hashlib.sha224(password).hexdigest()
    return (encrypted_pw, salt)
@@ -86,7 +83,7 @@ def validate_q_settings(q_settings):
             fail['min_wait_rejoin'] = 'Minimum wait to rejoin queue must be a non-negative number.'
             q_settings['SUCCESS'] = False
       except ValueError:
-         fail['min_wait_rejoin'] = 'Minimum wait to rejoin queue must be an number.'
+         fail['min_wait_rejoin'] = 'Minimum wait to rejoin queue must be a number.'
          q_settings['SUCCESS'] = False
    if not q_settings.has_key('admins') or q_settings['admins'] is None:
       q_settings['admins']= list()
