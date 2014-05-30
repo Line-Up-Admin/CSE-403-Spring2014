@@ -18,21 +18,21 @@
               <label class=" control-label text-right">Name</label>
               <div>
                 <input type="text" class="form-control" id="name" placeholder="LineUp Queue" ng-model="queue.qname">
-              </div> <div class="error-field ">{{ error.qname }}</div>
+              </div> <div class="error-field ">{{ errors.qname }}</div>
             </div>
 
             <div class="form-group">
               <label class="control-label text-right">Location</label>
               <div>
                 <input type="text" class="form-control" id="location" placeholder="CSE Atrium" ng-model="queue.location">
-              </div> <div class="error-field">{{ error.location }}</div>
+              </div> <div class="error-field">{{ errors.location }}</div>
             </div>
 
             <div class="form-group">
               <label class="control-label text-right">Keywords</label>
               <div>
                 <textarea  class="form-control" rows="3" id="keywords" placeholder="CSE403, Project, Aphrodite" ng-model="queue.keywords"></textarea>Enter as a list seperated by commas.
-              </div> <div class="error-field">{{ error.keywords }}</div>
+              </div> <div class="error-field">{{ errors.keywords }}</div>
             </div>
           </form>
         </div>
@@ -51,13 +51,13 @@
               <label class="control-label text-right">Max Queue Size</label>
               <div>
                 <input type="text" class="form-control" id="maxsize" placeholder="42" ng-model="queue.max_size">
-              </div> <div class="error-field">{{ error.max_size }}</div>
+              </div> <div class="error-field">{{ errors.max_size }}</div>
             </div>
             <div class="form-group">
               <label class="control-label text-right">Minimum Time Before Re-Join Queue</label>
               <div>
                 <input type="text" ng-model='queue.min_wait_rejoin' class="form-control" id="minwait" placeholder="10"> In Minutes.
-              </div> <div class="error-field">{{ error.minwait }}</div>
+              </div> <div class="error-field">{{ errors.minwait }}</div>
             </div>
           </form>
         </div>
@@ -76,27 +76,27 @@
               <label class="control-label text-right">Website</label>
               <div>
                 <input type="text" class="form-control" id="website" placeholder="https://courses.cs.washington.edu/courses/cse403/14sp/" ng-model="queue.website">
-              </div> <div class="error-field">{{ error.website }}</div>
+              </div> <div class="error-field">{{ errors.website }}</div>
             </div>
 
             <div class="form-group">
               <label class="control-label text-right">Organization</label>
               <div>
                 <input type="text" class="form-control" id="organization" placeholder="UW Computer Science and Engineering" ng-model="queue.organization">
-              </div> <div class="error-field">{{ error.organization }}</div>
+              </div> <div class="error-field">{{ errors.organization }}</div>
             </div>
 
             <div class="form-group">
               <label class="control-label text-right">Queue Entry Disclaimer</label>
               <div>
                 <textarea class="form-control" rows="3" id="minwait" placeholder="If something happens, it is not our fault." ng-model="queue.disclaimer"></textarea>Will be displayed when users view your queue.
-              </div> <div class="error-field">{{ error.disclaimer }}</div>
+              </div> <div class="error-field">{{ errors.disclaimer }}</div>
             </div>
             <div class="form-group">
               <label class="control-label text-right">Prompt For Information</label>
               <div>
                 <textarea class="form-control" rows="3" id="addinfo" placeholder="Anything else?" ng-model="queue.prompt"></textarea>Will be displayed when users join your queue.
-              </div> <div class="error-field">{{ error.prompt }}</div>
+              </div> <div class="error-field">{{ errors.prompt }}</div>
             </div>
           </form>
         </div>
@@ -115,14 +115,14 @@
               <label class="control-label text-right">Administrators</label>
               <div>
                 <textarea class="form-control" rows="3" id="admins" placeholder="Cleopatra" ng-model="queue.admins"></textarea>Enter as a list seperated by commas.
-              </div> <div class="error-field">{{ error.admins }}</div>
+              </div> <div class="error-field">{{ errors.admins }}</div>
             </div>
 
             <div class="form-group">
               <label class="control-label text-right">Managers</label>
               <div>
                 <textarea class="form-control" rows="3" id="managers" placeholder="Ramesses" ng-model="queue.managers"></textarea>Enter as a list seperated by commas.
-              </div> <div class="error-field">{{ error.managers }}</div>
+              </div> <div class="error-field">{{ errors.managers }}</div>
             </div>
           </form>
         </div>
