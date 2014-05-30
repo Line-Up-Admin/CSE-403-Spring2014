@@ -68,7 +68,7 @@ def qsettings_dict_to_db_tuple(qsettings):
           qsettings['keywords'] if qsettings.has_key('keywords') else None,
           qsettings['location'] if qsettings.has_key('location') else None,
           qsettings['active'] if qsettings.has_key('active') else 1,
-          qsettings['min_wait_rejoin'] if qsettings.has_key('min_wait_rejoin') else maxint,
+          qsettings['min_wait_rejoin'] if qsettings.has_key('min_wait_rejoin') else 0,
           qsettings['website'] if qsettings.has_key('website') else None,
           qsettings['organization'] if qsettings.has_key('organization') else None,
           qsettings['disclaimer'] if qsettings.has_key('disclaimer') else None,
