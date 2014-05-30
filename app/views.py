@@ -711,6 +711,13 @@ def create_user():
 
    """
    print 'enter createUser route'
+#   print 'header:'
+#   print request.headers
+#   print 'data:'
+#   print request.data
+#   print 'json:'
+#   print request.json
+   
    try:
       user_data = request.get_json()
    except:
