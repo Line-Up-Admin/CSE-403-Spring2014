@@ -5,6 +5,8 @@ angular.module('LineUpApp.controllers', []).
 
 
   controller('headerController', function ($scope, lineUpAPIService, $location, $route) {
+     // this assignment gives the headerController's $scope access to the displayHelp function 
+     // of whichever page loaded it.
      $scope.displayHelp = $scope.$parent.displayHelp;
     }).
 
@@ -134,6 +136,7 @@ angular.module('LineUpApp.controllers', []).
       }
     };
 
+    // show the help slide-in modal
     $scope.displayHelp = function () {
             $("#help-modal").modal('toggle');
     };
@@ -209,6 +212,11 @@ angular.module('LineUpApp.controllers', []).
       if ($route.current.loadedTemplateUrl == "partials/queue_info.html") {
         document.getElementById("edit-button").classList.add("hide");
       }
+    };
+
+    // show the help slide-in modal
+    $scope.displayHelp = function () {
+            $("#help-modal").modal('toggle');
     };
 
     $scope.queueStatus = function () {

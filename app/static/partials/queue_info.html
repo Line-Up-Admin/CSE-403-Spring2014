@@ -1,7 +1,6 @@
+<div class="main-page-content container">
 <!-- Header -->
 <div class="header-content" ng-include src="'partials/header.html'"></div>
-
-<div class="main-page-content container">
   <div class="panel-heading">
     <h3>{{ queue.qname }}</h3>
     <h4>{{ queue.organization }}: {{ queue.location }}</h4>
@@ -43,6 +42,10 @@
   </div>
   <div class="panel-footer">{{ queue.disclaimer }}</div>
 </div>
+
+<!-- This is a help slide-in for this page -->
+<div class="help-window" ng-include src="'partials/queue_info_help.html'"></div>
+
 
 <!-- Modal Window -->
 <div class="modal fade" id="question-modal">
