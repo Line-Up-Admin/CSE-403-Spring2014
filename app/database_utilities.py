@@ -8,6 +8,7 @@ __init__.py in app. All methods are static.
 from sys import maxint
 
 # Query constants
+GET_SPECIAL_UNAMES_BY_QID = 'select u.uname from users as u join permissions as p on p.pid=u.id and p.qid=? and p.permission_level=?'
 GET_ALL_QUEUES = 'select * from queues'
 GET_ALL_QUEUE_SETTINGS = 'select * from qsettings'
 GET_MEMBER_DATA_BY_QID = 'select qi.uid, u.uname, qi.relative_position, qi.optional_data from qindex as qi join users as u on qi.qid=? and qi.uid=u.id order by qi.relative_position'
@@ -242,6 +243,14 @@ def get_temp_user(temp_uid):
     return None
   else:
     return rows[0]
+
+def get_special_users(qid, permission_level):
+  unames = list()
+  rows = query_db(GET_SPECIAL_UNAMES_BY_QID, (qid, permission_level))
+  if rows is not None:
+    unames = [row[0] for row in rows]
+  return unames
+  
 
 #################################################
 # Queue related utilities.

@@ -59,17 +59,37 @@ def create_user_debug():
 	except sqlite3.Error as e:
 		return e.message
 
-#@app.route('/debug/getqueuesettings')
-@app.route('/debug/getqueuesettings', methods=['GET', 'POST'])
+@app.route('/debug/getQueueSettings', methods=['GET', 'POST'])
 def get_queue_settings_debug():
-   #queueID = request.args.get('qid')
-   qid = request.args.get('qid')
+   """
+
+   Args:
+      qid:
+
+   Returns: example return value
+      {
+         "active": 1,
+         "qid": 2789801433,
+         "keywords": "seattle",
+         "location": "seattle",
+         "max_size": 10,
+         "qname": "bestqueueever"
+      }
+
+   """
+   qid = int(request.args['qid'])
+   if session.has_key('logged_in') and session['logged_in']:
+      uid = session['id']
+   else:
+      return jsonify(Failure('You must be logged in with an admin account to view queue settings.'))
    try:
-      #permissions.has_flag(qid, 
-      q_settings = db_util.get_queue_settings(qid)
-      return jsonify(q_settings)
+      if permissions.has_flag(uid, qid, permissions.ADMIN):
+         queue = queue_server.get_settings(qid)
+         return jsonify(queue.__dict__)
+      else:
+         return jsonify(Failure('You must be an admin of the queue to see queue settings.'))
    except sqlite3.Error as e:
-      return e.message
+      return jsonify(Failure(e.message))
 
 @app.route('/debug/modifyQueue', methods=['GET', 'POST'])
 def debug_modify_queue_settings():
@@ -254,7 +274,7 @@ def enqueue_debug(qid):
    uname_msg = 'Name is required.'
    optional_data_required = False
    try:
-      settings = queue_server.get_settings(None, qid)
+      settings = queue_server.get_settings(qid)
       if settings.prompt is not None and len(settings.prompt) > 0:
          optional_data_required = True
    except QueueNotFoundException as e:
