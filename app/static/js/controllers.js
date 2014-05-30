@@ -199,20 +199,26 @@ angular.module('LineUpApp.controllers', []).
 
     // show the help slide-in modal
     $scope.displayHelp = function () {
-            $("#help-modal").modal('toggle');
+      $("#help-modal").modal('toggle');
     };
 
     // Sends search query to the server and fills the search results in the
     // HTML
     $scope.search = function () {
+      if (!$scope.query || $scope.queury == "") {
+        document.getElementById("results").innerHTML="Popular Queues";
+        $scope.getPopularQueues();
+        return;
+      }
+
       lineUpAPIService.search($scope.query).
         success(function (data, status, headers, config) {
             document.getElementById("results").innerHTML="Search Results";
             $scope.queueInfos = data.queue_info_list;
           }).
           error(function (data, status, headers, config) {
-            console.log(data);
-            alert("Something went wrong with the search request! \nStatus: " + status);
+            // not an error we are prepared to handle
+            $location.path("/error");
         });
     }
 
@@ -229,7 +235,8 @@ angular.module('LineUpApp.controllers', []).
         error(function (data, status, headers, config) {
           alert("Something went wrong with the popular queue request! \nStatus: " + status);
       });
-    }();
+    };
+    $scope.getPopularQueues();
   }).
 
   // Controller for the #/queue_info route
