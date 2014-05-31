@@ -272,6 +272,7 @@ h1.queue-page-header {
 	padding: 12px;
 	font-size: 40pt;
 	font-weight: bold;
+	overflow: hidden;
 }
 
 .control-buttons a, .control-buttons button {
