@@ -2,7 +2,7 @@
 
 // round the time values to the nearest integer
 var roundTimes = function (data) {
-  if (data.expected_wait){
+  if (data.expected_wait) {
     data.expected_wait = parseInt(data.expected_wait);
   }
   if (data.avg_wait_time) {
@@ -24,7 +24,7 @@ angular.module('LineUpApp.controllers', []).
      // this assignment gives the headerController's $scope access to the displayHelp function
      // of whichever page loaded it.
      $scope.displayHelp = $scope.$parent.displayHelp;
-    }).
+  }).
 
   // Controller for the #/create_queue route
   controller('createQueueController', function ($scope, lineUpAPIService, $location, $route) {
@@ -171,7 +171,9 @@ angular.module('LineUpApp.controllers', []).
       lineUpAPIService.getUsersQueues().
         success(function (data, status, headers, config) {
           if (data.SUCCESS) {
-            roundTimes(data);
+            roundTimes(data.queues_in);
+            roundTimes(data.queues_admin);
+            roundTimes(data.queues_manager);
             if (data.queues_in.length == 0) {
               document.getElementById('empty-in').classList.remove('hide');
             }
@@ -187,7 +189,6 @@ angular.module('LineUpApp.controllers', []).
           }
         }).
         error(function (data, status, headers, config) {
-          console.log(data);
           $location.path("/error");
         });
     }();
@@ -265,45 +266,53 @@ angular.module('LineUpApp.controllers', []).
       $("#help-modal").modal('toggle');
     };
 
+    // Request the details of this queue from the server.
+    // On success: Display the correct view based on the user being in the
+    // queue or not.
+    // On failure: redirect to the error page.
     $scope.queueStatus = function () {
       lineUpAPIService.queueStatus($routeParams.qid).
         success(function (data, status, headers, config) {
           roundTimes(data);
           $scope.queue = data;
 
+          // hide all elements
           document.getElementById('enqueued').classList.add('hide');
           document.getElementById('notEnqueued').classList.add('hide');
+
           if (data.member_position == null) {
+            // show elements for the user that is not in the queue
             document.getElementById('notEnqueued').classList.remove('hide');
           } else {
+            // show elements for the user that is in the queue
             document.getElementById('enqueued').classList.remove('hide');
-            // if (data.member_position == data.size) {
-              // document.getElementById('btn-postpone').disabled = true;
-            // }
           }
         }).
         error(function (data, status, headers, config) {
-          alert("Something went wrong with the queue lookup request!\nStatus: " + status);
+          // not an error we are prepared to handle
+          $location.path("/error");
         });
     };
 
     // This should load immediately when this controller is used
     $scope.queueStatus();
 
-    // used for self-removal of user from the queue
+    // Send request to the server to remove yourself from the queue
     $scope.leaveQueue = function () {
       lineUpAPIService.leaveQueue($routeParams.qid).
-      success(function (data, status, header, config) {
-        if(data.SUCCESS) {
-          // reset the client data and reset the page
-          $scope.queueStatus();
-        }
-      }).
-      error(function (data, status, header, config) {
-        alert("Something went wrong with your request to leave the queue!\n Status" + status);
-      });
+        success(function (data, status, header, config) {
+          if(data.SUCCESS) {
+            // reset the client data and reset the page
+            $scope.queueStatus();
+          }
+        }).
+        error(function (data, status, header, config) {
+          // not an error we are prepared to handle
+          $location.path("/error");
+        });
     };
 
+    // Send a request to the server to move back one spot in line
     $scope.postpone = function () {
       lineUpAPIService.postpone($routeParams.qid).
         success(function (data, status, header, config) {
@@ -313,10 +322,12 @@ angular.module('LineUpApp.controllers', []).
           }
         }).
         error(function (data, status, header, config) {
-          alert("Something went wrong with your request to postpone!\nStatus: " + status);
+          // not an error we are prepared to handle
+          $location.path("/error");
         });
     };
 
+    // promt the user for more information needed when they join the queue.
     $scope.promptForData = function () {
       if ($scope.queue.logged_in) {
         if ($scope.queue.prompt) {
@@ -351,7 +362,8 @@ angular.module('LineUpApp.controllers', []).
           document.getElementById('enqueued').classList.remove('hide');
         }).
         error(function (data, status, headers, config) {
-          alert("Something went wrong with the join queue request! \nStatus: " + status);
+          // not an error we are prepared to handle
+          $location.path("/error");
         });
     }
   }).
