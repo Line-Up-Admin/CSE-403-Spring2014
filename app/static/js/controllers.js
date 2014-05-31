@@ -650,10 +650,6 @@ angular.module('LineUpApp.controllers', []).
       if (!$scope.user.optional_data) {
         $scope.user.optional_data = "";
       }
-			if( $scope.activeStatus == "CLOSED" ) {
-				$scope.errors = {'error_message': "You cannot add people; queue is inactive."};
-				document.getElementById('error').classList.remove('hide');
-			}
 
       // send the request
 			lineUpAPIService.enqueue($routeParams.qid, $scope.user).
