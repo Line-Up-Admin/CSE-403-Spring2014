@@ -483,10 +483,8 @@ angular.module('LineUpApp.controllers', []).
     // Upon success: Shows the admin view for the given queue id.
     // Upon error: TODO: Do something smart to handle the error
 		$scope.getDetailedQueueInfo = function () {
-      console.log("qid: " + $routeParams.qid)
 			lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
 				success(function (data, status, headers, config) {
-          console.log("data: " + data.SUCCESS);
 
           if (data.SUCCESS) {
             // only available to admins of this queue
@@ -547,15 +545,15 @@ angular.module('LineUpApp.controllers', []).
 		$scope.dequeueFirstPerson = function () {
       lineUpAPIService.dequeueFirstPerson($routeParams.qid, $scope.userDetails.uid).
 				success(function (data, status, headers, config) {
+          console.log(data);
           if (data.SUCCESS) {
             // close the modal
             $("#dequeue-modal").modal('toggle');
           } else {
             // display error message
             $scope.errors = data;
-            if (data.error_message) {
-              document.getElementById('error').classList.remove('hide');
-            }
+            document.getElementById('dequeue-error').classList.remove('hide');
+            document.getElementById('dequeue-confirm').classList.add('disabled');
           }
 
           // refresh the queue data
@@ -566,6 +564,13 @@ angular.module('LineUpApp.controllers', []).
           $location.path("/error");
 				});
 		}
+
+    $scope.dequeueCancel = function () {
+      $scope.errors = {};
+      document.getElementById('dequeue-error').classList.add('hide');
+      document.getElementById('dequeue-confirm').classList.remove('disable');
+      $("#dequeue-modal").modal('toggle');
+    }
 
 		// Sends a remove request to the server.
     // Upon success: removes the selected person from the line.
