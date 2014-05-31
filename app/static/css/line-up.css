@@ -67,11 +67,16 @@ hr.bar1 {
 	background-color: #FFFFFF;
 }
 
+.username-wrapper {
+	max-width: 40px;
+	width: auto;
+	float: left;
+	margin-top: 14px;
+	margin-left: 14px;
+}
+
 .header-username {
 	display: inline-block;
-/*	text-align: left;
-	overflow: hidden;
-	text-overflow: ellipsis; */
 	font-weight: bold;
 	color: #333333;
 }
@@ -171,10 +176,13 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 .member-position-number {
 	display: inline-block;
 	color: #FEC839;
+	background-color: #333333;
+	padding-left: 4px;
+	padding-right: 4px;
 }
 
 .front {
-	width: 96%;
+	width: 84%;
 	font-size: 1em;
 	text-align: right;
 }
@@ -295,6 +303,7 @@ h1.queue-page-header {
 	font-size: large;
 	font-weight: bold;
 	padding: 25px;
+	clear: left;
 }
 
 #btn-close-queue {
@@ -390,6 +399,8 @@ h1.queue-page-header {
 	width: 30%;
 	margin: 10px;
 	min-width: 100px;
+	overflow: hidden;
+	text-overflow: clip;
 }
 
 body {
