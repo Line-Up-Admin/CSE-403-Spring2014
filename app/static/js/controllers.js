@@ -389,6 +389,8 @@ angular.module('LineUpApp.controllers', []).
           $scope.queue = data;
           document.getElementById('notEnqueued').classList.add('hide');
           document.getElementById('enqueued').classList.remove('hide');
+					roundTimes(data);
+					$scope.progressBar();
         }).
         error(function (data, status, headers, config) {
           // not an error we are prepared to handle
