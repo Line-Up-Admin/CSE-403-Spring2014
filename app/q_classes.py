@@ -149,7 +149,7 @@ class Queue(object):
       else:
          return None
 
-   def peek():
+   def peek(self):
       if len(self.storage) == 0:
          return None
       return self.storage[0][0]
@@ -356,7 +356,7 @@ class QueueServer(object):
          db_util.remove_by_uid_qid(q_member.uid, qid)
       return q_member
 
-   def peek(qid):
+   def peek(self, qid):
       if qid not in self.table:
          raise QueueNotFoundException('Queue not found')
       return self.table[qid].peek()
