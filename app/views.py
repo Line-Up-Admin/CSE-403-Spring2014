@@ -5,6 +5,7 @@ import validators
 import sqlite3
 from flask import request, session, g, redirect, url_for, abort, jsonify
 import permissions
+import pdb
 
 from q_classes import QueueServer, QueueMember, QueueSettings, QueueNotFoundException, MemberNotFoundException, QueueFullException
 
@@ -33,14 +34,16 @@ def root():
 def create_queue():
    """Creates a queue. If the user is logged in, they will become an admin for the queue.
 
-
-
    """
+   #pdb.set_trace()
    try:
       q_settings = request.get_json()
    except:
       return abort(500)
-   q_settings = validators.validate_q_settings(q_settings)
+   try:
+      q_settings = validators.validate_q_settings(q_settings)
+   except KeyError as e:
+      return jsonify(Failure('You cannot create a queue if you are not logged in!'))
    if not q_settings['SUCCESS']:
       return jsonify(q_settings)
    if not session.has_key('logged_in') or not session['logged_in']:
@@ -200,7 +203,7 @@ def dequeue(qid):
    """Dequeues a member from the specified queue. If the queue is empty, returns an empty json object.
 
    Args:
-      uid of person to be removed
+      qid of queue from which to remove a person
 
    Returns:
       {
@@ -263,7 +266,7 @@ def postpone():
       uid = session['id']
    else:
       return jsonify(Failure('You are not logged in!'))
-   qid= request.json
+   qid= request.json['qid']
    try:
       queue_server.postpone(QueueMember(uid=uid), qid)
       q_info = queue_server.get_info(QueueMember(uid=uid), qid)
