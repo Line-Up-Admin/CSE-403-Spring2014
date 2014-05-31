@@ -74,7 +74,7 @@
 						<input type="text" class="form-control"  ng-model="user.uname"></input><div class="error-field col-sm-8">{{ errors.uname }}</div>
 	        </div>
 	      </div>
-		    <div id="optional-data" class="form-group">
+		    <div id="optional-data" class="form-group" ng-if="queueInfo.prompt">
 		      <label class="col-sm-4 control-label text-right">{{ queueInfo.prompt }}: </label>
 		      <div class="col-sm-5">
 		        <textarea class="form-control" rows="3" id="other-info" ng-model="user.optional_data">
