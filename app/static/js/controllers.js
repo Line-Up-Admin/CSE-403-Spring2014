@@ -77,13 +77,8 @@ angular.module('LineUpApp.controllers', []).
       $scope.queue.active = 1;
 
       // send the request
-
-      console.log("sending:");
-      console.log($scope.queue);
 			lineUpAPIService.createQueue($scope.queue).
         success(function (data, status, headers, config) {
-          console.log("recieved:");
-          console.log(data);
           if (data.SUCCESS) {
             // load the queue admin page
             $location.path('/admin/' + data.qid);
@@ -169,7 +164,6 @@ angular.module('LineUpApp.controllers', []).
       // send the new account info to the server
       lineUpUserService.createUser($scope.user).
         success(function (data, status, headers, config) {
-          console.log(data);
           // account created successfully, redirect to the login page
           if (data.SUCCESS) {
             $location.path("/");
@@ -329,12 +323,12 @@ angular.module('LineUpApp.controllers', []).
 						var widthPercentage = width + "%";
 						$scope.progressBar();
           }
-					
+
 					if (data.active == 0 ) {
 						document.getElementById("btn-join").disabled = true;
 						document.getElementById("closed-message").classList.remove('hide');
 					}
-					
+
 				}).
         error(function (data, status, headers, config) {
           // not an error we are prepared to handle
@@ -590,10 +584,8 @@ angular.module('LineUpApp.controllers', []).
     // Upon success: Dequeues the first person in line.
     // Upon error: redirect to the error page.
 		$scope.dequeueFirstPerson = function () {
-      console.log($scope.userDetails);
       lineUpAPIService.dequeueFirstPerson($routeParams.qid, $scope.userDetails).
 				success(function (data, status, headers, config) {
-          console.log(data);
           if (data.SUCCESS) {
             // close the modal
             $("#dequeue-modal").modal('toggle');
@@ -649,10 +641,8 @@ angular.module('LineUpApp.controllers', []).
       if (!$scope.user.optional_data) {
         $scope.user.optional_data = "";
       }
-			console.log($scope.activeStatus);
 			if( $scope.activeStatus == "CLOSED" ) {
 				$scope.errors = {'error_message': "You cannot add people; queue is inactive."};
-				console.log($scope.errors);
 				document.getElementById('error').classList.remove('hide');
 			}
 
@@ -697,7 +687,6 @@ angular.module('LineUpApp.controllers', []).
     // sends a request to the server to move the user back one position
 		$scope.demoteSelectPerson = function () {
 			var selectIndex = document.getElementById("list-group").options.selectedIndex;
-			//console.log("selected index on trigger is " + selectIndex);
 			if( selectIndex != $scope.member_list.length - 1 ) {
 				lineUpAPIService.demoteSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.selectedUser.uid }).
 					success(function (data, status, headers, config) {
