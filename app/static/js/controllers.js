@@ -273,6 +273,7 @@ angular.module('LineUpApp.controllers', []).
   controller('queueInfoController', function ($scope, $route, lineUpAPIService, $routeParams) {
     $scope.optional_data = "";
     $scope.uname = "";
+		$scope.locationLink = "";
 
     // hide the edit button if we are on the create queue page
     // called on element load with ng-init="init()"
@@ -297,7 +298,10 @@ angular.module('LineUpApp.controllers', []).
         success(function (data, status, headers, config) {
           roundTimes(data);
           $scope.queue = data;
-
+					var location = data.location.split(" ").join("%20");
+					console.log(location);
+					$scope.locationLink = "http://maps.google.com/?q=" + location;
+					console.log($scope.locationLink);
           // hide all elements
           document.getElementById('enqueued').classList.add('hide');
           document.getElementById('notEnqueued').classList.add('hide');
@@ -321,20 +325,22 @@ angular.module('LineUpApp.controllers', []).
     };
 
 		$scope.progressBar = function () {
+			var size = $scope.queue.size;
 			var bar = document.getElementById("progress");
+			
 			while( bar.firstChild ) {
 				bar.removeChild(bar.firstChild);
 			}
-			var width = 100.0 / $scope.queue.size;
+			var width = 100.0 / size;
 			var widthPercentage = width + "%";
-			for(var i=0; i<$scope.queue.size; i++) {
+			for(var i=0; i<size; i++) {
 				var div = document.createElement("div");
 				div.classList.add("progress-bar-section");
 				div.style.width = widthPercentage;
 				div.innerHTML = "&nbsp";
-				if( $scope.queue.size - 1 - i == $scope.queue.member_position ) {
+				if( size - 1 - i == $scope.queue.member_position ) {
 					div.classList.add("current-user");
-					if( $scope.queue.size = 1 ) {
+					if( size == 1 ) {
 						div.innerHTML = "YOU'RE AT THE FRONT!";
 					}
 				}
