@@ -12,7 +12,7 @@
 			<div id="collapseIn" class="panel-collapse collapse in panel-body">
 				<ul class="list-group">
 					<a class="list-group-item" ng-repeat="queue in queueInfos.queues_in" href="#/queue_info/{{ queue.qid }}">
-						<img class="queue-img" src="img/default.png"/>{{ queue.qname }}: Position {{queue.member_position + 1 }} of {{ queue.size }} Estimated Wait: {{ queue.expected_wait }} min
+						<img class="queue-img" src="img/default.png"/>{{ queue.qname }}: Position {{queue.member_position + 1 }} of {{ queue.size }}, Estimated Wait: {{ queue.expected_wait }} min
 					</a>
 				</ul>
 				<div id="empty-in" class="hide">
