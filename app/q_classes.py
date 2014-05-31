@@ -119,14 +119,16 @@ class Queue(object):
       #  times the proportion of the queue remaining.
       avg_wait = self.get_avg_wait()
       position = self.get_position(member)
+      q_len = len(self.storage)
       if position == None:
          # here we "expect" the user is thinking about joining at the end
          position = len(self.storage)
+         q_len = q_len + 1
       if position == 0:
          return 0
       if avg_wait:
          #avg_wait is already in minutes
-         ex_wait = avg_wait * (position + 0.5)/len(self.storage)
+         ex_wait = avg_wait * (position + 0.5)/q_len
          return ex_wait
       else:
          # Here we have no data, because no one has left the queue yet.
@@ -150,6 +152,8 @@ class Queue(object):
          return None
 
    def peek(self):
+      """ This method returns the person at the front of the queue
+        without dequeueing them. """
       if len(self.storage) == 0:
          return None
       return self.storage[0][0]
@@ -210,6 +214,9 @@ class QueueMember(object):
             return False
          else:
             return self.uid == other.uid
+
+      def __repr__(self):
+         return "QMem{ uname:"+self.uname+", uid:"+str(self.uid)+" }"
 
       @staticmethod
       def from_dict(member_dict):
@@ -337,13 +344,19 @@ class QueueServer(object):
       """ This could raise a KeyError, which we are currently
          passing on the to caller. """
       if not self.table.has_key(qid):
-         raise QueueNotFoundException('The queue was not found.')
+         raise QueueNotFoundException('Queue not found.')
       q = self.table[qid]
-      self.index[member.uid].remove(qid)
+      if member.uid in self.index:
+         try:
+            self.index[member.uid].remove(qid)
+         except:
+            raise MemberNotFoundException('Member is not in the queue!')
+      else:
+         raise MemberNotFoundException('Member is not in the queue!')
       if self.sync_db:
-         db_util.remove_by_uid_qid(member.uid, qid)
-         
-      return q.remove(member)
+         db_util.remove_by_uid_qid(member.uid, qid) 
+      if not q.remove(member):
+         raise MemberNotFoundException('Member is not in the queue!')
 
    def dequeue(self, qid):
       if qid not in self.table:

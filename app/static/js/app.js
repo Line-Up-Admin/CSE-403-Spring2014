@@ -43,6 +43,9 @@ config(['$routeProvider', function($routeProvider) {
     templateUrl: "partials/edit_queue.html",
     controller: "editQueueController"
   }).
+  when("/information", {
+    templateUrl: "partials/information.html"
+  }).
   when("/error", {
     templateUrl: "partials/error.html"
     // No controller needed at this time

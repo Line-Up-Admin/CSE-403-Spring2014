@@ -67,6 +67,21 @@ hr.bar1 {
 	background-color: #FFFFFF;
 }
 
+.username-wrapper {
+	max-width: 40px;
+	width: auto;
+	float: left;
+	margin-top: 14px;
+	margin-left: 14px;
+	text-align: right;
+}
+
+.header-username {
+	display: inline-block;
+	font-weight: bold;
+	color: #333333;
+}
+
 .line-up-banner { /* login_home, create_account */
 	width: 180px;
 	margin-left: auto;
@@ -139,11 +154,12 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 	display: inline-block;
 	margin: 0px;
 	background-color: #000000;
-	border: 2px solid #3C3940;
+	border: 1px solid #3C3940;
 }
 
 #progress div {
-	border: 2px solid #3C3940;
+	border: solid #3C3940;
+	border-width: 1px;
 }
 
 #progress .progress-bar-section {
@@ -155,15 +171,19 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 
 #progress .current-user {
 	background-color: #FEC839;
+	text-overflow: 
 }
 
 .member-position-number {
 	display: inline-block;
 	color: #FEC839;
+	background-color: #333333;
+	padding-left: 4px;
+	padding-right: 4px;
 }
 
 .front {
-	width: 95%;
+	width: 84%;
 	font-size: 1em;
 	text-align: right;
 }
@@ -252,6 +272,7 @@ h1.queue-page-header {
 	padding: 12px;
 	font-size: 40pt;
 	font-weight: bold;
+	overflow: hidden;
 }
 
 .control-buttons a, .control-buttons button {
@@ -284,10 +305,15 @@ h1.queue-page-header {
 	font-size: large;
 	font-weight: bold;
 	padding: 25px;
+	clear: left;
 }
 
 #btn-close-queue {
 	margin-top: 30px;
+}
+
+.queue-url {
+	text-align: center;
 }
 
 /* create_queue css */
@@ -353,6 +379,26 @@ h1.queue-page-header {
 	display: inline-block;
 }
 
+/* information css */
+.info-page p, .info-page li {
+	text-align: left;
+}
+
+.info-page p {
+	padding-top: 10px;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.info-page a {
+	color: #CEBB7B;
+	font-weight: bold;
+}
+
+.info-page img {
+	width: 100%;
+}
+
 /* extra css ids */
 .glyphicon-send, .glyphicon-time, .glyphicon-remove-sign {
 	font-size: xx-large;
@@ -375,6 +421,8 @@ h1.queue-page-header {
 	width: 30%;
 	margin: 10px;
 	min-width: 100px;
+	overflow: hidden;
+	text-overflow: clip;
 }
 
 body {

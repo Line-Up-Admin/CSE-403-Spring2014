@@ -1,3 +1,4 @@
+(function() {
 'use strict';
 
 // round the time values to the nearest integer
@@ -24,19 +25,24 @@ angular.module('LineUpApp.controllers', []).
      // this assignment gives the headerController's $scope access to the displayHelp function
      // of whichever page loaded it.
      $scope.displayHelp = $scope.$parent.displayHelp;
+		 $scope.userInfo = {};
+		 $scope.getCurrentUser = function () {
+			 lineUpAPIService.getCurrentUser().
+				success(function (data, status, headers, config) {
+					if( data.SUCCESS ) {
+						$scope.userInfo = data;
+					}
+				}).
+				error(function (data, status, headers, config) {
+					//not an eventuality we are prepared to handle
+				});
+		 }
+		 $scope.getCurrentUser();
   }).
 
   // Controller for the #/create_queue route
   controller('createQueueController', function ($scope, lineUpAPIService, $location, $route) {
     $scope.queue = {};
-
-    // hide the edit button if we are on the create queue page
-    // call on page load with ng-init="init()"
-    $scope.init = function () {
-      if ($route.current.loadedTemplateUrl == "partials/create_queue.html") {
-        document.getElementById("edit-button").classList.add("hide");
-      }
-    };
 
     // show the help slide-in modal
     $scope.displayHelp = function () {
@@ -122,8 +128,14 @@ angular.module('LineUpApp.controllers', []).
     // Upon success: Redirects the browser to the login page.
     // Upon error: Redirect to the error page.
     $scope.createUser = function () {
+      $scope.errors = {};
+
+      if ($scope.user.pw == "") {
+        $scope.errors.pw = "Please create a password.";
+        return;
+      }
+
       if ($scope.user.pw != $scope.user.pwx2) {
-        $scope.errors = {};
         $scope.errors.pw = "Passwords do not match.";
         return;
       }
@@ -154,11 +166,11 @@ angular.module('LineUpApp.controllers', []).
 
     // hide the home button if we are on the home page
     // call on page load with ng-init="init()"
-    $scope.init = function () {
+    /* $scope.init = function () {
       if ($route.current.loadedTemplateUrl == "partials/user_home.html") {
         document.getElementById("home-button").classList.add("hide");
       }
-    };
+    }; */
 
     // show the help slide-in modal
     $scope.displayHelp = function () {
@@ -196,13 +208,6 @@ angular.module('LineUpApp.controllers', []).
 
   // Controller for the #/search route
   controller('searchController', function ($scope, $route, lineUpAPIService) {
-    // hide the edit button if we are on the create queue page
-    // call on page load with ng-init="init()"
-    $scope.init = function () {
-      if ($route.current.loadedTemplateUrl == "partials/search.html") {
-        document.getElementById("edit-button").classList.add("hide");
-      }
-    };
 
     // show the help slide-in modal
     $scope.displayHelp = function () {
@@ -252,14 +257,16 @@ angular.module('LineUpApp.controllers', []).
   controller('queueInfoController', function ($scope, $route, lineUpAPIService, $routeParams) {
     $scope.optional_data = "";
     $scope.uname = "";
+		$scope.locationLink = "";
 
     // hide the edit button if we are on the create queue page
     // called on element load with ng-init="init()"
-    $scope.init = function () {
+		// NEW: edit button was removed
+/*     $scope.init = function () {
       if ($route.current.loadedTemplateUrl == "partials/queue_info.html") {
         document.getElementById("edit-button").classList.add("hide");
       }
-    };
+    }; */
 
     // show the help slide-in modal
     $scope.displayHelp = function () {
@@ -275,7 +282,10 @@ angular.module('LineUpApp.controllers', []).
         success(function (data, status, headers, config) {
           roundTimes(data);
           $scope.queue = data;
-
+					var location = data.location.split(" ").join("%20");
+					console.log(location);
+					$scope.locationLink = "http://maps.google.com/?q=" + location;
+					console.log($scope.locationLink);
           // hide all elements
           document.getElementById('enqueued').classList.add('hide');
           document.getElementById('notEnqueued').classList.add('hide');
@@ -299,24 +309,24 @@ angular.module('LineUpApp.controllers', []).
     };
 
 		$scope.progressBar = function () {
+			var size = $scope.queue.size;
 			var bar = document.getElementById("progress");
+
 			while( bar.firstChild ) {
 				bar.removeChild(bar.firstChild);
 			}
-			var width = 100.0 / $scope.queue.size;
+			var width = 100.0 / size;
 			var widthPercentage = width + "%";
-			for(var i=0; i<$scope.queue.size; i++) {
-				console.log(i);
+			for(var i=0; i<size; i++) {
 				var div = document.createElement("div");
 				div.classList.add("progress-bar-section");
 				div.style.width = widthPercentage;
-
-				if( $scope.queue.size - 1 - i == $scope.queue.member_position ) {
-					console.log("i =" + i)
+				div.innerHTML = "&nbsp";
+				if( size - 1 - i == $scope.queue.member_position ) {
 					div.classList.add("current-user");
-					div.innerHTML = "YOU";
-				} else {
-					div.innerHTML = "&nbsp";
+					if( size == 1 ) {
+						div.innerHTML = "YOU'RE AT THE FRONT!";
+					}
 				}
 				bar.appendChild(div);
 			}
@@ -400,14 +410,7 @@ angular.module('LineUpApp.controllers', []).
   }).
 
   // Controller for the edit/queueID route
-	controller('editQueueController', function($scope, lineUpAPIService, $routeParams, $location, $route) {
-    // hide the edit button if we are on the create queue page
-    // call on page load with ng-init="init()"
-    $scope.init = function () {
-      if ($route.current.loadedTemplateUrl == "partials/edit_queue.html") {
-        document.getElementById("edit-button").classList.add("hide");
-      }
-    }
+	controller('editQueueController', function ($scope, lineUpAPIService, $routeParams, $location, $route) {
 		$scope.queue = {};
 
     // populate the form fields with the existing queue settings
@@ -468,6 +471,7 @@ angular.module('LineUpApp.controllers', []).
     $scope.errors = {};
 		$scope.member_list = [];
 		$scope.setActiveStatusTo = "Close Queue";
+    $scope.qid = $routeParams.qid;
 
 		// Redirects to edit queue page.
 		$scope.redirectToEditQueue = function () {
@@ -483,11 +487,8 @@ angular.module('LineUpApp.controllers', []).
     // Upon success: Shows the admin view for the given queue id.
     // Upon error: TODO: Do something smart to handle the error
 		$scope.getDetailedQueueInfo = function () {
-      console.log("qid: " + $routeParams.qid)
 			lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
 				success(function (data, status, headers, config) {
-          console.log("data: " + data.SUCCESS);
-
           if (data.SUCCESS) {
             // only available to admins of this queue
             roundTimes(data.queue_info);
@@ -523,12 +524,6 @@ angular.module('LineUpApp.controllers', []).
 		}
     $scope.getDetailedQueueInfo();
 
-		$scope.toggleRemoveButton = function () {
-			var rButton = document.getElementById("btn-remove");
-			console.log(rButton.disabled);
-			rButton.disabled=!rButton.disabled;
-		}
-
     // shows the window to the user offering to dequeue the person at the front
     $scope.showDequeueModal = function () {
       // get the user at the front of the queue
@@ -545,17 +540,18 @@ angular.module('LineUpApp.controllers', []).
     // Upon success: Dequeues the first person in line.
     // Upon error: redirect to the error page.
 		$scope.dequeueFirstPerson = function () {
-      lineUpAPIService.dequeueFirstPerson($routeParams.qid, $scope.userDetails.uid).
+      console.log($scope.userDetails);
+      lineUpAPIService.dequeueFirstPerson($routeParams.qid, $scope.userDetails).
 				success(function (data, status, headers, config) {
+          console.log(data);
           if (data.SUCCESS) {
             // close the modal
             $("#dequeue-modal").modal('toggle');
           } else {
             // display error message
             $scope.errors = data;
-            if (data.error_message) {
-              document.getElementById('error').classList.remove('hide');
-            }
+            document.getElementById('dequeue-error').classList.remove('hide');
+            document.getElementById('dequeue-confirm').classList.add('disabled');
           }
 
           // refresh the queue data
@@ -567,18 +563,21 @@ angular.module('LineUpApp.controllers', []).
 				});
 		}
 
+    //
+    $scope.dequeueCancel = function () {
+      $scope.errors = {};
+      document.getElementById('dequeue-error').classList.add('hide');
+      document.getElementById('dequeue-confirm').classList.remove('disabled');
+    }
+
 		// Sends a remove request to the server.
     // Upon success: removes the selected person from the line.
     // Upon Error: redirect to the error page.
 		$scope.dequeueSelectPerson = function () {
 			lineUpAPIService.dequeueSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.selectedUser.uid }).
 				success(function (data, status, headers, config) {
-          roundTimes(data.queue_info);
-  				$scope.queueInfo = data.queue_info;
-					$scope.member_list = data.member_list;
-
-          // sets the selection to the first user
-          $scope.selectedUser = $scope.member_list[0];
+          // refresh the queue data
+          $scope.getDetailedQueueInfo();
 				}).
 				error(function (data, status, headers, config) {
 					// not an error we are prepared to handle
@@ -649,10 +648,9 @@ angular.module('LineUpApp.controllers', []).
 						// refresh the queue
 						$scope.getDetailedQueueInfo();
 /* 						console.log($scope.member_list);
-						console.log(document.getElementById("list-group").options);
-						document.getElementById("list-group").options[selectIndex+1].selected="selected";
+						console.log(document.getElementById("list-group").options);	document.getElementById("list-group").options[selectIndex+1].selected="selected";
 						//$scope.selectedUser = $scope.member_list[selectIndex];
-						//WHY DOESN'T THIS WORK!??!?!?!
+						//WHY DOESN'T THIS WORK!??!?!?! (attempting to keep the selected index)
 						console.log("selected index after function is " + document.getElementById("list-group").options.selectedIndex);
 						console.log($scope.selectedUser); */
 					}).
@@ -703,3 +701,4 @@ angular.module('LineUpApp.controllers', []).
       }
     }
 	});
+}());

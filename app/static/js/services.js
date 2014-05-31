@@ -185,6 +185,10 @@ angular.module('LineUpApp.services', []).
     lineUpAPI.enqueue = function (qid, user) {
       return $http.post('/enqueue/' + qid, user);
     }
+		
+		lineUpAPI.getCurrentUser = function () {
+			return $http.post('/currentUser');
+		}
 
     return lineUpAPI;
   }).

@@ -4,12 +4,12 @@
 	<h1>Your Queues</h1>
 	<p>
 		<a href="#/create_queue" class="user-home-btn btn btn-line-up btn-lg" role="button">Create a New Queue</a>
-		<a href="#/search" class="user-home-btn btn btn-line-up btn-lg" role="button">Find a New Queue</a>
+		<a href="#/search" class="user-home-btn btn btn-line-up btn-lg" role="button">Find a Queue</a>
 	</p>
 	<div class="current-queues">
 		<div class="panel panel-default">
 			<a data-toggle="collapse" data-target="#collapseIn" href=""><div class="panel-heading">Queues You're In</div></a>
-			<div id="collapseIn" class="panel-collapse collapse panel-body">
+			<div id="collapseIn" class="panel-collapse collapse in panel-body">
 				<ul class="list-group">
 					<a class="list-group-item" ng-repeat="queue in queueInfos.queues_in" href="#/queue_info/{{ queue.qid }}">
 						<img class="queue-img" src="img/default.png"/>{{ queue.qname }}: Position {{queue.member_position + 1 }} of {{ queue.size }} Estimated Wait: {{ queue.expected_wait }} min
@@ -35,7 +35,7 @@
 		</div>
 		<div class="panel panel-default">
 			<a data-toggle="collapse" data-target="#collapseManaging" href=""><div class="panel-heading">Queues You Manage</div></a>
-			<div id="collapseManaging" class="panel-collapse collapse panel-body">
+			<div id="collapseManaging" class="panel-collapse collapse in panel-body">
 				<ul class="list-group">
 					<a class="list-group-item" ng-repeat="queue in queueInfos.queues_manager" href="#/admin/{{ queue.qid }}">
 						<img class="queue-img" src="img/default.png"/>{{ queue.qname }}: Current Size: {{ queue.size }}

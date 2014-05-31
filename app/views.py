@@ -33,7 +33,7 @@ def root():
 def create_queue():
    """Creates a queue. If the user is logged in, they will become an admin for the queue.
 
-   
+
 
    """
    try:
@@ -207,7 +207,7 @@ def dequeue(qid):
    """
    mid = None
    try:
-      uid = int(request.get_json())
+      uid = int(request.get_json()['uid'])
    except:
       return abort(500)
    if session.has_key('logged_in') and session['logged_in']:
@@ -217,7 +217,7 @@ def dequeue(qid):
    if permissions.has_flag(mid, qid, permissions.MANAGER):
       try:
          member = queue_server.peek(qid)
-         if not member.uid == uid:
+         if member is None or not member.uid == uid:
             return jsonify(Failure('This person is no longer at the front of the queue!'))
          q_member = queue_server.dequeue(qid)
          return jsonify(Success({}))
@@ -252,7 +252,7 @@ def postpone():
       (if SUCCESS is false)
       'error_message':
    }
-   
+
    """
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['id']
@@ -298,7 +298,7 @@ def manager_postpone():
       (if SUCCESS is false)
       'error_message':
    }
-   
+
    """
    if session.has_key('logged_in') and session['logged_in']:
       manager_id = session['id']
@@ -348,7 +348,7 @@ def leave_queue():
    }
 
    """
-      
+
    if not session.has_key('logged_in') and session['logged_in']:
       return jsonify(Failure('You are not logged in!'))
    uid=session['id']
@@ -359,6 +359,8 @@ def leave_queue():
    except sqlite3.Error as e:
       return jsonify(Failure('Failed to leave the queue.'))
    except QueueNotFoundException as e:
+      return jsonify(Failure(e.message))
+   except MemberNotFoundException as e:
       return jsonify(Failure(e.message))
 
 @app.route('/searchResults')
@@ -596,7 +598,7 @@ def edit_queue():
       return jsonify({'SUCCESS':True})
    except QueueNotFoundException as e:
       return jsonify(Failure(e.message))
-      
+
 @app.route('/myQueues', methods=['GET', 'POST'])
 def get_my_queues():
    """Gets the info about the queues you are in.
@@ -663,7 +665,7 @@ def remove_queue_member():
          qid:
          uid:
       }
-   
+
    Returns:
       {
          SUCCESS:
@@ -682,6 +684,8 @@ def remove_queue_member():
             queue_server.remove(QueueMember(uid=uid), qid)
             return jsonify({'SUCCESS':True})
          except QueueNotFoundException as e:
+            return jsonify(Failure(e.message))
+         except MemberNotFoundException as e:
             return jsonify(Failure(e.message))
       else:
         return jsonify(Failure("You must be a manager to remove a user."))
@@ -739,7 +743,7 @@ def create_user():
       return abort(500)
    except db_util.ValidationException as e:
       return jsonify({'SUCCESS':False, 'uname':'The User Name is already taken'})
-      
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
    """
@@ -791,3 +795,9 @@ def logout():
             session[key] = None
          return '<meta http-equiv="refresh" content="0; url=/" />'
    return 'You are not logged in!'
+
+@app.route('/currentUser', methods=['GET', 'POST'])
+def currentUser():
+   if session.has_key('logged_in') and session['logged_in']:
+      return jsonify({'SUCCESS':True, 'uname':session['uname'], 'uid':session['id']})
+   return jsonify(Failure('You are not logged in!'))

@@ -13,7 +13,7 @@
 				Line: {{ queueInfo.size }} people
 			</div>
 			<div class="queue-member-listing">
-				<select id="list-group" size="12" ng-model="selectedUser" ng-options="member.uname for member in member_list"></select>
+				<select id="list-group" size="11" ng-model="selectedUser" ng-options="'(' + (member_list.indexOf(member)+1) + ') ' + member.uname for member in member_list"></select>
 			</div>
 		</div>
 		<div class="control-options container text-center">
@@ -53,6 +53,7 @@
 			</p>
 		</div>
 	</div>
+	<div class="queue-url">Share this Queue: http://line-up.us/#/queue_info/{{ qid }}</div>
 </div>
 
 <!-- Modal Window for help slide-in for this page -->
@@ -104,7 +105,10 @@
     </div>
     <div class="modal-body">
     	<p> <strong>Name:</strong> {{ userDetails.uname }}
-    		<strong>{{ queueInfo.prompt }}</strong> {{ userDetails.optional_data }}
+    		<strong>{{ queueInfo.prompt }}
+      </p>
+      <p>
+        </strong> {{ userDetails.optional_data }}
     	</p>
     </div>
     <div class="modal-footer">
@@ -123,19 +127,21 @@
       <h4 class="modal-title" id="myModalLabel">Remove First Person</h4>
     </div>
     <div class="modal-body">
-      <div id="error" class=" col-md-6 col-md-offset-3 alert alert-danger hide">
+      <div id="dequeue-error" class="alert alert-danger hide">
         {{ errors.error_message }}
       </div>
-      <p>
-        <strong>Name:</strong> {{ userDetails.uname }}
-      </p>
-      <p>
-        <strong>{{ queueInfo.prompt }}</strong> {{ userDetails.optional_data }}
-      </p>
+      <div>
+        <p>
+          <strong>Name:</strong> {{ userDetails.uname }}
+        </p>
+        <p>
+          <strong>{{ queueInfo.prompt }}</strong> {{ userDetails.optional_data }}
+        </p>
+      </div>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-      <button type="button" class="btn btn-primary" ng-click="dequeueFirstPerson()">OK</button>
+      <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="dequeueCancel()">Cancel</button>
+      <button id="dequeue-confirm" type="button" class="btn btn-primary" ng-click="dequeueFirstPerson()">OK</button>
     </div>
   </div>
 </div>
