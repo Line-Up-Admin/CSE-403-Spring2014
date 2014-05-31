@@ -1,5 +1,7 @@
 import os
 import sys
+sys.path.insert(0, '.') # CSE-403-Spring2014 level
+sys.path.insert(0, '../app')
 sys.path.insert(0, '../..')
 sys.path.insert(0, '..')
 from app import app
