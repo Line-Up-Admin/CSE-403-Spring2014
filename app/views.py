@@ -217,7 +217,7 @@ def dequeue(qid):
    if permissions.has_flag(mid, qid, permissions.MANAGER):
       try:
          member = queue_server.peek(qid)
-         if member is None or member.uid == uid:
+         if member is None or not member.uid == uid:
             return jsonify(Failure('This person is no longer at the front of the queue!'))
          q_member = queue_server.dequeue(qid)
          return jsonify(Success({}))
