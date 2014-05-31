@@ -353,7 +353,7 @@ angular.module('LineUpApp.controllers', []).
 				if( size - 1 - i == $scope.queue.member_position ) {
 					div.classList.add("current-user");
 					if( size == 1 ) {
-						div.innerHTML = "YOU'RE AT THE FRONT!";
+						div.innerHTML = "YOU'RE IN FRONT!";
 					}
 				}
 				bar.appendChild(div);
