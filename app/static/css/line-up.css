@@ -196,11 +196,6 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 	background-color: #E6DDBC;
 }
 
-#list-group {
-	width: 100%;
-	font-size: 200%;
-}
-
 .list-group-item {
 	background: linear-gradient(#8CBDBA, #76ADA9);
 	border: 3px solid #3C3940;
@@ -208,14 +203,27 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 }
 
 /* queue_admin css */
+#list-group {
+	width: 100%;
+	font-size: 200%;
+	height: 435px;
+}
+
+.queue-admin-content {
+	padding-right: 15px;
+}
+
 .queue-face, .queue-control, .control-options {
 	margin-top: 25px;
 	margin-bottom: 25px;
 	margin-left: 10px;
 }
 
-.queue-face {
+.queue-face, .control-options {
 	margin-bottom: 10px;
+}
+
+.queue-face {
 	height : 140px;
 }
 
@@ -270,10 +278,6 @@ h1.queue-page-header {
 
 #btn-close-queue {
 	margin-top: 30px;
-}
-
-#list-group {
-	height: 500px;
 }
 
 /* create_queue css */
