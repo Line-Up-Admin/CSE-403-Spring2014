@@ -195,7 +195,7 @@ def dequeue(qid):
    """Dequeues a member from the specified queue. If the queue is empty, returns an empty json object.
 
    Args:
-      None. The route handles the argument. Example route: /dequeue/12345
+      uid of person to be removed
 
    Returns:
       {
@@ -205,18 +205,28 @@ def dequeue(qid):
       }
 
    """
-   uid=None
+   mid = None
+   try:
+      uid = int(request.get_json())
+   except:
+      return abort(500)
    if session.has_key('logged_in') and session['logged_in']:
-      uid=session['id']
+      mid=session['id']
    else:
-      return "You must be logged in as an manager to dequeue."
-   if permissions.has_flag(uid, qid, permissions.MANAGER):
-      q_member = queue_server.dequeue(qid)
-      if q_member is None:
-         return jsonify({})
-      return jsonify(q_member.__dict__)
+      return jsonify(Failure("You must be logged in as an manager to dequeue."))
+   if permissions.has_flag(mid, qid, permissions.MANAGER):
+      try:
+         member = queue_server.peek()
+         if not member.uid == uid:
+            return jsonify(Failure('This person is no longer at the front of the queue!'))
+         q_member = queue_server.dequeue(qid)
+         if q_member is None:
+            return jsonify({})
+         return jsonify(q_member.__dict__)
+      except QueueNotFoundException as e:
+         return jsonify(Failure(e.message))
    else:
-      return 'You must be an manager to dequeue.'
+      return jsonify(Failure('You must be an manager to dequeue.'))
 
 @app.route('/postpone', methods=['POST'])
 def postpone():

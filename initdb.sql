@@ -2,6 +2,7 @@ insert into Queues values(0, 0, 0);
 insert into Queues values(1, 0, 0);
 insert into Queues values(2, 0, 0);
 insert into Queues values(3, 0, 0);
+insert into Queues values(4, 0, 0);
 insert into QSettings values (0, 'tgr4', 10, 'thomas,seattle', 'seattle,uw', 1, null, null, null, null, 'What is your name?');
 insert into QSettings values (1, 'portland', 10, 'portland,oregon', 'portland,oregon', 1, null, null, null, null, 'What is the something velocity of a swallow?');
 insert into QSettings values (2, 'bestqueueever', 10, 'best,favorite', 'moon', 1, null, null, null, null, 'Party size:');

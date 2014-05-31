@@ -21,10 +21,10 @@ GET_QUEUE_SETTINGS_BY_ID = 'select * from qsettings where qid=?'
 GET_TEMP_USER_BY_ID = 'select * from users where temp=1 and id=?'
 INSERT_INTO_QUEUE_HISTORY = 'insert into QHistory values (?, ?, ?, ?)'
 INSERT_MEMBER_INTO_QUEUE = 'insert into QIndex values(?, ?, (select ending_index from Queues where id=?), ?)'
-INSERT_PROFILED_USER = 'insert into users values(?, ?, ?, ?, ?, ?, ?, ?)'
-INSERT_QUEUE = 'insert into queues values(?, 0, 0)'
+INSERT_PROFILED_USER = 'insert into users values(NULL, ?, ?, ?, ?, ?, ?, ?)'
+INSERT_QUEUE = 'insert into queues values(null, 0, 0)'
 INSERT_QUEUE_SETTINGS = 'insert into qsettings values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-INSERT_TEMP_USER = 'insert into users values(?, 1, ?, NULL, NULL, NULL, NULL, NULL)'
+INSERT_TEMP_USER = 'insert into users values(NULL, 1, ?, NULL, NULL, NULL, NULL, NULL)'
 REMOVE_MEMBER_FROM_QUEUE = 'delete from qindex where uid=? and qid=?'
 UPDATE_POSITION = 'update qindex set relative_position=? where uid=? and qid=?'
 UPDATE_QUEUE_FOR_ADD = 'update Queues set ending_index=ending_index+1 where id=?'
@@ -51,8 +51,7 @@ def check_usernames(usernames):
   return result
 
 def user_dict_to_db_tuple(user_dict):
-  return (user_dict['id'],
-          user_dict['temp'] if user_dict.has_key('temp') else 0,
+  return (user_dict['temp'] if user_dict.has_key('temp') else 0,
           user_dict['uname'],
           user_dict['fname'] if user_dict.has_key('fname') else None,
           user_dict['lname'] if user_dict.has_key('lname') else None,
@@ -111,8 +110,10 @@ from app import get_db
 
 def create_temp_user(user_dict):
   db = get_db()
-  user_dict['id'] = validators.get_unique_user_id()
-  db.execute(INSERT_TEMP_USER, (user_dict['id'], user_dict['uname']))
+  cursor = db.cursor()
+  cursor.execute(INSERT_TEMP_USER, (user_dict['uname'],))
+  user_dict['id'] = cursor.lastrowid
+  cursor.close()
   db.commit()
   return user_dict['id']
 
@@ -120,15 +121,17 @@ def create_user_profile(user_dict):
   try:
     print 'enter db_util.create_user_profile'
     db = get_db()
-    rows = query_db(GET_PROFILED_USER_BY_USERNAME, (user_dict['uname'],))
+    rows = db.execute(GET_PROFILED_USER_BY_USERNAME, (user_dict['uname'],)).fetchall()
     if (rows and (len(rows) > 0)):
       raise ValidationException('The given username is already in use.')
     result = validators.encrypt_password(user_dict['pw'])
     user_dict['pw'] = result[0]
     user_dict['salt'] = result[1]
-    user_dict['id'] = validators.get_unique_user_id()
     user_dict['temp'] = 0
-    db.execute(INSERT_PROFILED_USER, user_dict_to_db_tuple(user_dict))
+    cursor = db.cursor()
+    cursor.execute(INSERT_PROFILED_USER, user_dict_to_db_tuple(user_dict))
+    user_dict['id'] = cursor.lastrowid
+    cursor.close()
     db.commit()
     print 'exit db_util.create_user_profile: success.'
     return user_dict['id']
@@ -273,17 +276,19 @@ def create_queue(q_settings):
   Raises:
     ValidationException: the username <uname> was not found.
   """
-  q_settings['qid'] = validators.get_unique_queue_id()
+  db = get_db()
+  cursor = db.cursor()
+  cursor.execute(INSERT_QUEUE)
+  q_settings['qid'] = cursor.lastrowid
+  cursor.execute(INSERT_QUEUE_SETTINGS, qsettings_dict_to_db_tuple(q_settings))
+  cursor.close()
+  db.commit()
   if q_settings.has_key('admins'):
     permissions.add_permission_list(get_uids(q_settings['admins']), q_settings['qid'], permissions.ADMIN)
   if q_settings.has_key('managers'):
     permissions.add_permission_list(get_uids(q_settings['managers']), q_settings['qid'], permissions.MANAGER)
   if q_settings.has_key('blocked_users'):
     permissions.add_permission_list(get_uids(q_settings['blocked_users']), q_settings['qid'], permissions.BLOCKED_USER)
-  db = get_db()
-  db.execute(INSERT_QUEUE, (q_settings['qid'],))
-  db.execute(INSERT_QUEUE_SETTINGS, qsettings_dict_to_db_tuple(q_settings))
-  db.commit()
   return q_settings['qid']
 
 def modify_queue_settings(q_settings):

@@ -1,50 +1,57 @@
 <div class="main-page-content container">
 <!-- Header -->
-<div class="header-content" ng-include src="'partials/header.html'"></div>	<div class="queue-face text-center">
-		<img class="queue-portrait" src="img/default.png"/>
-		<h1 class="queue-page-header">{{queueInfo.qname}}</h1>
-	</div>
-	<div class="control-list container text-center">
-		<div class="queue-status" id="active">
-			{{ activeStatus }} </br>
-			Est. Wait: {{ queueInfo.expected_wait }} min</br>
-			Line: {{ queueInfo.size }} people
+<div class="header-content" ng-include src="'partials/header.html'"></div>
+	<div class="queue-admin-content">
+		<div class="queue-face text-center">
+			<img class="queue-portrait" src="img/default.png"/>
+			<h1 class="queue-page-header">{{queueInfo.qname}}</h1>
 		</div>
-		<div class="queue-member-listing">
-			<select id="list-group" size="12" ng-model="selectedUser" ng-options="member.uname for member in member_list"></select>
+		<div class="control-list container text-center">
+			<div class="queue-status" id="active">
+				{{ activeStatus }} </br>
+				Est. Wait: {{ queueInfo.expected_wait }} min</br>
+				Line: {{ queueInfo.size }} people
+			</div>
+			<div class="queue-member-listing">
+				<select id="list-group" size="12" ng-model="selectedUser" ng-options="member.uname for member in member_list"></select>
+			</div>
 		</div>
-	</div>
-	<div class="control-options container text-center">
-		<p class="control-buttons">
-			<button id="btn-remove-first" class="btn btn-line-up btn-lg" role="button" ng-click="showDequeueModal()">
-				<span class="glyphicon glyphicon-arrow-up"></span></br>
-				Remove First
-			</button>
-			<button id="btn-view-details" class="btn btn-line-up btn-lg" role="button" ng-click="viewDetails()">
-				<span class="glyphicon glyphicon-zoom-in"></span></br>
-				View Details
-			</button>
-			<button id="btn-add" class="btn btn-line-up btn-lg" role="button" data-toggle="modal" data-target="#addModal">
-				<span class="glyphicon glyphicon-plus"></span></br>
-				Add
-			</button>
-			<button id="btn-remove" class="btn btn-line-up btn-lg" role="button" ng-click='dequeueSelectPerson()'>
-				<span class="glyphicon glyphicon-minus"></span></br>
-				Remove
-			</button>
-			<button id="btn-demote" class="btn btn-line-up btn-lg" role="button" ng-click='demoteSelectPerson()'>
-				<span class="glyphicon glyphicon-arrow-down"></span></br>
-				Demote
-			</button>
-			<button id="btn-close-queue" class="btn btn-line-up btn-lg" role="button" ng-click='setActive()' value=0>
-				<span class="glyphicon glyphicon-remove"></span></br>
-				{{ setActiveStatusTo }}
-			</button>
-			<button id="btn-settings" class="btn btn-line-up btn-lg" role="button" ng-click='redirectToEditQueue()'>
-				<span class="glyphicon glyphicon-cog"></span></br>
-				Settings
-			</button>
-		</p>
+		<div class="control-options container text-center">
+			<p class="control-buttons">
+				<button id="btn-remove-first" class="btn btn-line-up btn-lg" role="button" ng-click='showDequeueModal()'>
+					<span class="glyphicon glyphicon-arrow-up"></span></br>
+					Remove First
+				</button>
+				<button id="btn-view-details" class="btn btn-line-up btn-lg" role="button" ng-click="viewDetails()">
+					<span class="glyphicon glyphicon-zoom-in"></span></br>
+					View Details
+				</button>
+				<button id="btn-add" class="btn btn-line-up btn-lg" role="button" data-toggle="modal" data-target="#addModal">
+					<span class="glyphicon glyphicon-plus"></span></br>
+					Add
+				</button>
+				<button id="btn-remove" class="btn btn-line-up btn-lg" role="button" ng-click='dequeueSelectPerson()'>
+					<span class="glyphicon glyphicon-minus"></span></br>
+					Remove
+				</button>
+				<button id="btn-demote" class="btn btn-line-up btn-lg" role="button" ng-click='demoteSelectPerson()'>
+					<span class="glyphicon glyphicon-arrow-down"></span></br>
+					Demote
+				</button>
+				<!-- <button id="btn-begin-closing" class="btn btn-line-up btn-lg" role="button" disabled>
+					<span class="glyphicon glyphicon-ban-circle"></span></br>
+					Begin Closing
+				</button> -->
+				<button id="btn-close-queue" class="btn btn-line-up btn-lg" role="button" ng-click='setActive()' value=0>
+					<span class="glyphicon glyphicon-remove"></span></br>
+					{{ setActiveStatusTo }}
+				</button>
+				<button id="btn-settings" class="btn btn-line-up btn-lg" role="button" ng-click='redirectToEditQueue()'>
+					<span class="glyphicon glyphicon-cog"></span></br>
+					Settings
+				</button>
+			</p>
+		</div>
 	</div>
 </div>
 
