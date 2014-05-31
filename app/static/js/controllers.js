@@ -44,15 +44,6 @@ angular.module('LineUpApp.controllers', []).
   controller('createQueueController', function ($scope, lineUpAPIService, $location, $route) {
     $scope.queue = {};
 
-    // hide the edit button if we are on the create queue page
-    // call on page load with ng-init="init()"
-		// note: not currently used because edit button was removed
-    $scope.init = function () {
-      if ($route.current.loadedTemplateUrl == "partials/create_queue.html") {
-        document.getElementById("edit-button").classList.add("hide");
-      }
-    };
-
     // show the help slide-in modal
     $scope.displayHelp = function () {
             $("#help-modal").modal('toggle');
@@ -217,13 +208,6 @@ angular.module('LineUpApp.controllers', []).
 
   // Controller for the #/search route
   controller('searchController', function ($scope, $route, lineUpAPIService) {
-    // hide the edit button if we are on the create queue page
-    // call on page load with ng-init="init()"
-    $scope.init = function () {
-      if ($route.current.loadedTemplateUrl == "partials/search.html") {
-        document.getElementById("edit-button").classList.add("hide");
-      }
-    };
 
     // show the help slide-in modal
     $scope.displayHelp = function () {
@@ -327,7 +311,7 @@ angular.module('LineUpApp.controllers', []).
 		$scope.progressBar = function () {
 			var size = $scope.queue.size;
 			var bar = document.getElementById("progress");
-			
+
 			while( bar.firstChild ) {
 				bar.removeChild(bar.firstChild);
 			}
@@ -426,14 +410,7 @@ angular.module('LineUpApp.controllers', []).
   }).
 
   // Controller for the edit/queueID route
-	controller('editQueueController', function($scope, lineUpAPIService, $routeParams, $location, $route) {
-    // hide the edit button if we are on the create queue page
-    // call on page load with ng-init="init()"
-    $scope.init = function () {
-      if ($route.current.loadedTemplateUrl == "partials/edit_queue.html") {
-        document.getElementById("edit-button").classList.add("hide");
-      }
-    }
+	controller('editQueueController', function ($scope, lineUpAPIService, $routeParams, $location, $route) {
 		$scope.queue = {};
 
     // populate the form fields with the existing queue settings
