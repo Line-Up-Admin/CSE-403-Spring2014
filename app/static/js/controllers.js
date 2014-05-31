@@ -1,3 +1,4 @@
+(function() {
 'use strict';
 
 // round the time values to the nearest integer
@@ -310,13 +311,10 @@ angular.module('LineUpApp.controllers', []).
 				var div = document.createElement("div");
 				div.classList.add("progress-bar-section");
 				div.style.width = widthPercentage;
-
+				div.innerHTML = "&nbsp";
 				if( $scope.queue.size - 1 - i == $scope.queue.member_position ) {
 					console.log("i =" + i)
 					div.classList.add("current-user");
-					div.innerHTML = "YOU";
-				} else {
-					div.innerHTML = "&nbsp";
 				}
 				bar.appendChild(div);
 			}
@@ -708,3 +706,4 @@ angular.module('LineUpApp.controllers', []).
       }
     }
 	});
+}());
