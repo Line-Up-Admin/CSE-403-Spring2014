@@ -270,11 +270,12 @@ angular.module('LineUpApp.controllers', []).
 
     // hide the edit button if we are on the create queue page
     // called on element load with ng-init="init()"
-    $scope.init = function () {
+		// NEW: edit button was removed
+/*     $scope.init = function () {
       if ($route.current.loadedTemplateUrl == "partials/queue_info.html") {
         document.getElementById("edit-button").classList.add("hide");
       }
-    };
+    }; */
 
     // show the help slide-in modal
     $scope.displayHelp = function () {
@@ -327,6 +328,9 @@ angular.module('LineUpApp.controllers', []).
 				div.innerHTML = "&nbsp";
 				if( $scope.queue.size - 1 - i == $scope.queue.member_position ) {
 					div.classList.add("current-user");
+					if( $scope.queue.size = 1 ) {
+						div.innerHTML = "YOU'RE AT THE FRONT!";
+					}
 				}
 				bar.appendChild(div);
 			}
