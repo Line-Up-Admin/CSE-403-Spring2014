@@ -17,10 +17,19 @@ var roundMultipleTimes = function (data) {
   }
 }
 
+/*
+This file contains all controllers for the all web pages.  A single controller
+is loaded for each HTML template as defined in app.js
+*/
+
 /* Controllers */
+
 angular.module('LineUpApp.controllers', []).
 
-  // controller for the main header
+  /* 
+     Controller for the main header controls the data and user interaction 
+     for the headers which are shared by several web pages.
+  */
   controller('headerController', function ($scope, lineUpAPIService, $location, $route) {
      // this assignment gives the headerController's $scope access to the displayHelp function
      // of whichever page loaded it.
@@ -34,7 +43,7 @@ angular.module('LineUpApp.controllers', []).
 					}
 				}).
 				error(function (data, status, headers, config) {
-					//not an eventuality we are prepared to handle
+					// not an eventuality we are prepared to handle
 				});
 		 }
 		 $scope.getCurrentUser();
@@ -84,7 +93,10 @@ angular.module('LineUpApp.controllers', []).
     }
   }).
 
-  // Controller for the #/login route
+  /*
+   Controller for the #/login route controls data and user interaction
+   for that route
+  */
   controller('userLoginController', function ($scope, lineUpUserService, $location) {
     $scope.user = lineUpUserService.getUser();
 
@@ -113,13 +125,17 @@ angular.module('LineUpApp.controllers', []).
 					}
         }).
         error(function (data, status, headers, config) {
+          // unrecoverable server error
           $location.path("/");
 					document.getElementById('error').classList.remove('hide');
         });
     };
   }).
 
-  // Controller for the #/create_account route
+  /* 
+   Controller for the #/create_account route controls data and user interaction
+   for that route
+  */
   controller('userCreateController', function ($scope, lineUpUserService, $location) {
     $scope.user = lineUpUserService.getUser();
     $scope.errors = {};
@@ -156,12 +172,16 @@ angular.module('LineUpApp.controllers', []).
           $scope.errors = data;
         }).
         error(function (data, status, headers, config) {
+          // unrecoverable server error
           $location.path("/error");
         });
       }
   }).
 
-  // Controller for the #/user_home route
+  /*
+   Controller for the #/user_home route controls data and user interaction
+   for that route
+  */
   controller('userHomeController', function ($scope, lineUpAPIService, $route, $location) {
 
     // hide the home button if we are on the home page
@@ -183,9 +203,9 @@ angular.module('LineUpApp.controllers', []).
       lineUpAPIService.getUsersQueues().
         success(function (data, status, headers, config) {
           if (data.SUCCESS) {
-            roundTimes(data.queues_in);
-            roundTimes(data.queues_admin);
-            roundTimes(data.queues_manager);
+            roundMultipleTimes(data.queues_in);
+            roundMultipleTimes(data.queues_admin);
+            roundMultipleTimes(data.queues_manager);
             if (data.queues_in.length == 0) {
               document.getElementById('empty-in').classList.remove('hide');
             }
@@ -194,19 +214,28 @@ angular.module('LineUpApp.controllers', []).
             }
             if (data.queues_manager.length == 0) {
               document.getElementById('empty-manager').classList.remove('hide');
-            }
+            } 
+            /* QueueInfos is a 3 element array.  Each element is an array.
+            1. 'queues_admin' - the queues you administer
+            2. 'queues_manager' - the queues you manage
+            3. 'queues_in' - the queues you are in
+            */
             $scope.queueInfos = data;
           } else {
             $location.path("/");
           }
         }).
         error(function (data, status, headers, config) {
+          // unrecoverable server error
           $location.path("/error");
         });
     }();
   }).
 
-  // Controller for the #/search route
+  /*
+   Controller for the #/search route controls data and user interaction
+   for that route
+  */
   controller('searchController', function ($scope, $route, lineUpAPIService) {
 
     // show the help slide-in modal
@@ -247,26 +276,21 @@ angular.module('LineUpApp.controllers', []).
           $scope.queueInfos = data.queue_info_list;
         }).
         error(function (data, status, headers, config) {
+          // unrecoverable server error
           alert("Something went wrong with the popular queue request! \nStatus: " + status);
       });
     };
     $scope.getPopularQueues();
   }).
 
-  // Controller for the #/queue_info route
+  /*
+   Controller for the #/queue_info route controls data and user interaction
+   for that route
+  */
   controller('queueInfoController', function ($scope, $route, lineUpAPIService, $routeParams) {
     $scope.optional_data = "";
     $scope.uname = "";
 		$scope.locationLink = "";
-
-    // hide the edit button if we are on the create queue page
-    // called on element load with ng-init="init()"
-		// NEW: edit button was removed
-/*     $scope.init = function () {
-      if ($route.current.loadedTemplateUrl == "partials/queue_info.html") {
-        document.getElementById("edit-button").classList.add("hide");
-      }
-    }; */
 
     // show the help slide-in modal
     $scope.displayHelp = function () {
@@ -283,9 +307,7 @@ angular.module('LineUpApp.controllers', []).
           roundTimes(data);
           $scope.queue = data;
 					var location = data.location.split(" ").join("%20");
-					console.log(location);
 					$scope.locationLink = "http://maps.google.com/?q=" + location;
-					console.log($scope.locationLink);
           // hide all elements
           document.getElementById('enqueued').classList.add('hide');
           document.getElementById('notEnqueued').classList.add('hide');
@@ -296,11 +318,17 @@ angular.module('LineUpApp.controllers', []).
           } else {
             // show elements for the user that is in the queue
             document.getElementById('enqueued').classList.remove('hide');
+						var bar = document.getElementById("progress");
+						var width = 100.0 / $scope.queue.size;
+						var widthPercentage = width + "%";
+						$scope.progressBar();
           }
-					var bar = document.getElementById("progress");
-					var width = 100.0 / $scope.queue.size;
-					var widthPercentage = width + "%";
-					$scope.progressBar();
+					
+					if (data.active == 0 ) {
+						document.getElementById("btn-join").disabled = true;
+						document.getElementById("closed-message").classList.remove('hide');
+					}
+					
 				}).
         error(function (data, status, headers, config) {
           // not an error we are prepared to handle
@@ -409,7 +437,10 @@ angular.module('LineUpApp.controllers', []).
     }
   }).
 
-  // Controller for the edit/queueID route
+  /*
+   Controller for the edit/queueID route controls data and user interaction
+   for that route
+  */
 	controller('editQueueController', function ($scope, lineUpAPIService, $routeParams, $location, $route) {
 		$scope.queue = {};
 
@@ -437,6 +468,7 @@ angular.module('LineUpApp.controllers', []).
 					$scope.queue = data;
 				}).
 				error(function (data, status, headers, config) {
+          // unrecoverable server error
 					alert("Something went wrong with the form fill request!\nStatus: " + status);
 				});
 		};
@@ -462,7 +494,10 @@ angular.module('LineUpApp.controllers', []).
 		  }
   }).
 
-  // Controller for the #/admin route
+  /*
+   Controller for the #/admin route controls data and user interaction
+   for that route
+  */
 	controller('adminViewController', function ($scope, lineUpAPIService, $location, $routeParams, $route) {
 		$scope.selectedUser;
 		$scope.activeStatus = "OPEN";
@@ -472,6 +507,7 @@ angular.module('LineUpApp.controllers', []).
 		$scope.member_list = [];
 		$scope.setActiveStatusTo = "Close Queue";
     $scope.qid = $routeParams.qid;
+		$scope.close_icon = "glyphicon glyphicon-stop";
 
 		// Redirects to edit queue page.
 		$scope.redirectToEditQueue = function () {
@@ -506,9 +542,11 @@ angular.module('LineUpApp.controllers', []).
   					if( $scope.queueInfo.active == 0 ) {
   						$scope.setActiveStatusTo = "Open Queue";
   						button.value = 1;
+							$scope.close_icon = "glyphicon glyphicon-play";
   						$scope.activeStatus = "CLOSED";
   					} else {
   						$scope.setActiveStatusTo = "Close Queue";
+							$scope.close_icon = "glyphicon glyphicon-stop";
   						button.value = 0;
   					}
   					// gets the selected user
@@ -599,6 +637,12 @@ angular.module('LineUpApp.controllers', []).
       if (!$scope.user.optional_data) {
         $scope.user.optional_data = "";
       }
+			console.log($scope.activeStatus);
+			if( $scope.activeStatus == "CLOSED" ) {
+				$scope.errors = {'error_message': "You cannot add people; queue is inactive."};
+				console.log($scope.errors);
+				document.getElementById('error').classList.remove('hide');
+			}
 
       // send the request
 			lineUpAPIService.enqueue($routeParams.qid, $scope.user).
@@ -641,13 +685,13 @@ angular.module('LineUpApp.controllers', []).
     // sends a request to the server to move the user back one position
 		$scope.demoteSelectPerson = function () {
 			var selectIndex = document.getElementById("list-group").options.selectedIndex;
-			console.log("selected index on trigger is " + selectIndex);
+			//console.log("selected index on trigger is " + selectIndex);
 			if( selectIndex != $scope.member_list.length - 1 ) {
 				lineUpAPIService.demoteSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.selectedUser.uid }).
 					success(function (data, status, headers, config) {
 						// refresh the queue
 						$scope.getDetailedQueueInfo();
-/* 						console.log($scope.member_list);
+/* 					console.log($scope.member_list);
 						console.log(document.getElementById("list-group").options);	document.getElementById("list-group").options[selectIndex+1].selected="selected";
 						//$scope.selectedUser = $scope.member_list[selectIndex];
 						//WHY DOESN'T THIS WORK!??!?!?! (attempting to keep the selected index)
@@ -678,11 +722,13 @@ angular.module('LineUpApp.controllers', []).
             // the queue is closed
 						$scope.setActiveStatusTo = "Open Queue";
 						button.value = 1;
+						$scope.close_icon = "glyphicon glyphicon-play";
 						$scope.activeStatus = "CLOSED";
 					} else {
             // the queue is open
 						$scope.setActiveStatusTo = "Close Queue";
 						button.value = 0;
+						$scope.close_icon = "glyphicon glyphicon-stop";
 						$scope.activeStatus = "OPEN";
 					}
 				}).

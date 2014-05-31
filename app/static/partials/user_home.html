@@ -12,7 +12,9 @@
 			<div id="collapseIn" class="panel-collapse collapse in panel-body">
 				<ul class="list-group">
 					<a class="list-group-item" ng-repeat="queue in queueInfos.queues_in" href="#/queue_info/{{ queue.qid }}">
-						<img class="queue-img" src="img/default.png"/>{{ queue.qname }}: Position {{queue.member_position + 1 }} of {{ queue.size }} Estimated Wait: {{ queue.expected_wait }} min
+						<p>
+						<img class="queue-img" src="img/default.png"/>{{ queue.qname }}: Position {{queue.member_position + 1 }} of {{ queue.size }}, Estimated Wait: {{ queue.expected_wait }} min
+						</p>
 					</a>
 				</ul>
 				<div id="empty-in" class="hide">
@@ -24,9 +26,9 @@
 			<a data-toggle="collapse" data-target="#collapseOwned" href=""><div class="panel-heading">Queues You Own</div></a>
 			<div id="collapseOwned" class="panel-collapse collapse in panel-body">
 				<ul class="list-group">
-					<a class="list-group-item" ng-repeat="queue in queueInfos.queues_admin" href="#/admin/{{ queue.qid }}">
+					<a class="list-group-item" ng-repeat="queue in queueInfos.queues_admin" href="#/admin/{{ queue.qid }}"><p>
 						<img class="queue-img" src="img/default.png"/>{{ queue.qname }}: Current Size: {{ queue.size }}
-					</a>
+					</p></a>
 				</ul>
 				<div id="empty-admin" class="hide">
 					<p>You do not own any queues right now.</p>
@@ -37,9 +39,9 @@
 			<a data-toggle="collapse" data-target="#collapseManaging" href=""><div class="panel-heading">Queues You Manage</div></a>
 			<div id="collapseManaging" class="panel-collapse collapse in panel-body">
 				<ul class="list-group">
-					<a class="list-group-item" ng-repeat="queue in queueInfos.queues_manager" href="#/admin/{{ queue.qid }}">
+					<a class="list-group-item" ng-repeat="queue in queueInfos.queues_manager" href="#/admin/{{ queue.qid }}"><p>
 						<img class="queue-img" src="img/default.png"/>{{ queue.qname }}: Current Size: {{ queue.size }}
-					</a>
+					</p></a>
 				</ul>
 				<div id="empty-manager" class="hide">
 					<p>You do not manage any queues right now.</p>
