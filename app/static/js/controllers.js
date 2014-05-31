@@ -328,7 +328,6 @@ angular.module('LineUpApp.controllers', []).
 						document.getElementById("btn-join").disabled = true;
 						document.getElementById("closed-message").classList.remove('hide');
 					}
-
 				}).
         error(function (data, status, headers, config) {
           // not an error we are prepared to handle
@@ -422,13 +421,20 @@ angular.module('LineUpApp.controllers', []).
     // of the request.
     // Upon error: redirects to an error page.
     $scope.joinQueue = function () {
+      $scope.errors = {};
+      document.getElementById("error").classList.add('hide');
       lineUpAPIService.joinQueue({ 'qid': $scope.queue.qid, 'uname': $scope.uname, 'optional_data': $scope.optional_data }).
         success(function (data, status, headers, config) {
-          $scope.queue = data;
-          document.getElementById('notEnqueued').classList.add('hide');
-          document.getElementById('enqueued').classList.remove('hide');
-					roundTimes(data);
-					$scope.progressBar();
+          if (data.SUCCESS) {
+            $scope.queue = data;
+            document.getElementById('notEnqueued').classList.add('hide');
+            document.getElementById('enqueued').classList.remove('hide');
+            roundTimes(data);
+            $scope.progressBar();
+          } else {
+            $scope.errors = data;
+            document.getElementById("error").classList.remove('hide');
+          }
         }).
         error(function (data, status, headers, config) {
           // not an error we are prepared to handle
