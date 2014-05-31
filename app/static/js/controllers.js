@@ -306,9 +306,12 @@ angular.module('LineUpApp.controllers', []).
         success(function (data, status, headers, config) {
           roundTimes(data);
           $scope.queue = data;
-					var location = data.location.split(" ").join("%20");
-					$scope.locationLink = "http://maps.google.com/?q=" + location;
-          // hide all elements
+          if (data.location != null) {
+					  var location = data.location.split(" ").join("%20");
+					  $scope.locationLink = "http://maps.google.com/?q=" + location;
+          } else {
+            $scope.locationLink = "";
+          }// hide all elements
           document.getElementById('enqueued').classList.add('hide');
           document.getElementById('notEnqueued').classList.add('hide');
 
@@ -328,7 +331,6 @@ angular.module('LineUpApp.controllers', []).
 						document.getElementById("btn-join").disabled = true;
 						document.getElementById("closed-message").classList.remove('hide');
 					}
-
 				}).
         error(function (data, status, headers, config) {
           // not an error we are prepared to handle
@@ -422,13 +424,20 @@ angular.module('LineUpApp.controllers', []).
     // of the request.
     // Upon error: redirects to an error page.
     $scope.joinQueue = function () {
+      $scope.errors = {};
+      document.getElementById("error").classList.add('hide');
       lineUpAPIService.joinQueue({ 'qid': $scope.queue.qid, 'uname': $scope.uname, 'optional_data': $scope.optional_data }).
         success(function (data, status, headers, config) {
-          $scope.queue = data;
-          document.getElementById('notEnqueued').classList.add('hide');
-          document.getElementById('enqueued').classList.remove('hide');
-					roundTimes(data);
-					$scope.progressBar();
+          if (data.SUCCESS) {
+            $scope.queue = data;
+            document.getElementById('notEnqueued').classList.add('hide');
+            document.getElementById('enqueued').classList.remove('hide');
+            roundTimes(data);
+            $scope.progressBar();
+          } else {
+            $scope.errors = data;
+            document.getElementById("error").classList.remove('hide');
+          }
         }).
         error(function (data, status, headers, config) {
           // not an error we are prepared to handle
@@ -641,10 +650,6 @@ angular.module('LineUpApp.controllers', []).
       if (!$scope.user.optional_data) {
         $scope.user.optional_data = "";
       }
-			if( $scope.activeStatus == "CLOSED" ) {
-				$scope.errors = {'error_message': "You cannot add people; queue is inactive."};
-				document.getElementById('error').classList.remove('hide');
-			}
 
       // send the request
 			lineUpAPIService.enqueue($routeParams.qid, $scope.user).
