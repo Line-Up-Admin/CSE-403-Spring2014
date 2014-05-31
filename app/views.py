@@ -217,7 +217,7 @@ def dequeue(qid):
    if permissions.has_flag(mid, qid, permissions.MANAGER):
       try:
          member = queue_server.peek(qid)
-         if not member.uid == uid:
+         if member is None or member.uid == uid:
             return jsonify(Failure('This person is no longer at the front of the queue!'))
          q_member = queue_server.dequeue(qid)
          return jsonify(Success({}))
@@ -791,3 +791,9 @@ def logout():
             session[key] = None
          return '<meta http-equiv="refresh" content="0; url=/" />'
    return 'You are not logged in!'
+
+@app.route('/currentUser', methods['GET', 'POST'])
+def currentUser():
+   if session.has_key('logged_in') and session['logged_in']:
+      return jsonify({'SUCCESS':True, 'uname':session['uname'], 'uid':sessoin['id']})
+   return jsonify(Failure('You are not logged in!'))
