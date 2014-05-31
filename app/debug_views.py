@@ -6,7 +6,7 @@ from flask import request, session, g, redirect, url_for, abort, jsonify
 import permissions
 import validators
 
-from q_classes import QueueServer, QueueMember, QueueSettings, QueueNotFoundException
+from q_classes import QueueServer, QueueMember, QueueSettings, QueueNotFoundException, MemberNotFoundException, QueueFullException
 
 def Failure(message):
    return {'SUCCESS':False, 'error_message':message}
@@ -262,7 +262,10 @@ def add_to_queue_debug(qid):
       uid = temp_user['id']
    if not permissions.has_flag(uid, qid, permissions.BLOCKED_USER):
       q_member = QueueMember(username, uid)
-      queue_server.add(q_member, qid)
+      try:
+         queue_server.add(q_member, qid)
+      except QueueFullException as e:
+         return jsonify(Failure(e.message))
       q_info = queue_server.get_info(q_member, qid)
       q_info_dict = dict(q_info.__dict__)
       if temp:
