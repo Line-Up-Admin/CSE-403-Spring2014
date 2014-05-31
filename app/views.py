@@ -792,7 +792,7 @@ def logout():
          return '<meta http-equiv="refresh" content="0; url=/" />'
    return 'You are not logged in!'
 
-@app.route('/currentUser', methods['GET', 'POST'])
+@app.route('/currentUser', methods=['GET', 'POST'])
 def currentUser():
    if session.has_key('logged_in') and session['logged_in']:
       return jsonify({'SUCCESS':True, 'uname':session['uname'], 'uid':sessoin['id']})

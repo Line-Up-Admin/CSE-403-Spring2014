@@ -176,6 +176,9 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 .member-position-number {
 	display: inline-block;
 	color: #FEC839;
+	background-color: #333333;
+	padding-left: 4px;
+	padding-right: 4px;
 }
 
 .front {
