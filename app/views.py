@@ -216,7 +216,7 @@ def dequeue(qid):
       return jsonify(Failure("You must be logged in as an manager to dequeue."))
    if permissions.has_flag(mid, qid, permissions.MANAGER):
       try:
-         member = queue_server.peek()
+         member = queue_server.peek(qid)
          if not member.uid == uid:
             return jsonify(Failure('This person is no longer at the front of the queue!'))
          q_member = queue_server.dequeue(qid)
