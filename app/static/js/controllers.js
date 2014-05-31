@@ -17,6 +17,12 @@ var roundMultipleTimes = function (data) {
   }
 }
 
+
+//Permissions constants
+var PERMISSION_ADMIN = 3;
+var PERMISSION_MANAGER = 1;
+var PERMISSION_NONE = 0;
+
 /*
 This file contains all controllers for the all web pages.  A single controller
 is loaded for each HTML template as defined in app.js
@@ -26,8 +32,8 @@ is loaded for each HTML template as defined in app.js
 
 angular.module('LineUpApp.controllers', []).
 
-  /* 
-     Controller for the main header controls the data and user interaction 
+  /*
+     Controller for the main header controls the data and user interaction
      for the headers which are shared by several web pages.
   */
   controller('headerController', function ($scope, lineUpAPIService, $location, $route) {
@@ -71,13 +77,8 @@ angular.module('LineUpApp.controllers', []).
       $scope.queue.active = 1;
 
       // send the request
-
-      console.log("sending:");
-      console.log($scope.queue);
 			lineUpAPIService.createQueue($scope.queue).
         success(function (data, status, headers, config) {
-          console.log("recieved:");
-          console.log(data);
           if (data.SUCCESS) {
             // load the queue admin page
             $location.path('/admin/' + data.qid);
@@ -132,7 +133,7 @@ angular.module('LineUpApp.controllers', []).
     };
   }).
 
-  /* 
+  /*
    Controller for the #/create_account route controls data and user interaction
    for that route
   */
@@ -163,7 +164,6 @@ angular.module('LineUpApp.controllers', []).
       // send the new account info to the server
       lineUpUserService.createUser($scope.user).
         success(function (data, status, headers, config) {
-          console.log(data);
           // account created successfully, redirect to the login page
           if (data.SUCCESS) {
             $location.path("/");
@@ -214,7 +214,7 @@ angular.module('LineUpApp.controllers', []).
             }
             if (data.queues_manager.length == 0) {
               document.getElementById('empty-manager').classList.remove('hide');
-            } 
+            }
             /* QueueInfos is a 3 element array.  Each element is an array.
             1. 'queues_admin' - the queues you administer
             2. 'queues_manager' - the queues you manage
@@ -323,12 +323,12 @@ angular.module('LineUpApp.controllers', []).
 						var widthPercentage = width + "%";
 						$scope.progressBar();
           }
-					
+
 					if (data.active == 0 ) {
 						document.getElementById("btn-join").disabled = true;
 						document.getElementById("closed-message").classList.remove('hide');
 					}
-					
+
 				}).
         error(function (data, status, headers, config) {
           // not an error we are prepared to handle
@@ -531,6 +531,12 @@ angular.module('LineUpApp.controllers', []).
   					$scope.queueInfo = data.queue_info;
   					$scope.member_list = data.member_list;
 
+            // Hide the settings button if not an admin
+            if (data.permission_level != PERMISSION_ADMIN) {
+              document.getElementById('btn-settings').classList.add('disabled');
+            }
+
+
   					var dequeueButton = document.getElementById("btn-remove-first");
   					if( $scope.member_list.length == 0 ) {
   						dequeueButton.disabled = true;
@@ -578,10 +584,8 @@ angular.module('LineUpApp.controllers', []).
     // Upon success: Dequeues the first person in line.
     // Upon error: redirect to the error page.
 		$scope.dequeueFirstPerson = function () {
-      console.log($scope.userDetails);
       lineUpAPIService.dequeueFirstPerson($routeParams.qid, $scope.userDetails).
 				success(function (data, status, headers, config) {
-          console.log(data);
           if (data.SUCCESS) {
             // close the modal
             $("#dequeue-modal").modal('toggle');
@@ -637,10 +641,8 @@ angular.module('LineUpApp.controllers', []).
       if (!$scope.user.optional_data) {
         $scope.user.optional_data = "";
       }
-			console.log($scope.activeStatus);
 			if( $scope.activeStatus == "CLOSED" ) {
 				$scope.errors = {'error_message': "You cannot add people; queue is inactive."};
-				console.log($scope.errors);
 				document.getElementById('error').classList.remove('hide');
 			}
 
@@ -685,18 +687,11 @@ angular.module('LineUpApp.controllers', []).
     // sends a request to the server to move the user back one position
 		$scope.demoteSelectPerson = function () {
 			var selectIndex = document.getElementById("list-group").options.selectedIndex;
-			//console.log("selected index on trigger is " + selectIndex);
 			if( selectIndex != $scope.member_list.length - 1 ) {
 				lineUpAPIService.demoteSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.selectedUser.uid }).
 					success(function (data, status, headers, config) {
 						// refresh the queue
 						$scope.getDetailedQueueInfo();
-/* 					console.log($scope.member_list);
-						console.log(document.getElementById("list-group").options);	document.getElementById("list-group").options[selectIndex+1].selected="selected";
-						//$scope.selectedUser = $scope.member_list[selectIndex];
-						//WHY DOESN'T THIS WORK!??!?!?! (attempting to keep the selected index)
-						console.log("selected index after function is " + document.getElementById("list-group").options.selectedIndex);
-						console.log($scope.selectedUser); */
 					}).
 					error(function (data, status, headers, config) {
 						// this is not an error we are prepared to handle
