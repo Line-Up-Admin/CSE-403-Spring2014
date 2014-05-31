@@ -3,7 +3,7 @@
 <div class="header-content" ng-include src="'partials/header.html'"></div>
   <div class="panel-heading">
     <h3>{{ queue.qname }}</h3>
-    <h4>{{ queue.organization }} <a href={{locationLink}}>{{ queue.location }}</a></h4>
+    <h4>{{ queue.organization }} <a href={{locationLink}} target="_blank">{{ queue.location }}</a></h4>
     <a ng-if="queue.website != null" href=>{{ queue.website }}</a>
   </div>
   <div class="panel-body">
@@ -34,6 +34,7 @@
         <span class="glyphicon glyphicon-send"></span></br>
         Join Queue
       </button></p>
+			<div id="closed-message" class="hide">Queue is currently closed!</div>
       <div class="queue-status">
         Expected Wait: {{ queue.expected_wait }} minutes</br>
         People: {{ queue.size }}

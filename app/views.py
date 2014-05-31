@@ -488,15 +488,17 @@ def get_manager_queue(qid):
    if session.has_key('logged_in') and session['logged_in']:
       uid = session['id']
    else:
-      return jsonify({'SUCCESS':False, 'error_message':'You must be logged in as a manager!'})
-      #return jsonify(Failure("You must be logged in as an manager to dequeue."))
-   if permissions.has_flag(uid, qid, permissions.MANAGER):
-      members = queue_server.get_members(qid)
-      q_info = queue_server.get_info(None, qid)
-      return jsonify({'SUCCESS':True, 'queue_info':q_info.__dict__, 'member_list':[member.__dict__ for member in members]})
+      return jsonify(Failure('You must be logged in as an manager to view this page.'))
+   permission_level = None
+   if permissions.has_flag(uid, qid, permissions.ADMIN):
+      permission_level = permissions.ADMIN
+   elif permissions.has_flag(uid, qid, permissions.MANAGER):
+      permission_level = permissions.MANAGER
    else:
-      return jsonify({'SUCCESS':False, 'error_message':'You must be a manager of the queue to view queue members'})
-      #return jsonify(Failure('You must be a manager of the queue to view queue members.'))
+      return jsonify(Failure('You must be at least a manager to view this page.'))
+   members = queue_server.get_members(qid)
+   q_info = queue_server.get_info(None, qid)
+   return jsonify({'SUCCESS':True, 'queue_info':q_info.__dict__, 'member_list':[member.__dict__ for member in members], 'permission_level':permission_level})
 
 @app.route('/getQueueSettings', methods=['POST'])
 def get_queue_settings():
