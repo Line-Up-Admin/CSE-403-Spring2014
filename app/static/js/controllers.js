@@ -469,6 +469,7 @@ angular.module('LineUpApp.controllers', []).
     $scope.errors = {};
 		$scope.member_list = [];
 		$scope.setActiveStatusTo = "Close Queue";
+    $scope.qid = $routeParams.qid;
 
 		// Redirects to edit queue page.
 		$scope.redirectToEditQueue = function () {
@@ -570,7 +571,7 @@ angular.module('LineUpApp.controllers', []).
     $scope.dequeueCancel = function () {
       $scope.errors = {};
       document.getElementById('dequeue-error').classList.add('hide');
-      document.getElementById('dequeue-confirm').classList.remove('disable');
+      document.getElementById('dequeue-confirm').classList.remove('disabled');
     }
 
 		// Sends a remove request to the server.
@@ -579,12 +580,8 @@ angular.module('LineUpApp.controllers', []).
 		$scope.dequeueSelectPerson = function () {
 			lineUpAPIService.dequeueSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.selectedUser.uid }).
 				success(function (data, status, headers, config) {
-          roundTimes(data.queue_info);
-  				$scope.queueInfo = data.queue_info;
-					$scope.member_list = data.member_list;
-
-          // sets the selection to the first user
-          $scope.selectedUser = $scope.member_list[0];
+          // refresh the queue data
+          $scope.getDetailedQueueInfo();
 				}).
 				error(function (data, status, headers, config) {
 					// not an error we are prepared to handle
