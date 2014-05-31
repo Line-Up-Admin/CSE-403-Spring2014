@@ -179,7 +179,7 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 }
 
 .front {
-	width: 96%;
+	width: 84%;
 	font-size: 1em;
 	text-align: right;
 }
@@ -300,6 +300,7 @@ h1.queue-page-header {
 	font-size: large;
 	font-weight: bold;
 	padding: 25px;
+	clear: left;
 }
 
 #btn-close-queue {
@@ -395,6 +396,8 @@ h1.queue-page-header {
 	width: 30%;
 	margin: 10px;
 	min-width: 100px;
+	overflow: hidden;
+	text-overflow: clip;
 }
 
 body {
