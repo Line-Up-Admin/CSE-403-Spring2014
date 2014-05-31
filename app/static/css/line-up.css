@@ -205,6 +205,11 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 	margin-left: 10px;
 }
 
+.queue-face {
+	margin-bottom: 10px;
+	height : 140px;
+}
+
 .queue-portrait {
 	border: 3px solid #3C3940;
 }
