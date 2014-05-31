@@ -129,14 +129,19 @@ def add_to_queue():
       session['uname'] = username
    if not permissions.has_flag(uid, qid, permissions.BLOCKED_USER):
       q_member = QueueMember(username, uid, optional_data)
-      queue_server.add(q_member, qid)
-      q_info = queue_server.get_info(q_member, qid)
-      q_info_dict = dict(q_info.__dict__)
-      if temp:
-         q_info_dict['confirmation_number'] = uid
-      return jsonify(q_info_dict)
+      try:
+         queue_server.add(q_member, qid)
+         q_info = queue_server.get_info(q_member, qid)
+         q_info_dict = dict(q_info.__dict__)
+         if temp:
+            q_info_dict['confirmation_number'] = uid
+         return jsonify(Success(q_info_dict))
+      except QueueFullException as e:
+         return jsonify(Failure(e.message))
+      except QueueNotFoundException as e:
+         return jsonify(Failure(e.message))
    else:
-      return 'User is blocked from this queue.'
+      return jsonify(Failure('User is blocked from this queue.'))
 
 @app.route('/enqueue/<int:qid>', methods=['POST'])
 def enqueue(qid):

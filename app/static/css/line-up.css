@@ -155,6 +155,8 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 	margin: 0px;
 	background-color: #000000;
 	border: 1px solid #3C3940;
+	overflow: hidden;
+	white-space: nowrap;
 }
 
 #progress div {
@@ -167,11 +169,11 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 	height: 100%;
 	background-color: #4668AA;
 	color: #000000;
+	text-align: center;
 }
 
 #progress .current-user {
 	background-color: #FEC839;
-	text-overflow: 
 }
 
 .member-position-number {
@@ -327,7 +329,9 @@ h1.queue-page-header {
 	font-size: large;
 	font-weight: bold;
 	padding: 25px;
-	clear: left;
+/*	clear: left;*/
+	width: 350px;
+	display: inline-block;
 }
 
 #btn-close-queue {
