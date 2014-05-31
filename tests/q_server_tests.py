@@ -25,42 +25,86 @@ class SomeTest(unittest.TestCase):
    def tearDown(self):
       pass
 
-   def test_add_get_members(self):
+   def test_a_few_things(self):
       """ Tests create, add, get_members, 
       and get_member_queues on a QueueServer object. 
       methods tested:
          add 
          create
+         dequeue
+         remove
+         get_popular
          get_members
          get_member_queues
       """
-      print "testing add_get_members"
+      print "testing a few things"
       qs = QueueServer(sync_db = False)
-      m1 = QueueMember("bob", 123)
-      m2 = QueueMember("carol", 124)
-      m3 = QueueMember("doug", 125)
-      qs1 = {"max_size":4, "qname":"water_park"}
-      qs2 = {"max_size":7, "qname":"lunch_spot"}
+      m1 = QueueMember("alice", 122)
+      m2 = QueueMember("bob", 123)
+      m3 = QueueMember("carol", 124)
+      m4 = QueueMember("doug", 125)
+      m5 = QueueMember("evan", 126)
+      m6 = QueueMember("franklin", 127)
+      m7 = QueueMember("gregory", 128)
+      m8 = QueueMember("hank", 129)
+      qs1 = {"max_size":4, "qname":"Apocolypse Garden"}
+      qs2 = {"max_size":7, "qname":"A world of magic"}
+      qs3 = {"max_size":7, "qname":"Dragon Palace"}
       # create 2 queues using the settings
       qid_1 = qs.create(qs1)
       qid_2 = qs.create(qs2)
+      qid_3 = qs.create(qs3)
       # For testing purposes, 500 was chosen as the default
       #  starting id.
       assert qid_1 == 500
       assert qid_2 == 501
+      assert qid_3 == 502
       qs.add(m1, qid_1)
+      #Most people in q2
       qs.add(m2, qid_2)
+      qs.add(m3, qid_2)
+      qs.add(m4, qid_2)
       
-      mems = qs.get_members(qid_1)
-      assert len(mems) == 1
+      mems = qs.get_members(qid_2)
+      assert len(mems) == 3
       assert mems[0].uname == 'bob'
 
+      # test removing from the middle
+      qs.remove(m3, qid_2)
+      mems = qs.get_members(qid_2)
+      assert len(mems) == 2
+      # test removing from the end
+      qs.remove(m4, qid_2)
+      mems = qs.get_members(qid_2)
+      assert len(mems) == 1
+
       #add a user to two queues, and check they are in both
-      qs.add(m3, qid_1)
-      qs.add(m3, qid_2)
-      dougs_qs = qs.get_member_queues(m3.uid)
-      print dougs_qs
-      assert len(dougs_qs) == 2
+      qs.add(m6, qid_1)
+      qs.add(m6, qid_2)
+      franklins_qs = qs.get_member_queues(m6.uid)
+      assert len(franklins_qs) == 2
+
+      qs.add(m7, qid_2)
+      
+      # 3 members currently in qid_2: m2, m6, m7
+      # 2 member currently in qid_1: m1, m6
+      popular_qs = qs.get_popular()
+      assert popular_qs[0] == qid_2
+
+      ### test dequeue
+      # test dequeue raises exception with bad queue
+      self.assertRaises(QueueNotFoundException, qs.dequeue, 9999999)
+      mm2 = qs.dequeue(qid_2)
+      assert mm2.uid == m2.uid
+      assert mm2.uname == m2.uname
+      mm6 = qs.dequeue(qid_2)
+      assert mm2.uid == m2.uid
+      assert mm2.uname == m2.uname
+
+      qs.dequeue(qid_2)
+      # Queue is now empty
+      non = qs.dequeue(qid_2)
+      assert non == None
 
    def test_search(self):
       """

@@ -205,6 +205,9 @@ class QueueMember(object):
          else:
             return self.uid == other.uid
 
+      def __repr__(self):
+         return "QMem{ uname:"+self.uname+", uid:"+str(self.uid)+" }"
+
       @staticmethod
       def from_dict(member_dict):
          q_member = QueueMember()
@@ -331,7 +334,7 @@ class QueueServer(object):
       """ This could raise a KeyError, which we are currently
          passing on the to caller. """
       if not self.table.has_key(qid):
-         raise QueueNotFoundException('The queue was not found.')
+         raise QueueNotFoundException('Queue not found.')
       q = self.table[qid]
       self.index[member.uid].remove(qid)
       if self.sync_db:
