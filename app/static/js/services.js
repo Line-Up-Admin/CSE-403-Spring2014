@@ -100,7 +100,7 @@ angular.module('LineUpApp.services', []).
       (0 = not active, 1 = active)
     */
 		lineUpAPI.setActive = function (qid, data) {
-			return $http.post('/setActive/' + qid, data);
+			return $http.post('/setActive/' + qid, {'active': data});
 		}
 
       /*
