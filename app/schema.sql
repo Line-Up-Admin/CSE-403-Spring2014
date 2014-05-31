@@ -11,13 +11,13 @@ CREATE TABLE Users (
 );
 
 CREATE TABLE Queues (
-	id int PRIMARY KEY,
+	id INTEGER PRIMARY KEY,
 	starting_index int,
 	ending_index int
 );
 
 CREATE TABLE QSettings (
-	qid INTEGER PRIMARY KEY,
+	qid int PRIMARY KEY,
 	qname varchar(32),
 	max_size int,
 	keywords varchar(256),

@@ -135,18 +135,37 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 
 #progress { /* user_home */
 	text-align: justify;
-	width: 20%;
+	width: 65%;
 	display: inline-block;
 	margin: 0px;
+	background-color: #000000;
+	border: 2px solid #3C3940;
+}
+
+#progress div {
+	border: 2px solid #3C3940;
 }
 
 #progress .progress-bar-section {
 	display: inline-block;
-	background-color: BLUE;
+	height: 100%;
+	background-color: #4668AA;
+	color: #000000;
 }
 
-#progress #current-user {
-	background-color: YELLOW;
+#progress .current-user {
+	background-color: #FEC839;
+}
+
+.member-position-number {
+	display: inline-block;
+	color: #FEC839;
+}
+
+.front {
+	width: 95%;
+	font-size: 1em;
+	text-align: right;
 }
 
 .queue-name, .time-left { /* user_home, search_queues, found_queues */
@@ -187,11 +206,6 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 	background-color: #E6DDBC;
 }
 
-#list-group {
-	width: 100%;
-	font-size: 200%;
-}
-
 .list-group-item {
 	background: linear-gradient(#8CBDBA, #76ADA9);
 	border: 3px solid #3C3940;
@@ -199,10 +213,28 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 }
 
 /* queue_admin css */
+#list-group {
+	width: 100%;
+	font-size: 200%;
+	height: 435px;
+}
+
+.queue-admin-content {
+	padding-right: 15px;
+}
+
 .queue-face, .queue-control, .control-options {
 	margin-top: 25px;
 	margin-bottom: 25px;
 	margin-left: 10px;
+}
+
+.queue-face, .control-options {
+	margin-bottom: 10px;
+}
+
+.queue-face {
+	height : 140px;
 }
 
 .queue-portrait {
@@ -256,10 +288,6 @@ h1.queue-page-header {
 
 #btn-close-queue {
 	margin-top: 30px;
-}
-
-#list-group {
-	height: 500px;
 }
 
 /* create_queue css */
@@ -331,7 +359,7 @@ h1.queue-page-header {
 }
 
 .control-options {
-	width: 120px;
+	width: 100px;
 	padding-right: 15px;
 }
 

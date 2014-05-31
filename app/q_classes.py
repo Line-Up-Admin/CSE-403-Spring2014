@@ -149,6 +149,12 @@ class Queue(object):
       else:
          return None
 
+   def peek(self):
+      if len(self.storage) == 0:
+         return None
+      return self.storage[0][0]
+      
+
    def get_position(self, member):
       """ Returns the current position in the queue of the Queue member
          being asked about. This is a 0-based index from the front
@@ -353,6 +359,10 @@ class QueueServer(object):
          db_util.remove_by_uid_qid(q_member.uid, qid)
       return q_member
 
+   def peek(self, qid):
+      if qid not in self.table:
+         raise QueueNotFoundException('Queue not found')
+      return self.table[qid].peek()
 
    def search(self, search_string):
       """ Returns a list of  qids that match the parameters 

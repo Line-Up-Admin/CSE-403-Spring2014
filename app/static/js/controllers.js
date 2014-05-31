@@ -2,7 +2,7 @@
 
 // round the time values to the nearest integer
 var roundTimes = function (data) {
-  if (data.expected_wait){
+  if (data.expected_wait) {
     data.expected_wait = parseInt(data.expected_wait);
   }
   if (data.avg_wait_time) {
@@ -24,7 +24,7 @@ angular.module('LineUpApp.controllers', []).
      // this assignment gives the headerController's $scope access to the displayHelp function
      // of whichever page loaded it.
      $scope.displayHelp = $scope.$parent.displayHelp;
-    }).
+  }).
 
   // Controller for the #/create_queue route
   controller('createQueueController', function ($scope, lineUpAPIService, $location, $route) {
@@ -166,12 +166,14 @@ angular.module('LineUpApp.controllers', []).
     };
 		// Sends a user queue request to the server.
     // Upon success: Loads the user queues to the requisite scope fields.
-    // Upon error: TODO: Do something smart to handle the error
+    // Upon error: redirect to the error page.
     $scope.getUsersQueues = function () {
       lineUpAPIService.getUsersQueues().
         success(function (data, status, headers, config) {
           if (data.SUCCESS) {
-            roundTimes(data);
+            roundTimes(data.queues_in);
+            roundTimes(data.queues_admin);
+            roundTimes(data.queues_manager);
             if (data.queues_in.length == 0) {
               document.getElementById('empty-in').classList.remove('hide');
             }
@@ -187,7 +189,6 @@ angular.module('LineUpApp.controllers', []).
           }
         }).
         error(function (data, status, headers, config) {
-          console.log(data);
           $location.path("/error");
         });
     }();
@@ -251,7 +252,6 @@ angular.module('LineUpApp.controllers', []).
   controller('queueInfoController', function ($scope, $route, lineUpAPIService, $routeParams) {
     $scope.optional_data = "";
     $scope.uname = "";
-		$scope.range = [];
 
     // hide the edit button if we are on the create queue page
     // called on element load with ng-init="init()"
@@ -266,65 +266,97 @@ angular.module('LineUpApp.controllers', []).
       $("#help-modal").modal('toggle');
     };
 
+    // Request the details of this queue from the server.
+    // On success: Display the correct view based on the user being in the
+    // queue or not.
+    // On failure: redirect to the error page.
     $scope.queueStatus = function () {
       lineUpAPIService.queueStatus($routeParams.qid).
         success(function (data, status, headers, config) {
           roundTimes(data);
           $scope.queue = data;
 
+          // hide all elements
           document.getElementById('enqueued').classList.add('hide');
           document.getElementById('notEnqueued').classList.add('hide');
+
           if (data.member_position == null) {
+            // show elements for the user that is not in the queue
             document.getElementById('notEnqueued').classList.remove('hide');
           } else {
+            // show elements for the user that is in the queue
             document.getElementById('enqueued').classList.remove('hide');
-            // if (data.member_position == data.size) {
-              // document.getElementById('btn-postpone').disabled = true;
-            // }
           }
-					for(var i=0; i<$scope.queue.size; i++) {
-						$scope.range.push(i);
-					}
-					console.log($scope.range.length);
-					var sections = $("#progress").children();
-					console.log($scope.queue.member_position);
-					$(sections[$scope.queue.member_position]).id = "current-user";
-					}).
+					var bar = document.getElementById("progress");
+					var width = 100.0 / $scope.queue.size;
+					var widthPercentage = width + "%";
+					$scope.progressBar();
+				}).
         error(function (data, status, headers, config) {
-          alert("Something went wrong with the queue lookup request!\nStatus: " + status);
+          // not an error we are prepared to handle
+          $location.path("/error");
         });
     };
+
+		$scope.progressBar = function () {
+			var bar = document.getElementById("progress");
+			while( bar.firstChild ) {
+				bar.removeChild(bar.firstChild);
+			}
+			var width = 100.0 / $scope.queue.size;
+			var widthPercentage = width + "%";
+			for(var i=0; i<$scope.queue.size; i++) {
+				console.log(i);
+				var div = document.createElement("div");
+				div.classList.add("progress-bar-section");
+				div.style.width = widthPercentage;
+
+				if( $scope.queue.size - 1 - i == $scope.queue.member_position ) {
+					console.log("i =" + i)
+					div.classList.add("current-user");
+					div.innerHTML = "YOU";
+				} else {
+					div.innerHTML = "&nbsp";
+				}
+				bar.appendChild(div);
+			}
+		}
 
     // This should load immediately when this controller is used
     $scope.queueStatus();
 
-    // used for self-removal of user from the queue
+    // Send request to the server to remove yourself from the queue
     $scope.leaveQueue = function () {
       lineUpAPIService.leaveQueue($routeParams.qid).
-      success(function (data, status, header, config) {
-        if(data.SUCCESS) {
-          // reset the client data and reset the page
-          $scope.queueStatus();
-        }
-      }).
-      error(function (data, status, header, config) {
-        alert("Something went wrong with your request to leave the queue!\n Status" + status);
-      });
+        success(function (data, status, header, config) {
+          if(data.SUCCESS) {
+            // reset the client data and reset the page
+            $scope.queueStatus();
+          }
+        }).
+        error(function (data, status, header, config) {
+          // not an error we are prepared to handle
+          $location.path("/error");
+        });
     };
 
+    // Send a request to the server to move back one spot in line
     $scope.postpone = function () {
       lineUpAPIService.postpone($routeParams.qid).
         success(function (data, status, header, config) {
           if(data.SUCCESS) {
             roundTimes(data);
             $scope.queue = data;
+						$scope.progressBar();
           }
         }).
         error(function (data, status, header, config) {
-          alert("Something went wrong with your request to postpone!\nStatus: " + status);
+          // not an error we are prepared to handle
+          $location.path("/error");
         });
     };
 
+    // promt the user for more information needed when they join the queue.
     $scope.promptForData = function () {
       if ($scope.queue.logged_in) {
         if ($scope.queue.prompt) {
@@ -357,9 +389,12 @@ angular.module('LineUpApp.controllers', []).
           $scope.queue = data;
           document.getElementById('notEnqueued').classList.add('hide');
           document.getElementById('enqueued').classList.remove('hide');
+					roundTimes(data);
+					$scope.progressBar();
         }).
         error(function (data, status, headers, config) {
-          alert("Something went wrong with the join queue request! \nStatus: " + status);
+          // not an error we are prepared to handle
+          $location.path("/error");
         });
     }
   }).
@@ -441,7 +476,7 @@ angular.module('LineUpApp.controllers', []).
 
     // show the help slide-in modal
     $scope.displayHelp = function () {
-            $("#help-modal").modal('toggle');
+      $("#help-modal").modal('toggle');
     };
 
 		// Sends an admin view request to the server.
@@ -453,31 +488,32 @@ angular.module('LineUpApp.controllers', []).
 				success(function (data, status, headers, config) {
           console.log("data: " + data.SUCCESS);
 
-          if(data.SUCCESS){  // only available to admins of this queue
+          if (data.SUCCESS) {
+            // only available to admins of this queue
+            roundTimes(data.queue_info);
+  					$scope.queueInfo = data.queue_info;
+  					$scope.member_list = data.member_list;
 
-					$scope.queueInfo = data.queue_info;
-					$scope.member_list = data.member_list;
+  					var dequeueButton = document.getElementById("btn-remove-first");
+  					if( $scope.member_list.length == 0 ) {
+  						dequeueButton.disabled = true;
+  					} else {
+  						dequeueButton.disabled = false;
+  					}
 
-					var dequeueButton = document.getElementById("btn-remove-first");
-					if( $scope.member_list.length == 0 ) {
-							dequeueButton.disabled = true;
-					} else {
-						dequeueButton.disabled = false;
-					}
-
-					var button = document.getElementById("btn-close-queue");
-					if( $scope.queueInfo.active == 0 ) {
-						$scope.setActiveStatusTo = "Open Queue";
-						button.value = 1;
-						$scope.activeStatus = "CLOSED";
-					} else {
-						$scope.setActiveStatusTo = "Close Queue";
-						button.value = 0;
-					}
-					// removes empty option at beginning of list
-					$scope.selectedUser = $scope.member_list[0];
-        } else {
-            $location.path("/home");
+  					var button = document.getElementById("btn-close-queue");
+  					if( $scope.queueInfo.active == 0 ) {
+  						$scope.setActiveStatusTo = "Open Queue";
+  						button.value = 1;
+  						$scope.activeStatus = "CLOSED";
+  					} else {
+  						$scope.setActiveStatusTo = "Close Queue";
+  						button.value = 0;
+  					}
+  					// gets the selected user
+  					$scope.selectedUser = $scope.member_list[0];
+          } else {
+              $location.path("/home");
         }
 				}).
 				error(function (data, status, headers, config) {
@@ -493,21 +529,37 @@ angular.module('LineUpApp.controllers', []).
 			rButton.disabled=!rButton.disabled;
 		}
 
+    // shows the window to the user offering to dequeue the person at the front
+    $scope.showDequeueModal = function () {
+      // get the user at the front of the queue
+      $scope.userDetails = $scope.member_list[0];
+
+      // clear previous error messages
+      document.getElementById('error').classList.add('hide');
+
+      // show the modal
+      $("#dequeue-modal").modal('toggle');
+    }
+
 		// Sends a dequeue request to the server.
     // Upon success: Dequeues the first person in line.
-    // Upon error: TODO: Do something smart to handle the error
+    // Upon error: redirect to the error page.
 		$scope.dequeueFirstPerson = function () {
-			lineUpAPIService.dequeueFirstPerson($routeParams.qid).
+      lineUpAPIService.dequeueFirstPerson($routeParams.qid, $scope.userDetails.uid).
 				success(function (data, status, headers, config) {
+          if (data.SUCCESS) {
+            // close the modal
+            $("#dequeue-modal").modal('toggle');
+          } else {
+            // display error message
+            $scope.errors = data;
+            if (data.error_message) {
+              document.getElementById('error').classList.remove('hide');
+            }
+          }
+
           // refresh the queue data
           $scope.getDetailedQueueInfo();
-
-          // display the dequeued user and info
-					if (data.optional_data) {
-						alert(data.uname + " was removed, information: " + data.optional_data);
-					} else {
-						alert(data.uname + " was removed.");
-					}
 				}).
 				error(function (data, status, headers, config) {
 					// not an error we are prepared to handle
@@ -516,17 +568,21 @@ angular.module('LineUpApp.controllers', []).
 		}
 
 		// Sends a remove request to the server.
-    // Upon success: Dequeues the selected person in line.
-    // Upon error: TODO: Do something smart to handle the error
+    // Upon success: removes the selected person from the line.
+    // Upon Error: redirect to the error page.
 		$scope.dequeueSelectPerson = function () {
 			lineUpAPIService.dequeueSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.selectedUser.uid }).
 				success(function (data, status, headers, config) {
-					$scope.queueInfo = data.queue_info;
+          roundTimes(data.queue_info);
+  				$scope.queueInfo = data.queue_info;
 					$scope.member_list = data.member_list;
-					$scope.getDetailedQueueInfo();
+
+          // sets the selection to the first user
+          $scope.selectedUser = $scope.member_list[0];
 				}).
 				error(function (data, status, headers, config) {
-					alert(data);
+					// not an error we are prepared to handle
+          $location.path("/error");
 				});
 		}
 
@@ -535,6 +591,7 @@ angular.module('LineUpApp.controllers', []).
     // Upon Success: the name has been added to the queue
     // Upon Error: redirect to the error page.
 		$scope.adminAdd = function () {
+      $scope.errors = {};
 
       // ensure that we send json data with both values
       if (!$scope.user.uname) {
@@ -571,7 +628,8 @@ angular.module('LineUpApp.controllers', []).
         });
 		}
 
-    $scope.dismissModal = function () {
+    // closes the add user modal window
+    $scope.dismissAddModal = function () {
       // clear the error messsages
       $scope.errors = {};
 			document.getElementById('error').classList.add('hide');
@@ -581,7 +639,7 @@ angular.module('LineUpApp.controllers', []).
       $("#addModal").modal('toggle');
     }
 
-
+    // sends a request to the server to move the user back one position
 		$scope.demoteSelectPerson = function () {
 			var selectIndex = document.getElementById("list-group").options.selectedIndex;
 			console.log("selected index on trigger is " + selectIndex);
@@ -636,6 +694,7 @@ angular.module('LineUpApp.controllers', []).
         });
 		}
 
+    // open the user details modal window
     $scope.viewDetails = function () {
       var selectedIndex = document.getElementById("list-group").options.selectedIndex;
       if (selectedIndex != -1) {
