@@ -252,6 +252,7 @@ angular.module('LineUpApp.controllers', []).
   controller('queueInfoController', function ($scope, $route, lineUpAPIService, $routeParams) {
     $scope.optional_data = "";
     $scope.uname = "";
+		$scope.range = [];
 
     // hide the edit button if we are on the create queue page
     // called on element load with ng-init="init()"
@@ -287,7 +288,14 @@ angular.module('LineUpApp.controllers', []).
             // show elements for the user that is in the queue
             document.getElementById('enqueued').classList.remove('hide');
           }
-        }).
+					for(var i=0; i<$scope.queue.size; i++) {
+						$scope.range.push(i);
+					}
+					console.log($scope.range.length);
+					var sections = $("#progress").children();
+					console.log($scope.queue.member_position);
+					$(sections[$scope.queue.member_position]).id = "current-user";
+					}).
         error(function (data, status, headers, config) {
           // not an error we are prepared to handle
           $location.path("/error");
@@ -452,8 +460,13 @@ angular.module('LineUpApp.controllers', []).
     // Upon success: Shows the admin view for the given queue id.
     // Upon error: TODO: Do something smart to handle the error
 		$scope.getDetailedQueueInfo = function () {
+      console.log("qid: " + $routeParams.qid)
 			lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
 				success(function (data, status, headers, config) {
+          console.log("data: " + data.SUCCESS);
+
+          if(data.SUCCESS){  // only available to admins of this queue
+
 					$scope.queueInfo = data.queue_info;
 					$scope.member_list = data.member_list;
 
@@ -475,6 +488,9 @@ angular.module('LineUpApp.controllers', []).
 					}
 					// removes empty option at beginning of list
 					$scope.selectedUser = $scope.member_list[0];
+        } else {
+            $location.path("/home");
+        }
 				}).
 				error(function (data, status, headers, config) {
 					// not an error we are prepared to handle

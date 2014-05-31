@@ -13,15 +13,16 @@
     <div id="enqueued" class="queue_control text-center hide">
       <div class="queue-status">
         Expected Wait: {{ queue.expected_wait }} minutes</br>
-        <div class="progress queue-position">
-          <div class="progress-bar" style="width: 60%;"></div>
-        </div>
+        <div id="progress" class="queue-position">
+					<div ng-repeat="i in range" display="inline"class="progress-bar-section"></div>
+          <!--<div id="progress-bar" style="width: 60%;"></div>-->
+        </div></br>
         Position {{ queue.member_position + 1 }} of {{ queue.size }}
       </div>
       <p class="buttons_control">
         <a id="btn-postpone" class="btn btn-line-up btn-lg" role="button" ng-click="postpone()">
           <span class="glyphicon glyphicon-time"></span></br>
-          Postpone
+          Move Back One
         </a>
         <a id="btn-leave" class="btn btn-line-up btn-lg" role="button" ng-click="leaveQueue()">
           <span class="glyphicon glyphicon-remove-sign"></span></br>
