@@ -67,11 +67,16 @@ hr.bar1 {
 	background-color: #FFFFFF;
 }
 
+.username-wrapper {
+	max-width: 40px;
+	width: auto;
+	float: left;
+	margin-top: 14px;
+	margin-left: 14px;
+}
+
 .header-username {
 	display: inline-block;
-/*	text-align: left;
-	overflow: hidden;
-	text-overflow: ellipsis; */
 	font-weight: bold;
 	color: #333333;
 }
