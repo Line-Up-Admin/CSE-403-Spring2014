@@ -306,9 +306,12 @@ angular.module('LineUpApp.controllers', []).
         success(function (data, status, headers, config) {
           roundTimes(data);
           $scope.queue = data;
-					var location = data.location.split(" ").join("%20");
-					$scope.locationLink = "http://maps.google.com/?q=" + location;
-          // hide all elements
+          if (data.location != null) {
+					  var location = data.location.split(" ").join("%20");
+					  $scope.locationLink = "http://maps.google.com/?q=" + location;
+          } else {
+            $scope.locationLink = "";
+          }// hide all elements
           document.getElementById('enqueued').classList.add('hide');
           document.getElementById('notEnqueued').classList.add('hide');
 
