@@ -16,7 +16,7 @@
 	</div>
 	<div class="control-options container text-center">
 		<p class="control-buttons">
-			<button id="btn-remove-first" class="btn btn-line-up btn-lg" role="button" ng-click='dequeueFirstPerson()'>
+			<button id="btn-remove-first" class="btn btn-line-up btn-lg" role="button" ng-click="showDequeueModal()">
 				<span class="glyphicon glyphicon-arrow-up"></span></br>
 				Remove First
 			</button>
@@ -36,10 +36,6 @@
 				<span class="glyphicon glyphicon-arrow-down"></span></br>
 				Demote
 			</button>
-			<!-- <button id="btn-begin-closing" class="btn btn-line-up btn-lg" role="button" disabled>
-				<span class="glyphicon glyphicon-ban-circle"></span></br>
-				Begin Closing
-			</button> -->
 			<button id="btn-close-queue" class="btn btn-line-up btn-lg" role="button" ng-click='setActive()' value=0>
 				<span class="glyphicon glyphicon-remove"></span></br>
 				{{ setActiveStatusTo }}
@@ -52,10 +48,10 @@
 	</div>
 </div>
 
-<!-- This is a help slide-in for this page -->
+<!-- Modal Window for help slide-in for this page -->
 <div class="help-window" ng-include src="'partials/queue_admin_help.html'"></div>
 
-<!-- Modal Window -->
+<!-- Modal Window for add user -->
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 <div class="modal-dialog">
   <div class="modal-content">
@@ -84,24 +80,23 @@
 		  </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-default" ng-click="dismissModal()">Cancel</button>
+      <button type="button" class="btn btn-default" ng-click="dismissAddModal()">Cancel</button>
       <button type="button" class="btn btn-primary" ng-click="adminAdd()">Add to queue</button>
     </div>
   </div>
 </div>
 </div>
 
-<!-- Modal Window -->
+<!-- Modal Window for the user details -->
 <div class="modal fade" id="details-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 <div class="modal-dialog">
   <div class="modal-content">
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-      <h4 class="modal-title" id="myModalLabel">Details</h4>
+      <h4 class="modal-title" id="myModalLabel">Person Details</h4>
     </div>
     <div class="modal-body">
     	<p> <strong>Name:</strong> {{ userDetails.uname }}
-    	<p>
     		<strong>{{ queueInfo.prompt }}</strong> {{ userDetails.optional_data }}
     	</p>
     </div>
@@ -112,5 +107,29 @@
 </div>
 </div>
 
-
-<!-- Version 9:22pm -->
+<!-- Modal Window for the dequeuing -->
+<div class="modal fade" id="dequeue-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h4 class="modal-title" id="myModalLabel">Remove First Person</h4>
+    </div>
+    <div class="modal-body">
+      <div id="error" class=" col-md-6 col-md-offset-3 alert alert-danger hide">
+        {{ errors.error_message }}
+      </div>
+      <p>
+        <strong>Name:</strong> {{ userDetails.uname }}
+      </p>
+      <p>
+        <strong>{{ queueInfo.prompt }}</strong> {{ userDetails.optional_data }}
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      <button type="button" class="btn btn-primary" ng-click="dequeueFirstPerson()">OK</button>
+    </div>
+  </div>
+</div>
+</div>
