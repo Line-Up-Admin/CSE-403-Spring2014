@@ -192,6 +192,11 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 	display: inline-block;
 }
 
+.info-page a , .panel-heading a {  /* information, queue_info css */
+	color: #CEBB7B;
+	font-weight: bold;
+}
+
 /* create_account, search_queues, found_queues have no unique css */
 
 /* log_home css */
@@ -230,6 +235,14 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 	background: linear-gradient(#8CBDBA, #76ADA9);
 	border: 3px solid #3C3940;
 	margin-top: 20px;
+	text-align: left;
+	overflow: hidden;
+	height: 66px;
+}
+
+.list-group-item p {
+	display: inline-block;
+	white-space: nowrap;
 }
 
 /* queue_admin css */
@@ -272,6 +285,7 @@ h1.queue-page-header {
 	padding: 12px;
 	font-size: 40pt;
 	font-weight: bold;
+	overflow: hidden;
 }
 
 .control-buttons a, .control-buttons button {
@@ -387,11 +401,6 @@ h1.queue-page-header {
 	padding-top: 10px;
 	padding-left: 20px;
 	padding-right: 20px;
-}
-
-.info-page a {
-	color: #CEBB7B;
-	font-weight: bold;
 }
 
 .info-page img {

@@ -2,6 +2,8 @@
 
 // Declare app level module which depends on controllers, filters,
 // and services etc.
+// Each "when" specifies a 'controller' that will be evaluated and in scope
+// for the specified 'templateUrl' html page.
 angular.module('LineUpApp', [
   'LineUpApp.controllers',
   'LineUpApp.services',
