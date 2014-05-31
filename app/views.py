@@ -60,7 +60,7 @@ def set_active(qid):
       return jsonify(Failure('You are not logged in!'))
    if not permissions.has_flag(session['id'], qid, permissions.MANAGER):
       return jsonify(Failure('You must be logged in as a manager to deactivate the queue.'))
-   active = request.get_json()
+   active = int(request.get_json()['active'])
    if active is None or type(active) is not int:
       return abort(500)
    try:
