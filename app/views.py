@@ -135,7 +135,7 @@ def add_to_queue():
          q_info_dict = dict(q_info.__dict__)
          if temp:
             q_info_dict['confirmation_number'] = uid
-         return jsonify(q_info_dict)
+         return jsonify(Success(q_info_dict))
       except QueueFullException as e:
          return jsonify(Failure(e.message))
       except QueueNotFoundException as e:
