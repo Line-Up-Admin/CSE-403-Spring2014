@@ -563,11 +563,11 @@ angular.module('LineUpApp.controllers', []).
 				});
 		}
 
+    //
     $scope.dequeueCancel = function () {
       $scope.errors = {};
       document.getElementById('dequeue-error').classList.add('hide');
       document.getElementById('dequeue-confirm').classList.remove('disable');
-      $("#dequeue-modal").modal('toggle');
     }
 
 		// Sends a remove request to the server.
