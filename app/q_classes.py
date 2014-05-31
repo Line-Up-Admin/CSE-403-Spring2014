@@ -342,11 +342,17 @@ class QueueServer(object):
       if not self.table.has_key(qid):
          raise QueueNotFoundException('Queue not found.')
       q = self.table[qid]
-      self.index[member.uid].remove(qid)
+      if member.uid in self.index:
+         try:
+            self.index[member.uid].remove(qid)
+         except:
+            raise MemberNotFoundException('Member is not in the queue!')
+      else:
+         raise MemberNotFoundException('Member is not in the queue!')
       if self.sync_db:
-         db_util.remove_by_uid_qid(member.uid, qid)
-         
-      return q.remove(member)
+         db_util.remove_by_uid_qid(member.uid, qid) 
+      if not q.remove(member):
+         raise MemberNotFoundException('Member is not in the queue!')
 
    def dequeue(self, qid):
       if qid not in self.table:

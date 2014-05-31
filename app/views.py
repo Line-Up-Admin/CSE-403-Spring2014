@@ -360,6 +360,8 @@ def leave_queue():
       return jsonify(Failure('Failed to leave the queue.'))
    except QueueNotFoundException as e:
       return jsonify(Failure(e.message))
+   except MemberNotFoundException as e:
+      return jsonify(Failure(e.message))
 
 @app.route('/searchResults')
 def get_search_results():
@@ -682,6 +684,8 @@ def remove_queue_member():
             queue_server.remove(QueueMember(uid=uid), qid)
             return jsonify({'SUCCESS':True})
          except QueueNotFoundException as e:
+            return jsonify(Failure(e.message))
+         except MemberNotFoundException as e:
             return jsonify(Failure(e.message))
       else:
         return jsonify(Failure("You must be a manager to remove a user."))
