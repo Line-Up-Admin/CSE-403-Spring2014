@@ -7,10 +7,10 @@
     <a ng-if="queue.website != null" href=>{{ queue.website }}</a>
   </div>
   <div class="panel-body">
-    <div class="queue-portrait">
-      <img src="img/default.png"/>
-    </div>
     <div id="enqueued" class="queue_control text-center hide">
+		 <div class="queue-portrait">
+			<img src="img/default.png"/>
+		 </div>
       <div class="queue-status">
         Expected Wait: {{ queue.expected_wait }} minutes</br>
         <div id="progress" class="queue-position">
