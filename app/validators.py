@@ -40,12 +40,6 @@ def encrypt_password(password):
    encrypted_pw = hashlib.sha224(password).hexdigest()
    return (encrypted_pw, salt)
 
-def get_unique_user_id():
-   return unpack("<L", urandom(4))[0]
-  
-def get_unique_queue_id():
-   return unpack("<L", urandom(4))[0]
-
 def validate_usernames(key, dictionary, fail):
    result = check_usernames(dictionary[key])
    if not result['SUCCESS']:
