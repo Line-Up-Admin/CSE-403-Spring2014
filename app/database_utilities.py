@@ -283,8 +283,7 @@ def create_queue(q_settings):
   cursor.execute(INSERT_QUEUE_SETTINGS, qsettings_dict_to_db_tuple(q_settings))
   cursor.close()
   db.commit()
-  if q_settings.has_key('admins'):
-    permissions.add_permission_list(get_uids(q_settings['admins']), q_settings['qid'], permissions.ADMIN)
+  permissions.add_permission_list(get_uids(q_settings['admins']), q_settings['qid'], permissions.ADMIN)
   if q_settings.has_key('managers'):
     permissions.add_permission_list(get_uids(q_settings['managers']), q_settings['qid'], permissions.MANAGER)
   if q_settings.has_key('blocked_users'):
@@ -311,6 +310,10 @@ def modify_queue_settings(q_settings):
   db = get_db()
   db.execute(UPDATE_QUEUE_SETTINGS, qsettings_dict_to_db_tuple_modify(q_settings))
   db.commit()
+  permissions.update_permissions(q_settings['qid'],
+                                 get_uids(q_settings['admins']),
+                                 get_uids(q_settings['managers']) if q_settings.has_key('managers') else None,
+                                 get_uids(q_settings['blocked_users']) if q_settings.has_key('blocked_users') else None)
 
 def delete_queue(qid):
   """Deletes the queue with the given qid.
