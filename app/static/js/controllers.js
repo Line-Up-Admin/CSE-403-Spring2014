@@ -547,7 +547,8 @@ angular.module('LineUpApp.controllers', []).
     // Upon success: Dequeues the first person in line.
     // Upon error: redirect to the error page.
 		$scope.dequeueFirstPerson = function () {
-      lineUpAPIService.dequeueFirstPerson($routeParams.qid, $scope.userDetails.uid).
+      console.log($scope.userDetails);
+      lineUpAPIService.dequeueFirstPerson($routeParams.qid, $scope.userDetails).
 				success(function (data, status, headers, config) {
           console.log(data);
           if (data.SUCCESS) {
