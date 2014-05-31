@@ -220,9 +220,7 @@ def dequeue(qid):
          if not member.uid == uid:
             return jsonify(Failure('This person is no longer at the front of the queue!'))
          q_member = queue_server.dequeue(qid)
-         if q_member is None:
-            return jsonify({})
-         return jsonify(q_member.__dict__)
+         return jsonify(Success({}))
       except QueueNotFoundException as e:
          return jsonify(Failure(e.message))
    else:
