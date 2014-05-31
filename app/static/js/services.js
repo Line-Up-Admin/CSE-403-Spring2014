@@ -125,16 +125,6 @@ angular.module('LineUpApp.services', []).
       return $http.post('/login', user);
     }
 
-    /* DEPRECATED
-      param:
-      'user' - a dictionary with two objects
-        1. 'uname' - a string identifier for a user
-        2. 'pw' - a string that is the password of the user
-    
-    lineUpAPI.createUser = function (user) {
-      return $http.post('/createUser', user);
-    }
-    */
 
     lineUpAPI.getUsersQueues = function () {
       return $http.post('/myQueues');
