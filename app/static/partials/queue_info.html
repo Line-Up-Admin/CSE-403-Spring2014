@@ -14,9 +14,8 @@
       <div class="queue-status">
         Expected Wait: {{ queue.expected_wait }} minutes</br>
         <div id="progress" class="queue-position">
-					<div ng-repeat="i in range" display="inline"class="progress-bar-section"></div>
-          <!--<div id="progress-bar" style="width: 60%;"></div>-->
         </div></br>
+				<div class="front">^</br>Front</div></br>
         Position {{ queue.member_position + 1 }} of {{ queue.size }}
       </div>
       <p class="buttons_control">
