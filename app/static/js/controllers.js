@@ -137,8 +137,14 @@ angular.module('LineUpApp.controllers', []).
     // Upon success: Redirects the browser to the login page.
     // Upon error: Redirect to the error page.
     $scope.createUser = function () {
+      $scope.errors = {};
+
+      if ($scope.user.pw == "") {
+        $scope.errors.pw = "Please create a password.";
+        return;
+      }
+
       if ($scope.user.pw != $scope.user.pwx2) {
-        $scope.errors = {};
         $scope.errors.pw = "Passwords do not match.";
         return;
       }
