@@ -149,7 +149,7 @@ class Queue(object):
       else:
          return None
 
-   def peek():
+   def peek(self):
       if len(self.storage) == 0:
          return None
       return self.storage[0][0]
@@ -210,6 +210,9 @@ class QueueMember(object):
             return False
          else:
             return self.uid == other.uid
+
+      def __repr__(self):
+         return "QMem{ uname:"+self.uname+", uid:"+str(self.uid)+" }"
 
       @staticmethod
       def from_dict(member_dict):
@@ -337,7 +340,7 @@ class QueueServer(object):
       """ This could raise a KeyError, which we are currently
          passing on the to caller. """
       if not self.table.has_key(qid):
-         raise QueueNotFoundException('The queue was not found.')
+         raise QueueNotFoundException('Queue not found.')
       q = self.table[qid]
       self.index[member.uid].remove(qid)
       if self.sync_db:
@@ -356,7 +359,7 @@ class QueueServer(object):
          db_util.remove_by_uid_qid(q_member.uid, qid)
       return q_member
 
-   def peek(qid):
+   def peek(self, qid):
       if qid not in self.table:
          raise QueueNotFoundException('Queue not found')
       return self.table[qid].peek()

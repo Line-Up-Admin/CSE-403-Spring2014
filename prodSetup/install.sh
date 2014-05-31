@@ -45,7 +45,7 @@ rm get-pip.py
 # Install flask framework
 pip install flask
 
-git clone https://github.com/Line-Up-Admin/CSE-403-Spring2014.git -b beta_release lineup
+git clone https://github.com/Line-Up-Admin/CSE-403-Spring2014.git -b release_candidate lineup
 
 if [ "$1" = "prod" ]; then
   # move configuration file into place

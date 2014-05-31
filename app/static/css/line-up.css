@@ -67,6 +67,15 @@ hr.bar1 {
 	background-color: #FFFFFF;
 }
 
+.header-username {
+	display: inline-block;
+/*	text-align: left;
+	overflow: hidden;
+	text-overflow: ellipsis; */
+	font-weight: bold;
+	color: #333333;
+}
+
 .line-up-banner { /* login_home, create_account */
 	width: 180px;
 	margin-left: auto;
@@ -290,6 +299,10 @@ h1.queue-page-header {
 
 #btn-close-queue {
 	margin-top: 30px;
+}
+
+.queue-url {
+	text-align: center;
 }
 
 /* create_queue css */
