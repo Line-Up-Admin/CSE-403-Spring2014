@@ -13,7 +13,7 @@ script:
  - python tests/flask_tests/views_test.py
  - coverage run --source=app/q_classes.py tests/q_server_tests.py
  - coverage run --source=app/q_classes.py tests/q_tests.py
- - coverage run --source=app/database_utilities.py tests/flask_tests/views_test.py
+ - coverage run --source=app/views.py tests/flask_tests/views_test.py
 
 after_success:
   - coveralls
