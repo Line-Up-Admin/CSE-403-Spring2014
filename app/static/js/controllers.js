@@ -21,10 +21,12 @@ var roundMultipleTimes = function (data) {
 angular.module('LineUpApp.controllers', []).
 
   // controller for the main header
-  controller('headerController', function ($scope, lineUpAPIService, $location, $route) {
+  controller('headerController', function ($scope, lineUpAPIService, lineUpUserService, $location, $route) {
      // this assignment gives the headerController's $scope access to the displayHelp function
      // of whichever page loaded it.
      $scope.displayHelp = $scope.$parent.displayHelp;
+		 $scope.username = lineUpUserService.getUser().uname;
+		 console.log($scope.username);
   }).
 
   // Controller for the #/create_queue route
@@ -33,6 +35,7 @@ angular.module('LineUpApp.controllers', []).
 
     // hide the edit button if we are on the create queue page
     // call on page load with ng-init="init()"
+		// note: not currently used because edit button was removed
     $scope.init = function () {
       if ($route.current.loadedTemplateUrl == "partials/create_queue.html") {
         document.getElementById("edit-button").classList.add("hide");
@@ -155,11 +158,11 @@ angular.module('LineUpApp.controllers', []).
 
     // hide the home button if we are on the home page
     // call on page load with ng-init="init()"
-    $scope.init = function () {
+    /* $scope.init = function () {
       if ($route.current.loadedTemplateUrl == "partials/user_home.html") {
         document.getElementById("home-button").classList.add("hide");
       }
-    };
+    }; */
 
     // show the help slide-in modal
     $scope.displayHelp = function () {
