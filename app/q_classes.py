@@ -76,9 +76,9 @@ class Queue(object):
          # divide by 60 because time() is in seconds.
          return total_time / float(total_num * 60)
 
-   def add(self, member):
+   def add(self, member, check_max_size = True):
       """ Adds a Queue Member to a Queue. (If there is room.) """
-      if self.q_settings and len(self.storage) >= self.q_settings.max_size:
+      if check_max_size and self.q_settings and len(self.storage) >= self.q_settings.max_size:
          raise QueueFullException("Queue is already at maximum size")
       else:
          self.storage.append( (member, time.time()) )
@@ -317,7 +317,7 @@ class QueueServer(object):
             for member_row in member_rows:
                # already ordered
                q_member = QueueMember.from_dict(member_row)
-               q.add(q_member)
+               q.add(q_member, False)
                if q_member.uid not in self.index:
                   self.index[q_member.uid] = set()
                self.index[q_member.uid].add(qid)
