@@ -3,7 +3,7 @@ LineUp - An online queueing system
 
 CSE 403 Spring 2014 -- Team Aphrodite
 
-
+www.line-up.us
 
 Current Version Number: Feature-Complete Release 
 
