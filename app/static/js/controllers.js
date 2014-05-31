@@ -17,6 +17,12 @@ var roundMultipleTimes = function (data) {
   }
 }
 
+
+//Permissions constants
+var PERMISSION_ADMIN = 3;
+var PERMISSION_MANAGER = 1;
+var PERMISSION_NONE = 0;
+
 /*
 This file contains all controllers for the all web pages.  A single controller
 is loaded for each HTML template as defined in app.js
@@ -26,8 +32,8 @@ is loaded for each HTML template as defined in app.js
 
 angular.module('LineUpApp.controllers', []).
 
-  /* 
-     Controller for the main header controls the data and user interaction 
+  /*
+     Controller for the main header controls the data and user interaction
      for the headers which are shared by several web pages.
   */
   controller('headerController', function ($scope, lineUpAPIService, $location, $route) {
@@ -132,7 +138,7 @@ angular.module('LineUpApp.controllers', []).
     };
   }).
 
-  /* 
+  /*
    Controller for the #/create_account route controls data and user interaction
    for that route
   */
@@ -214,7 +220,7 @@ angular.module('LineUpApp.controllers', []).
             }
             if (data.queues_manager.length == 0) {
               document.getElementById('empty-manager').classList.remove('hide');
-            } 
+            }
             /* QueueInfos is a 3 element array.  Each element is an array.
             1. 'queues_admin' - the queues you administer
             2. 'queues_manager' - the queues you manage
@@ -525,6 +531,12 @@ angular.module('LineUpApp.controllers', []).
             roundTimes(data.queue_info);
   					$scope.queueInfo = data.queue_info;
   					$scope.member_list = data.member_list;
+
+            // Hide the settings button if not an admin
+            if (data.permission_level != PERMISSION_ADMIN) {
+              document.getElementById('btn-settings').classList.add('disabled');
+            }
+
 
   					var dequeueButton = document.getElementById("btn-remove-first");
   					if( $scope.member_list.length == 0 ) {
