@@ -139,17 +139,27 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 	display: inline-block;
 	margin: 0px;
 	background-color: #000000;
+	border: 2px solid #3C3940;
+}
+
+#progress div {
+	border: 2px solid #3C3940;
 }
 
 #progress .progress-bar-section {
 	display: inline-block;
 	height: 100%;
-	background-color: #0000FF;
+	background-color: #4668AA;
 	color: #000000;
 }
 
 #progress .current-user {
-	background-color: #FFFF00;
+	background-color: #FEC839;
+}
+
+.member-position-number {
+	display: inline-block;
+	color: #FEC839;
 }
 
 .front {

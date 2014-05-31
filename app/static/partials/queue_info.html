@@ -16,7 +16,7 @@
         <div id="progress" class="queue-position">
         </div></br>
 				<div class="front">^</br>Front</div></br>
-        Position {{ queue.member_position + 1 }} of {{ queue.size }}
+        Position <div class="member-position-number">{{ queue.member_position + 1 }}</div> of {{ queue.size }}
       </div>
       <p class="buttons_control">
         <a id="btn-postpone" class="btn btn-line-up btn-lg" role="button" ng-click="postpone()">
