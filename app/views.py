@@ -799,5 +799,5 @@ def logout():
 @app.route('/currentUser', methods=['GET', 'POST'])
 def currentUser():
    if session.has_key('logged_in') and session['logged_in']:
-      return jsonify({'SUCCESS':True, 'uname':session['uname'], 'uid':sessoin['id']})
+      return jsonify({'SUCCESS':True, 'uname':session['uname'], 'uid':session['id']})
    return jsonify(Failure('You are not logged in!'))
