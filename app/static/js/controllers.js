@@ -44,18 +44,9 @@ angular.module('LineUpApp.controllers', []).
   controller('createQueueController', function ($scope, lineUpAPIService, $location, $route) {
     $scope.queue = {};
 
-    // hide the edit button if we are on the create queue page
-    // call on page load with ng-init="init()"
-		// note: not currently used because edit button was removed
-    $scope.init = function () {
-      if ($route.current.loadedTemplateUrl == "partials/create_queue.html") {
-        document.getElementById("edit-button").classList.add("hide");
-      }
-    };
-
     // show the help slide-in modal
     $scope.displayHelp = function () {
-            $("#help-modal").modal('toggle');
+      $("#help-modal").modal('toggle');
     };
 
     // Sends a request to the server to create a new queue. The request
@@ -108,7 +99,7 @@ angular.module('LineUpApp.controllers', []).
 
     // Sends a user account login request to the server.
     // Upon success: displays the user home page with queue information
-    // Upon error: TODO: Do something smart to handle the error
+    // Upon error: redirects to an error page.
     $scope.login = function () {
       lineUpUserService.login($scope.user).
         success(function (data, status, headers, config) {
@@ -217,13 +208,6 @@ angular.module('LineUpApp.controllers', []).
 
   // Controller for the #/search route
   controller('searchController', function ($scope, $route, lineUpAPIService) {
-    // hide the edit button if we are on the create queue page
-    // call on page load with ng-init="init()"
-    $scope.init = function () {
-      if ($route.current.loadedTemplateUrl == "partials/search.html") {
-        document.getElementById("edit-button").classList.add("hide");
-      }
-    };
 
     // show the help slide-in modal
     $scope.displayHelp = function () {
@@ -255,7 +239,7 @@ angular.module('LineUpApp.controllers', []).
     // queues.
     // Upon success: Updates the current queueInfos array to store the results
     // of the request.
-    // Upon error: TODO: Do something smart to handle the error
+    // Upon error: redirects to an error page.
     $scope.getPopularQueues = function () {
       lineUpAPIService.getPopularQueues().
         success(function (data, status, headers, config) {
@@ -327,7 +311,7 @@ angular.module('LineUpApp.controllers', []).
 		$scope.progressBar = function () {
 			var size = $scope.queue.size;
 			var bar = document.getElementById("progress");
-			
+
 			while( bar.firstChild ) {
 				bar.removeChild(bar.firstChild);
 			}
@@ -408,7 +392,7 @@ angular.module('LineUpApp.controllers', []).
     // Sends a request to the server to join the queue
     // Upon success: Updates the current queueInfos array to store the results
     // of the request.
-    // Upon error: TODO: Do something smart to handle the error
+    // Upon error: redirects to an error page.
     $scope.joinQueue = function () {
       lineUpAPIService.joinQueue({ 'qid': $scope.queue.qid, 'uname': $scope.uname, 'optional_data': $scope.optional_data }).
         success(function (data, status, headers, config) {
@@ -426,14 +410,7 @@ angular.module('LineUpApp.controllers', []).
   }).
 
   // Controller for the edit/queueID route
-	controller('editQueueController', function($scope, lineUpAPIService, $routeParams, $location, $route) {
-    // hide the edit button if we are on the create queue page
-    // call on page load with ng-init="init()"
-    $scope.init = function () {
-      if ($route.current.loadedTemplateUrl == "partials/edit_queue.html") {
-        document.getElementById("edit-button").classList.add("hide");
-      }
-    }
+	controller('editQueueController', function ($scope, lineUpAPIService, $routeParams, $location, $route) {
 		$scope.queue = {};
 
     // populate the form fields with the existing queue settings
@@ -508,7 +485,7 @@ angular.module('LineUpApp.controllers', []).
 
 		// Sends an admin view request to the server.
     // Upon success: Shows the admin view for the given queue id.
-    // Upon error: TODO: Do something smart to handle the error
+    // Upon error: redirects to an error page.
 		$scope.getDetailedQueueInfo = function () {
 			lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
 				success(function (data, status, headers, config) {

@@ -192,6 +192,11 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 	display: inline-block;
 }
 
+.info-page a , .panel-heading a {  /* information, queue_info css */
+	color: #CEBB7B;
+	font-weight: bold;
+}
+
 /* create_account, search_queues, found_queues have no unique css */
 
 /* log_home css */
@@ -272,6 +277,7 @@ h1.queue-page-header {
 	padding: 12px;
 	font-size: 40pt;
 	font-weight: bold;
+	overflow: hidden;
 }
 
 .control-buttons a, .control-buttons button {
@@ -376,6 +382,21 @@ h1.queue-page-header {
 
 .position-info {
 	display: inline-block;
+}
+
+/* information css */
+.info-page p, .info-page li {
+	text-align: left;
+}
+
+.info-page p {
+	padding-top: 10px;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.info-page img {
+	width: 100%;
 }
 
 /* extra css ids */
