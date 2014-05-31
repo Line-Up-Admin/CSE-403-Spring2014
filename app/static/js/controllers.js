@@ -252,7 +252,6 @@ angular.module('LineUpApp.controllers', []).
   controller('queueInfoController', function ($scope, $route, lineUpAPIService, $routeParams) {
     $scope.optional_data = "";
     $scope.uname = "";
-		$scope.range = [];
 
     // hide the edit button if we are on the create queue page
     // called on element load with ng-init="init()"
@@ -288,19 +287,40 @@ angular.module('LineUpApp.controllers', []).
             // show elements for the user that is in the queue
             document.getElementById('enqueued').classList.remove('hide');
           }
-					for(var i=0; i<$scope.queue.size; i++) {
-						$scope.range.push(i);
-					}
-					console.log($scope.range.length);
-					var sections = $("#progress").children();
-					console.log($scope.queue.member_position);
-					$(sections[$scope.queue.member_position]).id = "current-user";
-					}).
+					var bar = document.getElementById("progress");
+					var width = 100.0 / $scope.queue.size;
+					var widthPercentage = width + "%";
+					$scope.progressBar();
+				}).
         error(function (data, status, headers, config) {
           // not an error we are prepared to handle
           $location.path("/error");
         });
     };
+		
+		$scope.progressBar = function () {
+			var bar = document.getElementById("progress");
+			while( bar.firstChild ) {
+				bar.removeChild(bar.firstChild);
+			}
+			var width = 100.0 / $scope.queue.size;
+			var widthPercentage = width + "%";
+			for(var i=0; i<$scope.queue.size; i++) {
+				console.log(i);
+				var div = document.createElement("div");
+				div.classList.add("progress-bar-section");
+				div.style.width = widthPercentage;
+				
+				if( $scope.queue.size - 1 - i == $scope.queue.member_position ) {
+					console.log("i =" + i)
+					div.classList.add("current-user");
+					div.innerHTML = "YOU";
+				} else {
+					div.innerHTML = "&nbsp";
+				}
+				bar.appendChild(div);
+			}
+		}
 
     // This should load immediately when this controller is used
     $scope.queueStatus();
@@ -327,6 +347,7 @@ angular.module('LineUpApp.controllers', []).
           if(data.SUCCESS) {
             roundTimes(data);
             $scope.queue = data;
+						$scope.progressBar();
           }
         }).
         error(function (data, status, header, config) {
@@ -368,6 +389,8 @@ angular.module('LineUpApp.controllers', []).
           $scope.queue = data;
           document.getElementById('notEnqueued').classList.add('hide');
           document.getElementById('enqueued').classList.remove('hide');
+					roundTimes(data);
+					$scope.progressBar();
         }).
         error(function (data, status, headers, config) {
           // not an error we are prepared to handle
