@@ -297,7 +297,7 @@ angular.module('LineUpApp.controllers', []).
           $location.path("/error");
         });
     };
-		
+
 		$scope.progressBar = function () {
 			var bar = document.getElementById("progress");
 			while( bar.firstChild ) {
@@ -310,7 +310,7 @@ angular.module('LineUpApp.controllers', []).
 				var div = document.createElement("div");
 				div.classList.add("progress-bar-section");
 				div.style.width = widthPercentage;
-				
+
 				if( $scope.queue.size - 1 - i == $scope.queue.member_position ) {
 					console.log("i =" + i)
 					div.classList.add("current-user");
@@ -545,16 +545,14 @@ angular.module('LineUpApp.controllers', []).
     // Upon success: Dequeues the first person in line.
     // Upon error: redirect to the error page.
 		$scope.dequeueFirstPerson = function () {
-      console.log($scope.userDetails);
       lineUpAPIService.dequeueFirstPerson($routeParams.qid, $scope.userDetails.uid).
 				success(function (data, status, headers, config) {
-
           if (data.SUCCESS) {
             // close the modal
             $("#dequeue-modal").modal('toggle');
           } else {
             // display error message
-            error = data;
+            $scope.errors = data;
             if (data.error_message) {
               document.getElementById('error').classList.remove('hide');
             }
@@ -575,6 +573,7 @@ angular.module('LineUpApp.controllers', []).
 		$scope.dequeueSelectPerson = function () {
 			lineUpAPIService.dequeueSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.selectedUser.uid }).
 				success(function (data, status, headers, config) {
+          roundTimes(data.queue_info);
   				$scope.queueInfo = data.queue_info;
 					$scope.member_list = data.member_list;
 
@@ -592,6 +591,7 @@ angular.module('LineUpApp.controllers', []).
     // Upon Success: the name has been added to the queue
     // Upon Error: redirect to the error page.
 		$scope.adminAdd = function () {
+      $scope.errors = {};
 
       // ensure that we send json data with both values
       if (!$scope.user.uname) {
