@@ -360,6 +360,8 @@ def leave_queue():
       return jsonify(Failure('Failed to leave the queue.'))
    except QueueNotFoundException as e:
       return jsonify(Failure(e.message))
+   except MemberNotFoundException as e:
+      return jsonify(Failure(e.message))
 
 @app.route('/searchResults')
 def get_search_results():
@@ -683,6 +685,8 @@ def remove_queue_member():
             return jsonify({'SUCCESS':True})
          except QueueNotFoundException as e:
             return jsonify(Failure(e.message))
+         except MemberNotFoundException as e:
+            return jsonify(Failure(e.message))
       else:
         return jsonify(Failure("You must be a manager to remove a user."))
    else:
@@ -795,5 +799,5 @@ def logout():
 @app.route('/currentUser', methods=['GET', 'POST'])
 def currentUser():
    if session.has_key('logged_in') and session['logged_in']:
-      return jsonify({'SUCCESS':True, 'uname':session['uname'], 'uid':sessoin['id']})
+      return jsonify({'SUCCESS':True, 'uname':session['uname'], 'uid':session['id']})
    return jsonify(Failure('You are not logged in!'))

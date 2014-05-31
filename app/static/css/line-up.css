@@ -73,6 +73,7 @@ hr.bar1 {
 	float: left;
 	margin-top: 14px;
 	margin-left: 14px;
+	text-align: right;
 }
 
 .header-username {

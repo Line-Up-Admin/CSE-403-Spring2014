@@ -21,12 +21,23 @@ var roundMultipleTimes = function (data) {
 angular.module('LineUpApp.controllers', []).
 
   // controller for the main header
-  controller('headerController', function ($scope, lineUpAPIService, lineUpUserService, $location, $route) {
+  controller('headerController', function ($scope, lineUpAPIService, $location, $route) {
      // this assignment gives the headerController's $scope access to the displayHelp function
      // of whichever page loaded it.
      $scope.displayHelp = $scope.$parent.displayHelp;
-		 $scope.username = lineUpUserService.getUser().uname;
-		 console.log($scope.username);
+		 $scope.userInfo = {};
+		 $scope.getCurrentUser = function () {
+			 lineUpAPIService.getCurrentUser().
+				success(function (data, status, headers, config) {
+					if( data.SUCCESS ) {
+						$scope.userInfo = data;
+					}
+				}).
+				error(function (data, status, headers, config) {
+					//not an eventuality we are prepared to handle
+				});
+		 }
+		 $scope.getCurrentUser();
   }).
 
   // Controller for the #/create_queue route
@@ -310,13 +321,11 @@ angular.module('LineUpApp.controllers', []).
 			var width = 100.0 / $scope.queue.size;
 			var widthPercentage = width + "%";
 			for(var i=0; i<$scope.queue.size; i++) {
-				console.log(i);
 				var div = document.createElement("div");
 				div.classList.add("progress-bar-section");
 				div.style.width = widthPercentage;
 				div.innerHTML = "&nbsp";
 				if( $scope.queue.size - 1 - i == $scope.queue.member_position ) {
-					console.log("i =" + i)
 					div.classList.add("current-user");
 				}
 				bar.appendChild(div);
@@ -487,7 +496,6 @@ angular.module('LineUpApp.controllers', []).
 		$scope.getDetailedQueueInfo = function () {
 			lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
 				success(function (data, status, headers, config) {
-
           if (data.SUCCESS) {
             // only available to admins of this queue
             roundTimes(data.queue_info);
@@ -522,12 +530,6 @@ angular.module('LineUpApp.controllers', []).
 				});
 		}
     $scope.getDetailedQueueInfo();
-
-		$scope.toggleRemoveButton = function () {
-			var rButton = document.getElementById("btn-remove");
-			console.log(rButton.disabled);
-			rButton.disabled=!rButton.disabled;
-		}
 
     // shows the window to the user offering to dequeue the person at the front
     $scope.showDequeueModal = function () {
@@ -652,10 +654,9 @@ angular.module('LineUpApp.controllers', []).
 						// refresh the queue
 						$scope.getDetailedQueueInfo();
 /* 						console.log($scope.member_list);
-						console.log(document.getElementById("list-group").options);
-						document.getElementById("list-group").options[selectIndex+1].selected="selected";
+						console.log(document.getElementById("list-group").options);	document.getElementById("list-group").options[selectIndex+1].selected="selected";
 						//$scope.selectedUser = $scope.member_list[selectIndex];
-						//WHY DOESN'T THIS WORK!??!?!?!
+						//WHY DOESN'T THIS WORK!??!?!?! (attempting to keep the selected index)
 						console.log("selected index after function is " + document.getElementById("list-group").options.selectedIndex);
 						console.log($scope.selectedUser); */
 					}).
