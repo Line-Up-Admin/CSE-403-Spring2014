@@ -192,12 +192,14 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 	display: inline-block;
 }
 
-.info-page a , .panel-heading a {  /* information, queue_info css */
-	color: #CEBB7B;
-	font-weight: bold;
-}
-
 /* create_account, search_queues, found_queues have no unique css */
+
+/* queue_info */
+.panel-heading a {
+	color: #333333;
+	font-weight: bold;
+	text-decoration: underline;
+}
 
 /* log_home css */
 .about a {
@@ -412,6 +414,11 @@ h1.queue-page-header {
 
 .info-page img {
 	width: 100%;
+}
+
+.info-page a  {
+	color: #CEBB7B;
+	font-weight: bold;
 }
 
 /* extra css ids */
