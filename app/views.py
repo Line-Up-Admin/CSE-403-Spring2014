@@ -266,7 +266,7 @@ def postpone():
       uid = session['id']
    else:
       return jsonify(Failure('You are not logged in!'))
-   qid= request.json['qid']
+   qid= request.json
    try:
       queue_server.postpone(QueueMember(uid=uid), qid)
       q_info = queue_server.get_info(QueueMember(uid=uid), qid)

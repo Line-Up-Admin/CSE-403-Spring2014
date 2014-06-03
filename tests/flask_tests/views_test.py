@@ -371,9 +371,7 @@ class ViewsTestCase(unittest.TestCase):
                          with the server (i.e. unparsable JSON
                          or otherwise invalid response)
       """
-      dataTest = dict()
-      dataTest['qid'] = qid
-      dataString = json.dumps(dataTest)
+      dataString = json.dumps(qid)
       with app.test_request_context('/postpone', method='POST'):
          r = self.appTest.post('/postpone', headers={'content-type':'application/json'}, data=dataString)
       try:
