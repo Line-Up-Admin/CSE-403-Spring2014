@@ -1,0 +1,501 @@
+/*
+--white: #FFFFFF
+--sand: #E6DDBC;
+--light-teal: #99D1C6;
+--dark-teal: #76ADA9;
+--dark-grey: #3C3940;
+--middle-grey: #6B6777;
+--light-grey: #A6A6AF;
+*/
+
+/* shared css */
+.btn-default {
+  text-shadow: 0 1px 0 #fff;
+  background-image: -webkit-linear-gradient(top, #E6DDBC 0%, #CEBB7B 100%);
+  background-image:         linear-gradient(to bottom, #E6DDBC 0%, #CEBB7B 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffe0e0e0', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+  background-repeat: repeat-x;
+  border-color: #dbdbdb;
+  border-color: #ccc;
+}
+
+
+.btn-line-up:hover,
+.btn-line-up:focus {
+	background: linear-gradient(#c6b266, #c9b46d);
+}
+
+.btn-default:hover,
+.btn-default:focus {
+  background-color: #CEBB7B;
+  background-position: 0 -15px;
+}
+
+.btn-default:active,
+.btn-default.active,
+.btn-line-up:active {
+  background-color: #CEBB7B;
+  border-color: #dbdbdb;
+}
+
+hr {
+	height: 4px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+hr.bar2 {
+	border: 1px solid #E6DDBC;
+	background-color: #E6DDBC;
+	color: #3C3940;
+}
+
+hr.bar3{
+	border: 1px solid #3C3940;
+	background-color: #3C3940;
+	color: #3C3940;
+}
+
+hr.bar1 {
+	border: 1px solid #76ADA9;
+	background-color: #76ADA9;
+	color: #76ADA9;
+}
+
+.header-content { /* login_home, create_account, user_home, search_queues, found_queues, example_admin_queue_page */
+	background-color: #FFFFFF;
+}
+
+.username-wrapper {
+	max-width: 40px;
+	width: auto;
+	float: left;
+	margin-top: 14px;
+	margin-left: 14px;
+	text-align: right;
+}
+
+.header-username {
+	display: inline-block;
+	font-weight: bold;
+	color: #333333;
+}
+
+.line-up-banner { /* login_home, create_account */
+	width: 180px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.form-group  > div {
+	margin-left: 4%;
+	margin-right: 4%;
+}
+
+.info-box { /* login_home, create_account, search_queues */
+	background-color: #76ADA9;
+	border: 0px solid black;
+	padding: 0px;
+	margin-top: 20px;
+	margin-bottom: 15px;
+}
+
+.info-box  h1{ /* search_queues */
+	font-size: 36px;
+}
+
+.login-input { /* login_home, create_account, search_queues */
+	height: 20px;
+	width: 70px;
+}
+
+.btn-line-up { /* login_home, create_account, user_home, example_admin_queue_page */
+	color: #000;
+	background: linear-gradient(#E6DDBC, #CEBB7B);
+	border: 2px solid black;
+	font-size: small;
+	width: 60%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.line-up-icon { /* user_home, search_queues, found_queues, example_admin_queue_page */
+	width: 86px;
+}
+
+h2.page-content-header { /* (no h2 found yet) */
+	font-size: x-large;
+}
+
+h1.page-content-header { /* login_home, search_queues, found_queues */
+	margin-bottom: 0px;
+}
+
+.queue { /* user_home, search_queues, found_queues */
+	border: 2px solid black;
+	margin-top: 8px;
+	margin-bottom: 8px;
+	background: linear-gradient(#BCE0D9, #99D1C6);
+	padding-top: 15px;
+	padding-bottom: 15px;
+	padding-left: 15px;
+	color: #555;
+}
+
+.queue-img { /* user_home, search_queues, found_queues */
+	margin-right: 10px;
+	width: 40px;
+}
+
+#progress { /* user_home */
+	text-align: justify;
+	width: 65%;
+	display: inline-block;
+	margin: 0px;
+	background-color: #000000;
+	border: 1px solid #3C3940;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+#progress div {
+	border: solid #3C3940;
+	border-width: 1px;
+}
+
+#progress .progress-bar-section {
+	display: inline-block;
+	height: 100%;
+	background-color: #4668AA;
+	color: #000000;
+	text-align: center;
+}
+
+#progress .current-user {
+	background-color: #FEC839;
+}
+
+.member-position-number {
+	display: inline-block;
+	color: #FEC839;
+	background-color: #333333;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+.front {
+	width: 84%;
+	font-size: 1em;
+	text-align: right;
+}
+
+.queue-name, .time-left { /* user_home, search_queues, found_queues */
+	display: inline-block;
+}
+
+/* create_account, search_queues, found_queues have no unique css */
+
+/* queue_info */
+.panel-heading a {
+	color: #333333;
+	font-weight: bold;
+	text-decoration: underline;
+}
+
+/* log_home css */
+.about a {
+	color: #3C3940;
+}
+
+.about {
+	margin-right: 10px;
+}
+
+.main-page-content {
+	margin-top: 40px;
+	background-color: #76ADA9;
+	border: 4px solid #3C3940;
+	border-radius:0px;
+	max-width: 100%;
+}
+
+/* user_home css */
+.user-home-btn {
+	width: 30%; /* if we scale the main-page-content width */
+	display: inline-block;
+	min-width: 150px; /* any less and words overflow */
+}
+
+.recent-queues {
+	margin-bottom: 20px;
+}
+
+.queue-list-header {
+	background-color: #E6DDBC;
+}
+
+.list-group-item, .queue {
+	text-align: left;
+	overflow: hidden;
+}
+
+.list-group-item {
+	background: linear-gradient(#8CBDBA, #76ADA9);
+	border: 3px solid #3C3940;
+	margin-top: 20px;
+	height: 66px;
+}
+
+.queue {
+	height: 110px;
+}
+
+.list-group-item p, .queue p {
+	display: inline-block;
+	white-space: nowrap;
+}
+
+/* queue_admin css */
+#list-group {
+	width: 100%;
+	font-size: 200%;
+	height: 435px;
+}
+
+.queue-admin-content {
+	padding-right: 15px;
+}
+
+.queue-face, .queue-control, .control-options {
+	margin-top: 25px;
+	margin-bottom: 25px;
+	margin-left: 10px;
+}
+
+.queue-face, .control-options {
+	margin-bottom: 10px;
+}
+
+.queue-face {
+	height : 140px;
+}
+
+.queue-portrait {
+	border: 3px solid #3C3940;
+}
+
+.queue-portrait, .button-join {
+	float: left;
+	margin-top: 10px;
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+h1.queue-page-header {
+	padding: 12px;
+	font-size: 40pt;
+	font-weight: bold;
+	overflow: hidden;
+}
+
+.control-buttons a, .control-buttons button {
+	width: 100%;
+	margin: 5px;
+	min-width: 80px;
+	font-size: x-small;
+}
+
+.control-buttons a span, .control-buttons button span {
+	font-size: x-large;
+}
+
+.control-list, .control-options {
+	display: inline-block;
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.control-list {
+	min-width: 160px;
+	max-width: 300px;
+	float: right;
+}
+
+.queue-status {
+	text-align: center;
+	font-size: large;
+	font-weight: bold;
+	padding: 25px;
+/*	clear: left;*/
+	width: 350px;
+	display: inline-block;
+}
+
+#btn-close-queue {
+	margin-top: 30px;
+}
+
+.queue-url {
+	text-align: center;
+}
+
+/* create_queue css */
+.panel {
+	background-color: #99D1C6;
+	margin: 25px;
+}
+
+.panel-default {
+  border: 3px solid #3C3940;
+}
+
+.panel-default > a .panel-heading {
+  color: #333;
+  background-color: #CEBB7B;
+  border-bottom: 3px solid #3C3940;
+}
+
+.panel-default > .panel-heading + .panel-collapse .panel-body {
+  border-top-color: #CEBB7B;
+}
+
+.panel-default > .panel-footer + .panel-collapse .panel-body {
+  border-bottom-color: #CEBB7B;
+}
+
+.panel-default > .panel-heading {
+  background-image: -webkit-linear-gradient(top, #E6DDBC 0%, #E6DDBC 100%);
+  background-image:         linear-gradient(to bottom, #E6DDBC 0%, #E6DDBC 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff5f5f5', endColorstr='#ffe8e8e8', GradientType=0);
+  background-repeat: repeat-x;
+}
+
+.form-control:focus {
+  border-color: #76ADA9;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(230, 221, 188, .6);
+          box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(230, 221, 188, .6);
+}
+
+.create-queue-button {
+	margin-bottom: 15px;
+}
+
+/* search css */
+
+#submit-search-info {
+	width: 20%;
+	min-width: 100px;
+}
+
+#input-search-info {
+	display: inline-block;
+	width: 60%;
+}
+
+#search-content {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.position-info {
+	display: inline-block;
+}
+
+/* information css */
+.info-page p, .info-page li {
+	text-align: left;
+}
+
+.info-page p {
+	padding-top: 10px;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.info-page img {
+	width: 100%;
+}
+
+.info-page a  {
+	color: #CEBB7B;
+	font-weight: bold;
+}
+
+/* extra css ids */
+.glyphicon-send, .glyphicon-time, .glyphicon-remove-sign {
+	font-size: xx-large;
+}
+
+.control-options {
+	width: 100px;
+	padding-right: 15px;
+}
+
+.button-join {
+	width: 120px;
+}
+
+#btn-join {
+	width: 100%;
+}
+
+#btn-postpone, #btn-leave {
+	width: 30%;
+	margin: 10px;
+	min-width: 100px;
+	overflow: hidden;
+	text-overflow: clip;
+}
+/*
+body {
+	background-color: #A6A6AF;
+	background-attachment: fixed;
+}
+*/
+
+#create-account  {
+	width: 55%;
+}
+
+.time-left {
+	float: right;
+	margin-top: 8px;
+	margin-right: 10px;
+}
+
+#submit-login, #submit-acct-info  {
+	width: 35%;
+}
+
+#create-account, #submit-login  {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.queue-position {
+	width: 50%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+#footer {
+}
+
+.error-field {
+	color: red;
+}
+
+.buttons_control {
+	margin-top: 20px;
+}
+
+.container {
+	padding-left: 0px;
+	padding-right: 0px;
+}
