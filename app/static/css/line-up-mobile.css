@@ -294,7 +294,7 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 
 h1.queue-page-header {
 	padding: 12px;
-	font-size: 40pt;
+	font-size: 20pt;
 	font-weight: bold;
 	overflow: hidden;
 }
@@ -320,7 +320,7 @@ h1.queue-page-header {
 
 .control-list {
 	min-width: 160px;
-	max-width: 300px;
+	max-width: 175px;
 	float: right;
 }
 
@@ -328,9 +328,9 @@ h1.queue-page-header {
 	text-align: center;
 	font-size: large;
 	font-weight: bold;
-	padding: 25px;
+	padding: 0px;
 /*	clear: left;*/
-	width: 350px;
+	width: 175px;
 	display: inline-block;
 }
 
