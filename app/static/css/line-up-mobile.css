@@ -450,12 +450,11 @@ h1.queue-page-header {
 	overflow: hidden;
 	text-overflow: clip;
 }
-/*
+
 body {
 	background-color: #A6A6AF;
 	background-attachment: fixed;
 }
-*/
 
 #create-account  {
 	width: 55%;
