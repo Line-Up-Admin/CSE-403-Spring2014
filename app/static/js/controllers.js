@@ -393,6 +393,12 @@ angular.module('LineUpApp.controllers', []).
             roundTimes(data);
             $scope.queue = data;
 						$scope.progressBar();
+						if( data.member_position + 1 == data.size ) {
+							document.getElementById('btn-postpone').disabled = true;
+							console.log(document.getElementById('btn-postpone').disabled);
+						} else {
+							document.getElementById('btn-postpone').disabled = false;
+						}
           }
         }).
         error(function (data, status, header, config) {
