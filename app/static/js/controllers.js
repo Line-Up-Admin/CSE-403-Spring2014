@@ -192,6 +192,10 @@ angular.module('LineUpApp.controllers', []).
       }
     }; */
 
+    //clear any intervals
+    //clearInterval(autoRefresh);
+
+
     // show the help slide-in modal
     $scope.displayHelp = function () {
             $("#help-modal").modal('toggle');
@@ -287,7 +291,7 @@ angular.module('LineUpApp.controllers', []).
    Controller for the #/queue_info route controls data and user interaction
    for that route
   */
-  controller('queueInfoController', function ($scope, $route, lineUpAPIService, $routeParams) {
+  controller('queueInfoController', function ($scope, $route, lineUpAPIService, $routeParams, $location, $interval) {
     $scope.optional_data = "";
     $scope.uname = "";
 		$scope.locationLink = "";
@@ -370,6 +374,19 @@ angular.module('LineUpApp.controllers', []).
     // This should load immediately when this controller is used
     $scope.queueStatus();
 
+    // This interval will update the queue information every 2 seconds
+     var autoRefresh = $interval(function() {
+       $scope.queueStatus();
+     } , 2000);
+
+    // stop the autoRefresh interval when this iFrame is destroyed
+    $scope.$on('$destroy', function() {
+      if (angular.isDefined(autoRefresh)) {
+        $interval.cancel(autoRefresh);
+        autoRefresh = undefined;
+      }
+    })
+    
     // Send request to the server to remove yourself from the queue
     $scope.leaveQueue = function () {
       lineUpAPIService.leaveQueue($routeParams.qid).
