@@ -321,6 +321,12 @@ angular.module('LineUpApp.controllers', []).
           } else {
             // show elements for the user that is in the queue
             document.getElementById('enqueued').classList.remove('hide');
+						if( data.member_position + 1 == data.size ) {
+							document.getElementById('btn-postpone').disabled = true;
+							console.log(document.getElementById('btn-postpone').disabled);
+						} else {
+							document.getElementById('btn-postpone').disabled = false;
+						}
 						$scope.progressBar();
           }
 
