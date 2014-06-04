@@ -310,18 +310,24 @@ h1.queue-page-header {
 	font-size: x-large;
 }
 
+.control-options {
+	margin-left: 35px;
+	margin-right: 35px;
+	width: 100px;
+	padding-right: 15px;
+}
+
 .control-list, .control-options {
 	display: inline-block;
-	margin-left: auto;
-	margin-right: auto;
-	padding-left: 10px;
-	padding-right: 10px;
 }
 
 .control-list {
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-left: 50px;
+	margin-right: auto;
 	min-width: 160px;
 	max-width: 300px;
-	float: right;
 }
 
 .queue-status {
@@ -330,7 +336,7 @@ h1.queue-page-header {
 	font-weight: bold;
 	padding: 25px;
 /*	clear: left;*/
-	width: 350px;
+	width: 300px;
 	display: inline-block;
 }
 
@@ -428,11 +434,6 @@ h1.queue-page-header {
 /* extra css ids */
 .glyphicon-send, .glyphicon-time, .glyphicon-remove-sign {
 	font-size: xx-large;
-}
-
-.control-options {
-	width: 100px;
-	padding-right: 15px;
 }
 
 .button-join {

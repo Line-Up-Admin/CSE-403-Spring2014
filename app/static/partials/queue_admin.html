@@ -6,16 +6,6 @@
 			<img class="queue-portrait" src="img/default.png"/>
 			<h1 class="queue-page-header">{{queueInfo.qname}}</h1>
 		</div>
-		<div class="control-list container text-center">
-			<div class="queue-status" id="active">
-				{{ activeStatus }} </br>
-				Est. Wait: {{ queueInfo.expected_wait }} min</br>
-				Line: {{ queueInfo.size }} people
-			</div>
-			<div class="queue-member-listing">
-				<select id="list-group" size="11" ng-model="selectedUser" ng-options="'(' + (member_list.indexOf(member)+1) + ') ' + member.uname for member in member_list"></select>
-			</div>
-		</div>
 		<div class="control-options container text-center">
 			<p class="control-buttons">
 				<button id="btn-remove-first" class="btn btn-line-up btn-lg" role="button" ng-click='showDequeueModal()'>
@@ -47,6 +37,16 @@
 					Settings
 				</button>
 			</p>
+		</div>
+		<div class="control-list container text-center">
+			<div class="queue-status" id="active">
+				{{ activeStatus }} </br>
+				Est. Wait: {{ queueInfo.expected_wait }} min</br>
+				Line: {{ queueInfo.size }} people
+			</div>
+			<div class="queue-member-listing">
+				<select id="list-group" size="11" ng-model="selectedUser" ng-options="'(' + (member_list.indexOf(member)+1) + ') ' + member.uname for member in member_list"></select>
+			</div>
 		</div>
 	</div>
 	<div class="queue-url">Share this Queue: http://line-up.us/#/queue_info/{{ qid }}</div>
