@@ -8,31 +8,31 @@
 		</div>
 		<div class="control-options container text-center">
 			<p class="control-buttons">
-				<button id="btn-remove-first" class="btn btn-line-up btn-lg" role="button" ng-click='showDequeueModal()'>
+				<button id="btn-remove-first" class="btn btn-line-up btn-lg btn-admin" role="button" ng-click='showDequeueModal()'>
 					<span class="glyphicon glyphicon-arrow-up"></span></br>
 					Remove First
 				</button>
-				<button id="btn-view-details" class="btn btn-line-up btn-lg" role="button" ng-click="viewDetails()">
+				<button id="btn-view-details" class="btn btn-line-up btn-lg btn-admin" role="button" ng-click="viewDetails()">
 					<span class="glyphicon glyphicon-zoom-in"></span></br>
 					View Details
 				</button>
-				<button id="btn-add" class="btn btn-line-up btn-lg" role="button" data-toggle="modal" data-target="#addModal">
+				<button id="btn-add" class="btn btn-line-up btn-lg btn-admin" role="button" data-toggle="modal" data-target="#addModal">
 					<span class="glyphicon glyphicon-plus"></span></br>
 					Add Walk-In
 				</button>
-				<button id="btn-remove" class="btn btn-line-up btn-lg" role="button" ng-click='dequeueSelectPerson()'>
+				<button id="btn-remove" class="btn btn-line-up btn-lg btn-admin" role="button" ng-click='dequeueSelectPerson()'>
 					<span class="glyphicon glyphicon-minus"></span></br>
 					Remove
 				</button>
-				<button id="btn-demote" class="btn btn-line-up btn-lg" role="button" ng-click='demoteSelectPerson()'>
+				<button id="btn-demote" class="btn btn-line-up btn-lg btn-admin" role="button" ng-click='demoteSelectPerson()'>
 					<span class="glyphicon glyphicon-arrow-down"></span></br>
 					Demote
 				</button>
-				<button id="btn-close-queue" class="btn btn-line-up btn-lg" role="button" ng-click='setActive()' value=0>
+				<button id="btn-close-queue" class="btn btn-line-up btn-lg btn-admin" role="button" ng-click='setActive()' value=0>
 					<span class={{close_icon}}></span></br>
 					{{ setActiveStatusTo }}
 				</button>
-				<button id="btn-settings" class="btn btn-line-up btn-lg" role="button" ng-click='redirectToEditQueue()'>
+				<button id="btn-settings" class="btn btn-line-up btn-lg btn-admin" role="button" ng-click='redirectToEditQueue()'>
 					<span class="glyphicon glyphicon-cog"></span></br>
 					Settings
 				</button>

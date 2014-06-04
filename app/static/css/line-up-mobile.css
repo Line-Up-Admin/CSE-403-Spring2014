@@ -302,7 +302,7 @@ h1.queue-page-header {
 .control-buttons a, .control-buttons button {
 	width: 100%;
 	margin: 5px;
-	min-width: 80px;
+	max-width: 80px;
 	font-size: x-small;
 }
 
@@ -319,19 +319,22 @@ h1.queue-page-header {
 }
 
 .control-list {
-	min-width: 160px;
-	max-width: 175px;
-	float: right;
+	width: 145px;
 }
 
 .queue-status {
 	text-align: center;
-	font-size: large;
+	font-size: 15px;
 	font-weight: bold;
 	padding: 0px;
 /*	clear: left;*/
-	width: 175px;
+	width: 145px;
 	display: inline-block;
+}
+
+.btn-admin {
+	padding-right: 0px;
+	padding-left: 0px;
 }
 
 #btn-close-queue {
