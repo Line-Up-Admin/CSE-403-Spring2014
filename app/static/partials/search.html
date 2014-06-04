@@ -15,10 +15,9 @@
 			<a href="#/queue_info/{{ queueInfo.qid }}">
 				<div class="queue">
 					<p>
-						<img class="queue-img" src="img/CLUE_phys.png"/>{{ queueInfo.qname }}: {{ queueInfo.location }}
-						{{ queueInfo.organization }}
-						<div class="position-info" ng-if="queueInfo.expected_wait > 0">{{ queueInfo.size }} in Line - Expected Wait: {{ queueInfo.expected_wait }} minutes</div>
-						<div class="position-info" ng-if="queueInfo.expected_wait <= 0">{{ queueInfo.size }} in Line - 	Expected Wait: less than 1 minute</div>
+						<img class="queue-img" src="img/CLUE_phys.png"/>{{ queueInfo.qname }}: {{ queueInfo.location }} {{ queueInfo.organization }}
+						<span class="position-info" ng-if="queueInfo.expected_wait > 0">{{ queueInfo.size }} in Line - Expected Wait: {{ queueInfo.expected_wait }} minutes</span>
+						<span class="position-info" ng-if="queueInfo.expected_wait <= 0">{{ queueInfo.size }} in Line - Expected Wait: less than 1 minute</span>
 					</p>
 				</div>
 			</a>
