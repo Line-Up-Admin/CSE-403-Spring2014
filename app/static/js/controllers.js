@@ -325,9 +325,12 @@ angular.module('LineUpApp.controllers', []).
           } else {
             // show elements for the user that is in the queue
             document.getElementById('enqueued').classList.remove('hide');
-						var bar = document.getElementById("progress");
-						var width = 100.0 / $scope.queue.size;
-						var widthPercentage = width + "%";
+						if( data.member_position + 1 == data.size ) {
+							document.getElementById('btn-postpone').disabled = true;
+							console.log(document.getElementById('btn-postpone').disabled);
+						} else {
+							document.getElementById('btn-postpone').disabled = false;
+						}
 						$scope.progressBar();
           }
 
@@ -360,7 +363,9 @@ angular.module('LineUpApp.controllers', []).
 					div.classList.add("current-user");
 					if( size == 1 ) {
 						div.innerHTML = "YOU'RE IN FRONT!";
-					}
+					} else if( size < 5 && size >= 2 ) {
+						div.innerHTML = "YOU";
+					}	
 				}
 				bar.appendChild(div);
 			}
@@ -405,6 +410,12 @@ angular.module('LineUpApp.controllers', []).
             roundTimes(data);
             $scope.queue = data;
 						$scope.progressBar();
+						if( data.member_position + 1 == data.size ) {
+							document.getElementById('btn-postpone').disabled = true;
+							console.log(document.getElementById('btn-postpone').disabled);
+						} else {
+							document.getElementById('btn-postpone').disabled = false;
+						}
           }
         }).
         error(function (data, status, header, config) {
@@ -535,6 +546,19 @@ angular.module('LineUpApp.controllers', []).
     $scope.qid = $routeParams.qid;
 		$scope.close_icon = "glyphicon glyphicon-stop";
 
+		$scope.disableDemote = function () {
+			var list = document.getElementById("list-group");
+			list.addEventListener("click", function () {
+				var demoteButton = document.getElementById("btn-demote");
+				if( list.selectedIndex + 1 == list.options.length ) {
+					demoteButton.disabled = true;
+				} else if( demoteButton.disabled ) {
+					demoteButton.disabled = false;
+				}
+			});
+		}
+		$scope.disableDemote();
+		
 		// Redirects to edit queue page.
 		$scope.redirectToEditQueue = function () {
 			$location.path('/edit/' + $routeParams.qid);
@@ -561,13 +585,20 @@ angular.module('LineUpApp.controllers', []).
             if (data.permission_level != PERMISSION_ADMIN) {
               document.getElementById('btn-settings').classList.add('disabled');
             }
-
-
+						
+						var buttons = [];
+						buttons.push(document.getElementById("btn-remove-first"));
+						buttons.push(document.getElementById("btn-view-details"));
+						buttons.push(document.getElementById("btn-remove"));
   					var dequeueButton = document.getElementById("btn-remove-first");
   					if( $scope.member_list.length == 0 ) {
-  						dequeueButton.disabled = true;
+  						for( var i = 0; i < buttons.length; i++ ) {
+								buttons[i].disabled = true;
+							}
   					} else {
-  						dequeueButton.disabled = false;
+  						for( var i = 0; i < buttons.length; i++ ) {
+								buttons[i].disabled = false;
+							}
   					}
 
   					var button = document.getElementById("btn-close-queue");

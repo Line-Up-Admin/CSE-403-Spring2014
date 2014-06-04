@@ -19,14 +19,14 @@
         Position <div class="member-position-number">{{ queue.member_position + 1 }}</div> of {{ queue.size }}
       </div>
       <p class="buttons_control">
-        <a id="btn-postpone" class="btn btn-line-up btn-lg" role="button" ng-click="postpone()">
+        <button id="btn-postpone" class="btn btn-line-up btn-lg" role="button" ng-click="postpone()">
           <span class="glyphicon glyphicon-time"></span></br>
           Move Back One
-        </a>
-        <a id="btn-leave" class="btn btn-line-up btn-lg" role="button" ng-click="leaveQueue()">
+        </button>
+        <button id="btn-leave" class="btn btn-line-up btn-lg" role="button" ng-click="leaveQueue()">
           <span class="glyphicon glyphicon-remove-sign"></span></br>
           Leave Queue
-        </a>
+        </button>
       </p>
     </div>
     <div id="notEnqueued" class="queue-control hide">
