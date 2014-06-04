@@ -364,6 +364,14 @@ h1.queue-page-header {
   border-bottom: 3px solid #3C3940;
 }
 
+a .panel-heading:hover {
+  background-color: #E6DDBC;
+}
+
+a .panel-heading:active {
+  background-color: #C8B36A;
+}
+
 .panel-default > .panel-heading + .panel-collapse .panel-body {
   border-top-color: #CEBB7B;
 }
