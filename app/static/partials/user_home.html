@@ -8,7 +8,7 @@
 	</p>
 	<div class="current-queues">
 		<div class="panel panel-default">
-			<a data-toggle="collapse" data-target="#collapseIn" href=""><div class="panel-heading">v  Queues You're In  v</div></a>
+			<a data-toggle="collapse" data-target="#collapseIn" href=""><div class="panel-heading">Queues You're In</div></a>
 			<div id="collapseIn" class="panel-collapse collapse in panel-body">
 				<ul class="list-group">
 					<a class="list-group-item" ng-repeat="queue in queueInfos.queues_in" href="#/queue_info/{{ queue.qid }}">
@@ -23,7 +23,7 @@
 			</div>
 		</div>
 		<div class="panel panel-default">
-			<a data-toggle="collapse" data-target="#collapseOwned" href=""><div class="panel-heading">v  Queues You Own  v</div></a>
+			<a data-toggle="collapse" data-target="#collapseOwned" href=""><div class="panel-heading">Queues You Own</div></a>
 			<div id="collapseOwned" class="panel-collapse collapse in panel-body">
 				<ul class="list-group">
 					<a class="list-group-item" ng-repeat="queue in queueInfos.queues_admin" href="#/admin/{{ queue.qid }}"><p>
@@ -36,7 +36,7 @@
 			</div>
 		</div>
 		<div class="panel panel-default">
-			<a data-toggle="collapse" data-target="#collapseManaging" href=""><div class="panel-heading">v  Queues You Manage  v</div></a>
+			<a data-toggle="collapse" data-target="#collapseManaging" href=""><div class="panel-heading">Queues You Manage</div></a>
 			<div id="collapseManaging" class="panel-collapse collapse in panel-body">
 				<ul class="list-group">
 					<a class="list-group-item" ng-repeat="queue in queueInfos.queues_manager" href="#/admin/{{ queue.qid }}"><p>
