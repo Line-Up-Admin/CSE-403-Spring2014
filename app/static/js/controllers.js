@@ -309,12 +309,12 @@ angular.module('LineUpApp.controllers', []).
     $scope.optional_data = "";
     $scope.uname = "";
     $scope.locationLink = "";
-
+		
     // show the help slide-in modal
     $scope.displayHelp = function () {
       $("#help-modal").modal('toggle');
     };
-
+		
     // Request the details of this queue from the server.
     // On success: Display the correct view based on the user being in the
     // queue or not.
@@ -352,6 +352,7 @@ angular.module('LineUpApp.controllers', []).
             document.getElementById("btn-join").disabled = true;
             document.getElementById("closed-message").classList.remove('hide');
           }
+          document.getElementById('qtracksImg').src="img/qtracks/" + $scope.queue.qid + ".png";
         }).
         error(function (data, status, headers, config) {
           // not an error we are prepared to handle
@@ -460,7 +461,7 @@ angular.module('LineUpApp.controllers', []).
           }
       }
     }
-
+		
     // Sends a request to the server to join the queue
     // Upon success: Updates the current queueInfos array to store the results
     // of the request.
