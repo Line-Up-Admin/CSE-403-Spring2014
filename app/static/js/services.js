@@ -13,12 +13,12 @@ angular.module('LineUpApp.services', []).
     var lineUpAPI = {};
 
     /*
-    param: 
+    param:
     'queue' is an object dictionary that containes all
     of the fields set by the user from the create_queue.html page.
     It will contain at minimum 2 fields:
       1. 'qname' - the name associated with the queue
-      2. 'active' - an integer that represents whether or not the 
+      2. 'active' - an integer that represents whether or not the
           queue is active (0 = not active, 1 = active)
           but all others may or may not be present.
     */
@@ -27,11 +27,11 @@ angular.module('LineUpApp.services', []).
     }
 
     /*
-    param: 
+    param:
     'queue' is a dictionary that contains 2 fields:
      1. 'qid' - a unique number identifier of a queue
-     2. 'q_settings' - a dictionary that contains all of 
-         the fields entered by the user from the 
+     2. 'q_settings' - a dictionary that contains all of
+         the fields entered by the user from the
          edit_queue.html page.
 
     */
@@ -63,9 +63,9 @@ angular.module('LineUpApp.services', []).
       param:
       'qid' - a unique number identifier of a queue
       'userDetails' - a dictionary with 3 fields:
-        1. username - 
-        2. optionaldata - 
-        3. uid - 
+        1. username -
+        2. optionaldata -
+        3. uid -
     */
 		lineUpAPI.dequeueFirstPerson = function (qid, userDetails) {
 			return $http.post('/dequeue/' + qid, userDetails);
@@ -175,7 +175,7 @@ angular.module('LineUpApp.services', []).
     lineUpAPI.enqueue = function (qid, user) {
       return $http.post('/enqueue/' + qid, user);
     }
-		
+
 		lineUpAPI.getCurrentUser = function () {
 			return $http.post('/currentUser');
 		}
@@ -186,7 +186,7 @@ angular.module('LineUpApp.services', []).
   service('lineUpUserService', function ($http) {
     var userData = { uname: "", pw: "" };
 
-    
+
     this.getUser = function () {
       return userData;
     };

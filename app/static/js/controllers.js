@@ -242,6 +242,8 @@ angular.module('LineUpApp.controllers', []).
   */
   controller('searchController', function ($scope, $route, lineUpAPIService) {
 
+    $scope.errors = {};
+
     // show the help slide-in modal
     $scope.displayHelp = function () {
       $("#help-modal").modal('toggle');
@@ -274,14 +276,21 @@ angular.module('LineUpApp.controllers', []).
     // of the request.
     // Upon error: redirects to an error page.
     $scope.getPopularQueues = function () {
+      // clear previous errors
+      $scope.errors = {};
+      document.getElementById('error').classList.add('hide');
+
+      // request the popular queues
       lineUpAPIService.getPopularQueues().
         success(function (data, status, headers, config) {
           roundMultipleTimes(data.queue_info_list);
           $scope.queueInfos = data.queue_info_list;
         }).
         error(function (data, status, headers, config) {
+          console.log("LKDJFLKDSJFLKSJDFLKDSFJ");
           // unrecoverable server error
-          alert("Something went wrong with the popular queue request! \nStatus: " + status);
+          $scope.errors.error_message = "Something went wrong. Popular Queues could not be retrieved at this time."
+          document.getElementById('error').classList.remove('hide');
       });
     };
     $scope.getPopularQueues();
@@ -365,7 +374,7 @@ angular.module('LineUpApp.controllers', []).
 						div.innerHTML = "YOU'RE IN FRONT!";
 					} else if( size < 5 && size >= 2 ) {
 						div.innerHTML = "YOU";
-					}	
+					}
 				}
 				bar.appendChild(div);
 			}
@@ -386,7 +395,7 @@ angular.module('LineUpApp.controllers', []).
         autoRefresh = undefined;
       }
     })
-    
+
     // Send request to the server to remove yourself from the queue
     $scope.leaveQueue = function () {
       lineUpAPIService.leaveQueue($routeParams.qid).
@@ -558,7 +567,7 @@ angular.module('LineUpApp.controllers', []).
 			});
 		}
 		$scope.disableDemote();
-		
+
 		// Redirects to edit queue page.
 		$scope.redirectToEditQueue = function () {
 			$location.path('/edit/' + $routeParams.qid);
@@ -585,7 +594,7 @@ angular.module('LineUpApp.controllers', []).
             if (data.permission_level != PERMISSION_ADMIN) {
               document.getElementById('btn-settings').classList.add('disabled');
             }
-						
+
 						var buttons = [];
 						buttons.push(document.getElementById("btn-remove-first"));
 						buttons.push(document.getElementById("btn-view-details"));
