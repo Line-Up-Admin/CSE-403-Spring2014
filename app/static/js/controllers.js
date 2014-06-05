@@ -252,6 +252,10 @@ angular.module('LineUpApp.controllers', []).
     // Sends search query to the server and fills the search results in the
     // HTML
     $scope.search = function () {
+      // clear previous errors
+      $scope.errors = {};
+      document.getElementById('error').classList.add('hide');
+
       if (!$scope.query || $scope.queury == "") {
         document.getElementById("results").innerHTML="Popular Queues";
         $scope.getPopularQueues();
@@ -265,8 +269,9 @@ angular.module('LineUpApp.controllers', []).
             $scope.queueInfos = data.queue_info_list;
           }).
           error(function (data, status, headers, config) {
-            // not an error we are prepared to handle
-            $location.path("/error");
+            // unrecoverable server error
+            $scope.errors.error_message = "Something went wrong. Search Results could not be retrieved at this time."
+            document.getElementById('error').classList.remove('hide');
         });
     }
 
@@ -287,7 +292,6 @@ angular.module('LineUpApp.controllers', []).
           $scope.queueInfos = data.queue_info_list;
         }).
         error(function (data, status, headers, config) {
-          console.log("LKDJFLKDSJFLKSJDFLKDSFJ");
           // unrecoverable server error
           $scope.errors.error_message = "Something went wrong. Popular Queues could not be retrieved at this time."
           document.getElementById('error').classList.remove('hide');
