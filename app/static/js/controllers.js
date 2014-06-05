@@ -592,28 +592,46 @@ angular.module('LineUpApp.controllers', []).
     };
 
     // Sends an admin view request to the server.
+		// Param: flag >>> -1 : called from demote
+		//						 >>>  0 : initial call (page load)
+		//						 >>>  1 : all other calls
     // Upon success: Shows the admin view for the given queue id.
     // Upon error: redirects to an error page.
-    $scope.getDetailedQueueInfo = function (prevIndex) {
+    $scope.getDetailedQueueInfo = function (prevMember) {
       lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
         success(function (data, status, headers, config) {
           if (data.SUCCESS) {
             // only available to admins of this queue
             roundTimes(data.queue_info);
-            $scope.queueInfo = data.queue_info;
+						
+						var prevIndex = findUser(prevMember);
+            
+						//update scope variables to server objects
+						$scope.queueInfo = data.queue_info;
             $scope.member_list = data.member_list;
 
+						var currIndex = findUser(prevMember);
+						
+						if( prevIndex == currIndex ) {
+							$scope.selectedUser = $scope.member_list[prevIndex];
+						} else if( prevIndex != currIndex && currIndex != -1 ) {
+							$scope.selectedUser = $scope.member_list[currIndex];
+						} else if( currIndex == -1 ) {
+							$scope.selectedUser = $scope.member_list[-1];
+						}
+						
             // Hide the settings button if not an admin
             if (data.permission_level != PERMISSION_ADMIN) {
               document.getElementById('btn-settings').classList.add('disabled');
             }
 
+						// disables buttons if no-one is in the queue
             var buttons = [];
             buttons.push(document.getElementById("btn-remove-first"));
             buttons.push(document.getElementById("btn-view-details"));
             buttons.push(document.getElementById("btn-remove"));
             var dequeueButton = document.getElementById("btn-remove-first");
-            if( $scope.member_list.length == 0 ) {
+            if( $scope.member_list.length == 0 || $scope.selectedUser == undefined) {
               for( var i = 0; i < buttons.length; i++ ) {
                 buttons[i].disabled = true;
               }
@@ -622,7 +640,8 @@ angular.module('LineUpApp.controllers', []).
                 buttons[i].disabled = false;
               }
             }
-
+						
+						//sets the value and content of the open/close queue button
             var button = document.getElementById("btn-close-queue");
             if( $scope.queueInfo.active == 0 ) {
               $scope.setActiveStatusTo = "Open Queue";
@@ -634,8 +653,6 @@ angular.module('LineUpApp.controllers', []).
               $scope.close_icon = "glyphicon glyphicon-stop";
               button.value = 0;
             }
-            // gets the selected user
-            $scope.selectedUser = $scope.member_list[prevIndex];
           } else {
               $location.path("/home");
         }
@@ -645,8 +662,21 @@ angular.module('LineUpApp.controllers', []).
           $location.path("/error");
         });
     }
-    $scope.getDetailedQueueInfo(0);
+    $scope.getDetailedQueueInfo($scope.selectedUser);
 
+		function findUser(prevMember) {
+			var index = -1;
+			if( prevMember != undefined ) {
+				for( var j = 0; j < $scope.member_list.length; j++ ) {
+					if( $scope.member_list[j].uid == prevMember.uid) {
+						index = j;
+						break;
+					}
+				}
+			}
+			return index;
+		}
+		
     // shows the window to the user offering to dequeue the person at the front
     $scope.showDequeueModal = function () {
       // get the user at the front of the queue
@@ -676,7 +706,7 @@ angular.module('LineUpApp.controllers', []).
           }
 
           // refresh the queue data
-          $scope.getDetailedQueueInfo(0);
+          $scope.getDetailedQueueInfo($scope.selectedUser);
         }).
         error(function (data, status, headers, config) {
           // not an error we are prepared to handle
@@ -698,7 +728,7 @@ angular.module('LineUpApp.controllers', []).
       lineUpAPIService.dequeueSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.selectedUser.uid }).
         success(function (data, status, headers, config) {
           // refresh the queue data
-          $scope.getDetailedQueueInfo($scope.member_list.indexOf($scope.selectedUser));
+          $scope.getDetailedQueueInfo($scope.selectedUser);
         }).
         error(function (data, status, headers, config) {
           // not an error we are prepared to handle
@@ -727,7 +757,7 @@ angular.module('LineUpApp.controllers', []).
 
           if (data.SUCCESS) {
             // refresh the queue
-            $scope.getDetailedQueueInfo($scope.member_list.indexOf($scope.selectedUser));
+            $scope.getDetailedQueueInfo($scope.selectedUser);
 
             // close the window
             $("#addModal").modal('toggle');
@@ -766,7 +796,7 @@ angular.module('LineUpApp.controllers', []).
         lineUpAPIService.demoteSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.selectedUser.uid }).
           success(function (data, status, headers, config) {
             // refresh the queue
-            $scope.getDetailedQueueInfo($scope.member_list.indexOf($scope.selectedUser)+1);
+            $scope.getDetailedQueueInfo($scope.selectedUser);
           }).
           error(function (data, status, headers, config) {
             // this is not an error we are prepared to handle
@@ -819,7 +849,7 @@ angular.module('LineUpApp.controllers', []).
 
     // create an auto refresh interval
     var autoRefresh = $interval(function () {
-       $scope.getDetailedQueueInfo($scope.member_list.indexOf($scope.selectedUser));
+       $scope.getDetailedQueueInfo($scope.selectedUser);
      } , REFRESH_INTERVAL);
 
     // stop the autoRefresh interval when this iFrame is destroyed
