@@ -22,6 +22,7 @@ var roundMultipleTimes = function (data) {
 var PERMISSION_ADMIN = 3;
 var PERMISSION_MANAGER = 1;
 var PERMISSION_NONE = 0;
+var REFRESH_INTERVAL = 2000;
 
 /*
 This file contains all controllers for the all web pages.  A single controller
@@ -40,19 +41,19 @@ angular.module('LineUpApp.controllers', []).
      // this assignment gives the headerController's $scope access to the displayHelp function
      // of whichever page loaded it.
      $scope.displayHelp = $scope.$parent.displayHelp;
-		 $scope.userInfo = {};
-		 $scope.getCurrentUser = function () {
-			 lineUpAPIService.getCurrentUser().
-				success(function (data, status, headers, config) {
-					if( data.SUCCESS ) {
-						$scope.userInfo = data;
-					}
-				}).
-				error(function (data, status, headers, config) {
-					// not an eventuality we are prepared to handle
-				});
-		 }
-		 $scope.getCurrentUser();
+     $scope.userInfo = {};
+     $scope.getCurrentUser = function () {
+       lineUpAPIService.getCurrentUser().
+        success(function (data, status, headers, config) {
+          if( data.SUCCESS ) {
+            $scope.userInfo = data;
+          }
+        }).
+        error(function (data, status, headers, config) {
+          // not an eventuality we are prepared to handle
+        });
+     }
+     $scope.getCurrentUser();
   }).
 
   // Controller for the #/create_queue route
@@ -77,7 +78,7 @@ angular.module('LineUpApp.controllers', []).
       $scope.queue.active = 1;
 
       // send the request
-			lineUpAPIService.createQueue($scope.queue).
+      lineUpAPIService.createQueue($scope.queue).
         success(function (data, status, headers, config) {
           if (data.SUCCESS) {
             // load the queue admin page
@@ -123,12 +124,12 @@ angular.module('LineUpApp.controllers', []).
             // login unsuccessful, display error
             $scope.error = data.error_message;
             document.getElementById('error').classList.remove('hide');
-					}
+          }
         }).
         error(function (data, status, headers, config) {
           // unrecoverable server error
           $location.path("/");
-					document.getElementById('error').classList.remove('hide');
+          document.getElementById('error').classList.remove('hide');
         });
     };
   }).
@@ -200,7 +201,7 @@ angular.module('LineUpApp.controllers', []).
     $scope.displayHelp = function () {
             $("#help-modal").modal('toggle');
     };
-		// Sends a user queue request to the server.
+    // Sends a user queue request to the server.
     // Upon success: Loads the user queues to the requisite scope fields.
     // Upon error: redirect to the error page.
     $scope.getUsersQueues = function () {
@@ -307,7 +308,7 @@ angular.module('LineUpApp.controllers', []).
   controller('queueInfoController', function ($scope, $route, lineUpAPIService, $routeParams, $location, $interval) {
     $scope.optional_data = "";
     $scope.uname = "";
-		$scope.locationLink = "";
+    $scope.locationLink = "";
 
     // show the help slide-in modal
     $scope.displayHelp = function () {
@@ -324,8 +325,8 @@ angular.module('LineUpApp.controllers', []).
           roundTimes(data);
           $scope.queue = data;
           if (data.location != null) {
-					  var location = data.location.split(" ").join("%20");
-					  $scope.locationLink = "http://maps.google.com/?q=" + location;
+            var location = data.location.split(" ").join("%20");
+            $scope.locationLink = "http://maps.google.com/?q=" + location;
           } else {
             $scope.locationLink = "";
           }// hide all elements
@@ -338,51 +339,51 @@ angular.module('LineUpApp.controllers', []).
           } else {
             // show elements for the user that is in the queue
             document.getElementById('enqueued').classList.remove('hide');
-						if( data.member_position + 1 == data.size ) {
-							document.getElementById('btn-postpone').disabled = true;
-							console.log(document.getElementById('btn-postpone').disabled);
-						} else {
-							document.getElementById('btn-postpone').disabled = false;
-						}
-						$scope.progressBar();
+            if( data.member_position + 1 == data.size ) {
+              document.getElementById('btn-postpone').disabled = true;
+              console.log(document.getElementById('btn-postpone').disabled);
+            } else {
+              document.getElementById('btn-postpone').disabled = false;
+            }
+            $scope.progressBar();
           }
 
-					if (data.active == 0 ) {
-						document.getElementById("btn-join").disabled = true;
-						document.getElementById("closed-message").classList.remove('hide');
-					}
-				}).
+          if (data.active == 0 ) {
+            document.getElementById("btn-join").disabled = true;
+            document.getElementById("closed-message").classList.remove('hide');
+          }
+        }).
         error(function (data, status, headers, config) {
           // not an error we are prepared to handle
           $location.path("/error");
         });
     };
 
-		$scope.progressBar = function () {
-			var size = $scope.queue.size;
-			var bar = document.getElementById("progress");
+    $scope.progressBar = function () {
+      var size = $scope.queue.size;
+      var bar = document.getElementById("progress");
 
-			while( bar.firstChild ) {
-				bar.removeChild(bar.firstChild);
-			}
-			var width = 100.0 / size;
-			var widthPercentage = width + "%";
-			for(var i=0; i<size; i++) {
-				var div = document.createElement("div");
-				div.classList.add("progress-bar-section");
-				div.style.width = widthPercentage;
-				div.innerHTML = "&nbsp";
-				if( size - 1 - i == $scope.queue.member_position ) {
-					div.classList.add("current-user");
-					if( size == 1 ) {
-						div.innerHTML = "YOU'RE IN FRONT!";
-					} else if( size < 5 && size >= 2 ) {
-						div.innerHTML = "YOU";
-					}
-				}
-				bar.appendChild(div);
-			}
-		}
+      while( bar.firstChild ) {
+        bar.removeChild(bar.firstChild);
+      }
+      var width = 100.0 / size;
+      var widthPercentage = width + "%";
+      for(var i=0; i<size; i++) {
+        var div = document.createElement("div");
+        div.classList.add("progress-bar-section");
+        div.style.width = widthPercentage;
+        div.innerHTML = "&nbsp";
+        if( size - 1 - i == $scope.queue.member_position ) {
+          div.classList.add("current-user");
+          if( size == 1 ) {
+            div.innerHTML = "YOU'RE IN FRONT!";
+          } else if( size < 5 && size >= 2 ) {
+            div.innerHTML = "YOU";
+          }
+        }
+        bar.appendChild(div);
+      }
+    }
 
     // This should load immediately when this controller is used
     $scope.queueStatus();
@@ -390,7 +391,7 @@ angular.module('LineUpApp.controllers', []).
     // This interval will update the queue information every 2 seconds
      var autoRefresh = $interval(function() {
        $scope.queueStatus();
-     } , 2000);
+     } , REFRESH_INTERVAL);
 
     // stop the autoRefresh interval when this iFrame is destroyed
     $scope.$on('$destroy', function() {
@@ -422,13 +423,13 @@ angular.module('LineUpApp.controllers', []).
           if(data.SUCCESS) {
             roundTimes(data);
             $scope.queue = data;
-						$scope.progressBar();
-						if( data.member_position + 1 == data.size ) {
-							document.getElementById('btn-postpone').disabled = true;
-							console.log(document.getElementById('btn-postpone').disabled);
-						} else {
-							document.getElementById('btn-postpone').disabled = false;
-						}
+            $scope.progressBar();
+            if( data.member_position + 1 == data.size ) {
+              document.getElementById('btn-postpone').disabled = true;
+              console.log(document.getElementById('btn-postpone').disabled);
+            } else {
+              document.getElementById('btn-postpone').disabled = false;
+            }
           }
         }).
         error(function (data, status, header, config) {
@@ -491,13 +492,13 @@ angular.module('LineUpApp.controllers', []).
    Controller for the edit/queueID route controls data and user interaction
    for that route
   */
-	controller('editQueueController', function ($scope, lineUpAPIService, $routeParams, $location, $route) {
-		$scope.queue = {};
+  controller('editQueueController', function ($scope, lineUpAPIService, $routeParams, $location, $route) {
+    $scope.queue = {};
 
     // populate the form fields with the existing queue settings
-		$scope.fillFormFields = function () {
-			lineUpAPIService.getQueueSettings($routeParams.qid).
-				success(function (data, status, headers, config) {
+    $scope.fillFormFields = function () {
+      lineUpAPIService.getQueueSettings($routeParams.qid).
+        success(function (data, status, headers, config) {
           // convert the arrays of users to a string of comma seperated values
           if (data.admins) {
             var admins_str = data.admins[0];
@@ -515,127 +516,127 @@ angular.module('LineUpApp.controllers', []).
             data.managers = managers_str;
           }
 
-					$scope.queue = data;
-				}).
-				error(function (data, status, headers, config) {
+          $scope.queue = data;
+        }).
+        error(function (data, status, headers, config) {
           // unrecoverable server error
-					alert("Something went wrong with the form fill request!\nStatus: " + status);
-				});
-		};
+          alert("Something went wrong with the form fill request!\nStatus: " + status);
+        });
+    };
     $scope.fillFormFields();
 
     // send the updated settings to the server
-		$scope.editQueue = function () {
+    $scope.editQueue = function () {
       // clear any old errors
       $scope.errors = {};
-		  lineUpAPIService.editQueue({ 'qid': $routeParams.qid, 'q_settings': $scope.queue }).
-				success(function (data, status, headers, config) {
+      lineUpAPIService.editQueue({ 'qid': $routeParams.qid, 'q_settings': $scope.queue }).
+        success(function (data, status, headers, config) {
           if (data.SUCCESS) {
             // redirect back to the admin view
             $location.path('/admin/' + $routeParams.qid);
           } else {
             $scope.errors = data;
           }
-				}).
-				error(function (data, status, headers, config) {
-					// not an error we are prepared to handle
+        }).
+        error(function (data, status, headers, config) {
+          // not an error we are prepared to handle
           $location.path("/error");
-				});
-		  }
+        });
+      }
   }).
 
   /*
    Controller for the #/admin route controls data and user interaction
    for that route
   */
-	controller('adminViewController', function ($scope, lineUpAPIService, $location, $routeParams, $route) {
-		$scope.selectedUser;
-		$scope.activeStatus = "OPEN";
-		$scope.user = {};
-		$scope.queueInfo = {};
+  controller('adminViewController', function ($scope, lineUpAPIService, $location, $routeParams, $route, $interval) {
+    $scope.selectedUser;
+    $scope.activeStatus = "OPEN";
+    $scope.user = {};
+    $scope.queueInfo = {};
     $scope.errors = {};
-		$scope.member_list = [];
-		$scope.setActiveStatusTo = "Close Queue";
+    $scope.member_list = [];
+    $scope.setActiveStatusTo = "Close Queue";
     $scope.qid = $routeParams.qid;
-		$scope.close_icon = "glyphicon glyphicon-stop";
+    $scope.close_icon = "glyphicon glyphicon-stop";
 
-		$scope.disableDemote = function () {
-			var list = document.getElementById("list-group");
-			list.addEventListener("click", function () {
-				var demoteButton = document.getElementById("btn-demote");
-				if( list.selectedIndex + 1 == list.options.length ) {
-					demoteButton.disabled = true;
-				} else if( demoteButton.disabled ) {
-					demoteButton.disabled = false;
-				}
-			});
-		}
-		$scope.disableDemote();
+    $scope.disableDemote = function () {
+      var list = document.getElementById("list-group");
+      list.addEventListener("click", function () {
+        var demoteButton = document.getElementById("btn-demote");
+        if( list.selectedIndex + 1 == list.options.length ) {
+          demoteButton.disabled = true;
+        } else if( demoteButton.disabled ) {
+          demoteButton.disabled = false;
+        }
+      });
+    }
+    $scope.disableDemote();
 
-		// Redirects to edit queue page.
-		$scope.redirectToEditQueue = function () {
-			$location.path('/edit/' + $routeParams.qid);
-		}
+    // Redirects to edit queue page.
+    $scope.redirectToEditQueue = function () {
+      $location.path('/edit/' + $routeParams.qid);
+    }
 
     // show the help slide-in modal
     $scope.displayHelp = function () {
       $("#help-modal").modal('toggle');
     };
 
-		// Sends an admin view request to the server.
+    // Sends an admin view request to the server.
     // Upon success: Shows the admin view for the given queue id.
     // Upon error: redirects to an error page.
-		$scope.getDetailedQueueInfo = function () {
-			lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
-				success(function (data, status, headers, config) {
+    $scope.getDetailedQueueInfo = function () {
+      lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
+        success(function (data, status, headers, config) {
           if (data.SUCCESS) {
             // only available to admins of this queue
             roundTimes(data.queue_info);
-  					$scope.queueInfo = data.queue_info;
-  					$scope.member_list = data.member_list;
+            $scope.queueInfo = data.queue_info;
+            $scope.member_list = data.member_list;
 
             // Hide the settings button if not an admin
             if (data.permission_level != PERMISSION_ADMIN) {
               document.getElementById('btn-settings').classList.add('disabled');
             }
 
-						var buttons = [];
-						buttons.push(document.getElementById("btn-remove-first"));
-						buttons.push(document.getElementById("btn-view-details"));
-						buttons.push(document.getElementById("btn-remove"));
-  					var dequeueButton = document.getElementById("btn-remove-first");
-  					if( $scope.member_list.length == 0 ) {
-  						for( var i = 0; i < buttons.length; i++ ) {
-								buttons[i].disabled = true;
-							}
-  					} else {
-  						for( var i = 0; i < buttons.length; i++ ) {
-								buttons[i].disabled = false;
-							}
-  					}
+            var buttons = [];
+            buttons.push(document.getElementById("btn-remove-first"));
+            buttons.push(document.getElementById("btn-view-details"));
+            buttons.push(document.getElementById("btn-remove"));
+            var dequeueButton = document.getElementById("btn-remove-first");
+            if( $scope.member_list.length == 0 ) {
+              for( var i = 0; i < buttons.length; i++ ) {
+                buttons[i].disabled = true;
+              }
+            } else {
+              for( var i = 0; i < buttons.length; i++ ) {
+                buttons[i].disabled = false;
+              }
+            }
 
-  					var button = document.getElementById("btn-close-queue");
-  					if( $scope.queueInfo.active == 0 ) {
-  						$scope.setActiveStatusTo = "Open Queue";
-  						button.value = 1;
-							$scope.close_icon = "glyphicon glyphicon-play";
-  						$scope.activeStatus = "CLOSED";
-  					} else {
-  						$scope.setActiveStatusTo = "Close Queue";
-							$scope.close_icon = "glyphicon glyphicon-stop";
-  						button.value = 0;
-  					}
-  					// gets the selected user
-  					$scope.selectedUser = $scope.member_list[0];
+            var button = document.getElementById("btn-close-queue");
+            if( $scope.queueInfo.active == 0 ) {
+              $scope.setActiveStatusTo = "Open Queue";
+              button.value = 1;
+              $scope.close_icon = "glyphicon glyphicon-play";
+              $scope.activeStatus = "CLOSED";
+            } else {
+              $scope.setActiveStatusTo = "Close Queue";
+              $scope.close_icon = "glyphicon glyphicon-stop";
+              button.value = 0;
+            }
+            // gets the selected user
+            $scope.selectedUser = $scope.member_list[0];
           } else {
               $location.path("/home");
         }
-				}).
-				error(function (data, status, headers, config) {
-					// not an error we are prepared to handle
+        }).
+        error(function (data, status, headers, config) {
+          // not an error we are prepared to handle
           $location.path("/error");
-				});
-		}
+        });
+    }
     $scope.getDetailedQueueInfo();
 
     // shows the window to the user offering to dequeue the person at the front
@@ -650,12 +651,12 @@ angular.module('LineUpApp.controllers', []).
       $("#dequeue-modal").modal('toggle');
     }
 
-		// Sends a dequeue request to the server.
+    // Sends a dequeue request to the server.
     // Upon success: Dequeues the first person in line.
     // Upon error: redirect to the error page.
-		$scope.dequeueFirstPerson = function () {
+    $scope.dequeueFirstPerson = function () {
       lineUpAPIService.dequeueFirstPerson($routeParams.qid, $scope.userDetails).
-				success(function (data, status, headers, config) {
+        success(function (data, status, headers, config) {
           if (data.SUCCESS) {
             // close the modal
             $("#dequeue-modal").modal('toggle');
@@ -668,12 +669,12 @@ angular.module('LineUpApp.controllers', []).
 
           // refresh the queue data
           $scope.getDetailedQueueInfo();
-				}).
-				error(function (data, status, headers, config) {
-					// not an error we are prepared to handle
+        }).
+        error(function (data, status, headers, config) {
+          // not an error we are prepared to handle
           $location.path("/error");
-				});
-		}
+        });
+    }
 
     //
     $scope.dequeueCancel = function () {
@@ -682,26 +683,26 @@ angular.module('LineUpApp.controllers', []).
       document.getElementById('dequeue-confirm').classList.remove('disabled');
     }
 
-		// Sends a remove request to the server.
+    // Sends a remove request to the server.
     // Upon success: removes the selected person from the line.
     // Upon Error: redirect to the error page.
-		$scope.dequeueSelectPerson = function () {
-			lineUpAPIService.dequeueSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.selectedUser.uid }).
-				success(function (data, status, headers, config) {
+    $scope.dequeueSelectPerson = function () {
+      lineUpAPIService.dequeueSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.selectedUser.uid }).
+        success(function (data, status, headers, config) {
           // refresh the queue data
           $scope.getDetailedQueueInfo();
-				}).
-				error(function (data, status, headers, config) {
-					// not an error we are prepared to handle
+        }).
+        error(function (data, status, headers, config) {
+          // not an error we are prepared to handle
           $location.path("/error");
-				});
-		}
+        });
+    }
 
-		// Opens a modal dialog that prompts for the name and the optional data.
+    // Opens a modal dialog that prompts for the name and the optional data.
     // Sends a request to the server to add that name to the queue.
     // Upon Success: the name has been added to the queue
     // Upon Error: redirect to the error page.
-		$scope.adminAdd = function () {
+    $scope.adminAdd = function () {
       $scope.errors = {};
 
       // ensure that we send json data with both values
@@ -713,7 +714,7 @@ angular.module('LineUpApp.controllers', []).
       }
 
       // send the request
-			lineUpAPIService.enqueue($routeParams.qid, $scope.user).
+      lineUpAPIService.enqueue($routeParams.qid, $scope.user).
         success(function (data, status, headers, config) {
 
           if (data.SUCCESS) {
@@ -732,18 +733,18 @@ angular.module('LineUpApp.controllers', []).
               document.getElementById('error').classList.remove('hide');
             }
           }
-				}).
+        }).
         error(function (data, status, headers, config) {
           // this is not an error we are prepared to handle
           $location.path("/error");
         });
-		}
+    }
 
     // closes the add user modal window
     $scope.dismissAddModal = function () {
       // clear the error messsages
       $scope.errors = {};
-			document.getElementById('error').classList.add('hide');
+      document.getElementById('error').classList.add('hide');
       $scope.user = {};
 
       // close the modal window
@@ -751,53 +752,53 @@ angular.module('LineUpApp.controllers', []).
     }
 
     // sends a request to the server to move the user back one position
-		$scope.demoteSelectPerson = function () {
-			var selectIndex = document.getElementById("list-group").options.selectedIndex;
-			if( selectIndex != $scope.member_list.length - 1 ) {
-				lineUpAPIService.demoteSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.selectedUser.uid }).
-					success(function (data, status, headers, config) {
-						// refresh the queue
-						$scope.getDetailedQueueInfo();
-					}).
-					error(function (data, status, headers, config) {
-						// this is not an error we are prepared to handle
-						$location.path("/error");
-					});
-			} else {
-				alert("user is already at end of queue!");
-			}
-		}
+    $scope.demoteSelectPerson = function () {
+      var selectIndex = document.getElementById("list-group").options.selectedIndex;
+      if( selectIndex != $scope.member_list.length - 1 ) {
+        lineUpAPIService.demoteSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.selectedUser.uid }).
+          success(function (data, status, headers, config) {
+            // refresh the queue
+            $scope.getDetailedQueueInfo();
+          }).
+          error(function (data, status, headers, config) {
+            // this is not an error we are prepared to handle
+            $location.path("/error");
+          });
+      } else {
+        alert("user is already at end of queue!");
+      }
+    }
 
-		// Sends a request to toggle the queue's active status to the server.
+    // Sends a request to toggle the queue's active status to the server.
     // Upon success: toggles the queue to open or closed depending on prev state.
     // Upon error: redirects to an error page.
-		$scope.setActive = function() {
+    $scope.setActive = function() {
       // get the button
-			var button = document.getElementById("btn-close-queue");
-			var targetActiveStatus = button.value;
+      var button = document.getElementById("btn-close-queue");
+      var targetActiveStatus = button.value;
 
       // send the request
-			lineUpAPIService.setActive($routeParams.qid, targetActiveStatus).
+      lineUpAPIService.setActive($routeParams.qid, targetActiveStatus).
         success(function (data, status, headers, config) {
-					if (targetActiveStatus == 0) {
+          if (targetActiveStatus == 0) {
             // the queue is closed
-						$scope.setActiveStatusTo = "Open Queue";
-						button.value = 1;
-						$scope.close_icon = "glyphicon glyphicon-play";
-						$scope.activeStatus = "CLOSED";
-					} else {
+            $scope.setActiveStatusTo = "Open Queue";
+            button.value = 1;
+            $scope.close_icon = "glyphicon glyphicon-play";
+            $scope.activeStatus = "CLOSED";
+          } else {
             // the queue is open
-						$scope.setActiveStatusTo = "Close Queue";
-						button.value = 0;
-						$scope.close_icon = "glyphicon glyphicon-stop";
-						$scope.activeStatus = "OPEN";
-					}
-				}).
+            $scope.setActiveStatusTo = "Close Queue";
+            button.value = 0;
+            $scope.close_icon = "glyphicon glyphicon-stop";
+            $scope.activeStatus = "OPEN";
+          }
+        }).
         error(function (data, status, headers, config) {
           // this is not an error we are prepared to handle
           $location.path("/error");
         });
-		}
+    }
 
     // open the user details modal window
     $scope.viewDetails = function () {
@@ -807,5 +808,18 @@ angular.module('LineUpApp.controllers', []).
         $("#details-modal").modal('toggle');
       }
     }
-	});
+
+    // create an auto refresh interval
+    var autoRefresh = $interval(function () {
+       $scope.getDetailedQueueInfo();
+     } , REFRESH_INTERVAL);
+
+    // stop the autoRefresh interval when this iFrame is destroyed
+    $scope.$on('$destroy', function () {
+      if (angular.isDefined(autoRefresh)) {
+        $interval.cancel(autoRefresh);
+        autoRefresh = undefined;
+      }
+    })
+  });
 }());
