@@ -5,7 +5,7 @@ CSE 403 Spring 2014 -- Team Aphrodite
 
 www.line-up.us
 
-Current Version Number: Release Candidate
+Current Version Number: 1.0
 
 For infomation regarding the development and depoloyment of our project, 
 view the [development website](https://github.com/Line-Up-Admin/CSE-403-Spring2014/wiki).
