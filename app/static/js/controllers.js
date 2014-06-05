@@ -494,9 +494,14 @@ angular.module('LineUpApp.controllers', []).
   */
   controller('editQueueController', function ($scope, lineUpAPIService, $routeParams, $location, $route) {
     $scope.queue = {};
+    $scope.errors = {};
 
     // populate the form fields with the existing queue settings
     $scope.fillFormFields = function () {
+      // clear any old errors
+      $scope.errors = {};
+      document.getElementById('error').classList.add('hide');
+
       lineUpAPIService.getQueueSettings($routeParams.qid).
         success(function (data, status, headers, config) {
           // convert the arrays of users to a string of comma seperated values
@@ -520,7 +525,8 @@ angular.module('LineUpApp.controllers', []).
         }).
         error(function (data, status, headers, config) {
           // unrecoverable server error
-          alert("Something went wrong with the form fill request!\nStatus: " + status);
+          $scope.errors.error_message = "Something went wrong. Queue settings could not be retrieved at this time."
+          document.getElementById('error').classList.remove('hide');
         });
     };
     $scope.fillFormFields();
@@ -529,6 +535,7 @@ angular.module('LineUpApp.controllers', []).
     $scope.editQueue = function () {
       // clear any old errors
       $scope.errors = {};
+
       lineUpAPIService.editQueue({ 'qid': $routeParams.qid, 'q_settings': $scope.queue }).
         success(function (data, status, headers, config) {
           if (data.SUCCESS) {
