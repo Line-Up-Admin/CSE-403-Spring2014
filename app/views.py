@@ -120,7 +120,9 @@ def add_to_queue():
    else:
       temp = True
       temp_user = dict()
-      temp_user['uname'] = request.json['uname']
+      temp_user['uname'] = (request.json['uname']).strip()
+      if temp_user['uname'] is None or len(temp_user['uname']) == 0:
+         return jsonify(Failure('User Name is required.'))
       try:
          temp_user['id'] = db_util.create_temp_user(temp_user)
       except sqlite3.Error as e:
