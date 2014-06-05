@@ -47,10 +47,6 @@ angular.module('LineUpApp.services', []).
       return $http.post('/getQueueSettings', qid);
     }
 
-   // lineUpAPI.modifyQueue = function (queueSettings) {
-   //   return $http.post('/modifyQueue', queueSettings);
-   // }
-
     /*
       param:
       'qid' - a unique number identifier of a queue
@@ -59,13 +55,14 @@ angular.module('LineUpApp.services', []).
 			return $http.post('/managerView/' + qid);
 		}
 
-    /* FINSISH COMMENTING THIS ONCE CHANGES ARE COMMITTED
+    /*
       param:
       'qid' - a unique number identifier of a queue
       'userDetails' - a dictionary with 3 fields:
-        1. username -
-        2. optionaldata -
-        3. uid -
+        1. username - the name that will the client thinks they are dequeing
+        2. optionaldata - the optional data for the user that
+        the client thinks they are dequeing
+        3. uid - the uid for the user that the client thinks they are dequeing
     */
 		lineUpAPI.dequeueFirstPerson = function (qid, userDetails) {
 			return $http.post('/dequeue/' + qid, userDetails);
@@ -183,6 +180,8 @@ angular.module('LineUpApp.services', []).
     return lineUpAPI;
   }).
 
+
+  // Service used for the login and create account pages.
   service('lineUpUserService', function ($http) {
     var userData = { uname: "", pw: "" };
 
