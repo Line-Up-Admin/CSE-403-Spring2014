@@ -309,12 +309,12 @@ angular.module('LineUpApp.controllers', []).
     $scope.optional_data = "";
     $scope.uname = "";
     $scope.locationLink = "";
-		
+
     // show the help slide-in modal
     $scope.displayHelp = function () {
       $("#help-modal").modal('toggle');
     };
-		
+
     // Request the details of this queue from the server.
     // On success: Display the correct view based on the user being in the
     // queue or not.
@@ -341,7 +341,6 @@ angular.module('LineUpApp.controllers', []).
             document.getElementById('enqueued').classList.remove('hide');
             if( data.member_position + 1 == data.size ) {
               document.getElementById('btn-postpone').disabled = true;
-              console.log(document.getElementById('btn-postpone').disabled);
             } else {
               document.getElementById('btn-postpone').disabled = false;
             }
@@ -427,7 +426,6 @@ angular.module('LineUpApp.controllers', []).
             $scope.progressBar();
             if( data.member_position + 1 == data.size ) {
               document.getElementById('btn-postpone').disabled = true;
-              console.log(document.getElementById('btn-postpone').disabled);
             } else {
               document.getElementById('btn-postpone').disabled = false;
             }
@@ -461,7 +459,7 @@ angular.module('LineUpApp.controllers', []).
           }
       }
     }
-		
+
     // Sends a request to the server to join the queue
     // Upon success: Updates the current queueInfos array to store the results
     // of the request.
@@ -603,15 +601,15 @@ angular.module('LineUpApp.controllers', []).
           if (data.SUCCESS) {
             // only available to admins of this queue
             roundTimes(data.queue_info);
-						
+
 						var prevIndex = findUser(prevMember);
-            
+
 						//update scope variables to server objects
 						$scope.queueInfo = data.queue_info;
             $scope.member_list = data.member_list;
 
 						var currIndex = findUser(prevMember);
-						
+
 						if( prevIndex == currIndex ) {
 							$scope.selectedUser = $scope.member_list[prevIndex];
 						} else if( prevIndex != currIndex && currIndex != -1 ) {
@@ -619,7 +617,7 @@ angular.module('LineUpApp.controllers', []).
 						} else if( currIndex == -1 ) {
 							$scope.selectedUser = $scope.member_list[-1];
 						}
-						
+
             // Hide the settings button if not an admin
             if (data.permission_level != PERMISSION_ADMIN) {
               document.getElementById('btn-settings').classList.add('disabled');
@@ -640,7 +638,7 @@ angular.module('LineUpApp.controllers', []).
                 buttons[i].disabled = false;
               }
             }
-						
+
 						//sets the value and content of the open/close queue button
             var button = document.getElementById("btn-close-queue");
             if( $scope.queueInfo.active == 0 ) {
@@ -676,7 +674,7 @@ angular.module('LineUpApp.controllers', []).
 			}
 			return index;
 		}
-		
+
     // shows the window to the user offering to dequeue the person at the front
     $scope.showDequeueModal = function () {
       // get the user at the front of the queue
