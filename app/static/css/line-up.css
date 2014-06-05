@@ -184,6 +184,16 @@ h1.page-content-header { /* login_home, search_queues, found_queues */
 	padding-right: 4px;
 }
 
+.queue-status-image {
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+.qtracks-image {
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
 .front {
 	width: 84%;
 	font-size: 1em;

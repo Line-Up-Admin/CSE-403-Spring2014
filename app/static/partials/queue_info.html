@@ -13,9 +13,9 @@
 		 </div>
       <div class="queue-status">
         Expected Wait: {{ queue.expected_wait }} minutes</br>
-        <div id="progress" class="queue-position">
-        </div></br>
-				<div class="front">^</br>Front</div></br>
+        
+        
+        
         Position <div class="member-position-number">{{ queue.member_position + 1 }}</div> of {{ queue.size }}
       </div>
       <p class="buttons_control">
@@ -44,6 +44,10 @@
       </div>
       <div id="error" class="alert alert-danger hide"> {{ errors.error_message }} </div>
     </div>
+    <h3>QTracks:</h3>
+    <div class="qtracks-image">
+			<a href="#/home"><img class="pull-left img-responsive" src="/img/1.png"/></a>
+		</div>
   </div>
   <div class="panel-footer">{{ queue.disclaimer }}</div>
 </div>
