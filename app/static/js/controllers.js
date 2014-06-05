@@ -593,7 +593,7 @@ angular.module('LineUpApp.controllers', []).
     // Sends an admin view request to the server.
     // Upon success: Shows the admin view for the given queue id.
     // Upon error: redirects to an error page.
-    $scope.getDetailedQueueInfo = function () {
+    $scope.getDetailedQueueInfo = function (prevIndex) {
       lineUpAPIService.getDetailedQueueInfo($routeParams.qid).
         success(function (data, status, headers, config) {
           if (data.SUCCESS) {
@@ -634,7 +634,7 @@ angular.module('LineUpApp.controllers', []).
               button.value = 0;
             }
             // gets the selected user
-            $scope.selectedUser = $scope.member_list[0];
+            $scope.selectedUser = $scope.member_list[prevIndex];
           } else {
               $location.path("/home");
         }
@@ -644,7 +644,7 @@ angular.module('LineUpApp.controllers', []).
           $location.path("/error");
         });
     }
-    $scope.getDetailedQueueInfo();
+    $scope.getDetailedQueueInfo(0);
 
     // shows the window to the user offering to dequeue the person at the front
     $scope.showDequeueModal = function () {
@@ -675,7 +675,7 @@ angular.module('LineUpApp.controllers', []).
           }
 
           // refresh the queue data
-          $scope.getDetailedQueueInfo();
+          $scope.getDetailedQueueInfo(0);
         }).
         error(function (data, status, headers, config) {
           // not an error we are prepared to handle
@@ -697,7 +697,7 @@ angular.module('LineUpApp.controllers', []).
       lineUpAPIService.dequeueSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.selectedUser.uid }).
         success(function (data, status, headers, config) {
           // refresh the queue data
-          $scope.getDetailedQueueInfo();
+          $scope.getDetailedQueueInfo($scope.member_list.indexOf($scope.selectedUser));
         }).
         error(function (data, status, headers, config) {
           // not an error we are prepared to handle
@@ -726,7 +726,7 @@ angular.module('LineUpApp.controllers', []).
 
           if (data.SUCCESS) {
             // refresh the queue
-            $scope.getDetailedQueueInfo();
+            $scope.getDetailedQueueInfo($scope.member_list.indexOf($scope.selectedUser));
 
             // close the window
             $("#addModal").modal('toggle');
@@ -765,7 +765,7 @@ angular.module('LineUpApp.controllers', []).
         lineUpAPIService.demoteSelectPerson({ 'qid': $routeParams.qid, 'uid': $scope.selectedUser.uid }).
           success(function (data, status, headers, config) {
             // refresh the queue
-            $scope.getDetailedQueueInfo();
+            $scope.getDetailedQueueInfo($scope.member_list.indexOf($scope.selectedUser)+1);
           }).
           error(function (data, status, headers, config) {
             // this is not an error we are prepared to handle
@@ -818,7 +818,7 @@ angular.module('LineUpApp.controllers', []).
 
     // create an auto refresh interval
     var autoRefresh = $interval(function () {
-       $scope.getDetailedQueueInfo();
+       $scope.getDetailedQueueInfo($scope.member_list.indexOf($scope.selectedUser));
      } , REFRESH_INTERVAL);
 
     // stop the autoRefresh interval when this iFrame is destroyed
