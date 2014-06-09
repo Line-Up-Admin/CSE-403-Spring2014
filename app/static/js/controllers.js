@@ -618,6 +618,12 @@ angular.module('LineUpApp.controllers', []).
 							$scope.selectedUser = $scope.member_list[-1];
 						}
 
+            // If there are poeple in the queue and no one has been selected,
+            // select the first member.
+            if ($scope.member_list.length >= 0 && currIndex == -1) {
+              $scope.selectedUser = $scope.member_list[0];
+            }
+
             // Hide the settings button if not an admin
             if (data.permission_level != PERMISSION_ADMIN) {
               document.getElementById('btn-settings').classList.add('disabled');
@@ -734,7 +740,11 @@ angular.module('LineUpApp.controllers', []).
         });
     }
 
-    // Opens a modal dialog that prompts for the name and the optional data.
+    // focus on the name field when showing the add modal
+    $('#addModal').on('shown.bs.modal', function () {
+      $('#add-name').focus();
+    });
+
     // Sends a request to the server to add that name to the queue.
     // Upon Success: the name has been added to the queue
     // Upon Error: redirect to the error page.
