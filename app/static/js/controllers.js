@@ -310,6 +310,19 @@ angular.module('LineUpApp.controllers', []).
     $scope.uname = "";
     $scope.locationLink = "";
 
+    // focus on the name field when showing the add modal
+    $('#question-modal').on('shown.bs.modal', function () {
+      $('#form-name').focus();
+    });
+
+    // submit form when the enter key is pressed
+    $("#form-name").keypress(function (event) {
+      if (event.which == 13) {
+        event.preventDefault();
+        $scope.joinQueue();
+      }
+    });
+
     // show the help slide-in modal
     $scope.displayHelp = function () {
       $("#help-modal").modal('toggle');
@@ -351,7 +364,7 @@ angular.module('LineUpApp.controllers', []).
             document.getElementById("btn-join").disabled = true;
             document.getElementById("closed-message").classList.remove('hide');
           }
-          document.getElementById('qtracksImg').src="img/qtracks/" + $scope.queue.qid + ".png";
+          // document.getElementById('qtracksImg').src="img/qtracks/" + $scope.queue.qid + ".png";
         }).
         error(function (data, status, headers, config) {
           // not an error we are prepared to handle
@@ -475,6 +488,9 @@ angular.module('LineUpApp.controllers', []).
             document.getElementById('enqueued').classList.remove('hide');
             roundTimes(data);
             $scope.progressBar();
+            if ($('#question-modal').hasClass('in')) {
+              $("#question-modal").modal('toggle');
+            }
           } else {
             $scope.errors = data;
             document.getElementById("error").classList.remove('hide');
@@ -747,9 +763,7 @@ angular.module('LineUpApp.controllers', []).
 
     // submit form when the enter key is pressed
     $("#add-name").keypress(function (event) {
-      console.log("NOT 13");
       if (event.which == 13) {
-        console.log("IT WAS 13");
         event.preventDefault();
         $scope.adminAdd();
       }
