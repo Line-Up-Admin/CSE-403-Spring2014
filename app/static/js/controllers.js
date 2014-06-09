@@ -366,6 +366,10 @@ angular.module('LineUpApp.controllers', []).
           } else {
             document.getElementById("btn-join").disabled = false;
             document.getElementById("closed-message").classList.add('hide');
+						var errorMessage = document.getElementById("error");
+						if( !errorMessage.classList.contains("hide") ) {
+							errorMessage.classList.add("hide");
+						}
           }
           // document.getElementById('qtracksImg').src="img/qtracks/" + $scope.queue.qid + ".png";
         }).
@@ -497,6 +501,7 @@ angular.module('LineUpApp.controllers', []).
           } else {
             $scope.errors = data;
             document.getElementById("error").classList.remove('hide');
+						$("#question-modal").modal('toggle');
           }
         }).
         error(function (data, status, headers, config) {
