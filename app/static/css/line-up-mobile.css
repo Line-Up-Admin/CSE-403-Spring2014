@@ -418,6 +418,10 @@ a .panel-heading:active {
 	padding-right: 0px;
 }
 
+#progress {
+	font-size: 10px;
+}
+
 .position-info {
 	display: inline-block;
 }
