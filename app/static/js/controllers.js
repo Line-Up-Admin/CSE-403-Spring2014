@@ -586,17 +586,18 @@ angular.module('LineUpApp.controllers', []).
     $scope.close_icon = "glyphicon glyphicon-stop";
 
     $scope.disableDemote = function () {
-      var list = document.getElementById("list-group");
-      list.addEventListener("click", function () {
-        var demoteButton = document.getElementById("btn-demote");
+			var demoteButton = document.getElementById("btn-demote");
         if( list.selectedIndex + 1 == list.options.length ) {
           demoteButton.disabled = true;
         } else if( demoteButton.disabled ) {
           demoteButton.disabled = false;
         }
-      });
     }
-    $scope.disableDemote();
+    var list = document.getElementById("list-group");
+    list.addEventListener("click", function () {
+			console.log("last selected user was " + $scope.selectedUser.uname);
+			$scope.disableDemote()
+		});
 
     // Redirects to edit queue page.
     $scope.redirectToEditQueue = function () {
@@ -609,9 +610,7 @@ angular.module('LineUpApp.controllers', []).
     };
 
     // Sends an admin view request to the server.
-		// Param: flag >>> -1 : called from demote
-		//						 >>>  0 : initial call (page load)
-		//						 >>>  1 : all other calls
+		// Param: previous queue member that was selected
     // Upon success: Shows the admin view for the given queue id.
     // Upon error: redirects to an error page.
     $scope.getDetailedQueueInfo = function (prevMember) {
@@ -639,7 +638,7 @@ angular.module('LineUpApp.controllers', []).
 
             // If there are poeple in the queue and no one has been selected,
             // select the first member.
-            if ($scope.member_list.length >= 0 && currIndex == -1) {
+            if ($scope.member_list.length > 0 && currIndex == -1) {
               $scope.selectedUser = $scope.member_list[0];
             }
 
@@ -678,7 +677,8 @@ angular.module('LineUpApp.controllers', []).
             }
           } else {
               $location.path("/home");
-        }
+					}
+					$scope.disableDemote();
         }).
         error(function (data, status, headers, config) {
           // not an error we are prepared to handle
