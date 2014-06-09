@@ -497,6 +497,7 @@ angular.module('LineUpApp.controllers', []).
           } else {
             $scope.errors = data;
             document.getElementById("error").classList.remove('hide');
+						$("#question-modal").modal('toggle');
           }
         }).
         error(function (data, status, headers, config) {
