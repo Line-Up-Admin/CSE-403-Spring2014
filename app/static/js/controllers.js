@@ -745,6 +745,16 @@ angular.module('LineUpApp.controllers', []).
       $('#add-name').focus();
     });
 
+    // submit form when the enter key is pressed
+    $("#add-name").keypress(function (event) {
+      console.log("NOT 13");
+      if (event.which == 13) {
+        console.log("IT WAS 13");
+        event.preventDefault();
+        $scope.adminAdd();
+      }
+    });
+
     // Sends a request to the server to add that name to the queue.
     // Upon Success: the name has been added to the queue
     // Upon Error: redirect to the error page.
