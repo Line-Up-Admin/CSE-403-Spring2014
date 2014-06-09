@@ -363,6 +363,9 @@ angular.module('LineUpApp.controllers', []).
           if (data.active == 0 ) {
             document.getElementById("btn-join").disabled = true;
             document.getElementById("closed-message").classList.remove('hide');
+          } else {
+            document.getElementById("btn-join").disabled = false;
+            document.getElementById("closed-message").classList.add('hide');
           }
           // document.getElementById('qtracksImg').src="img/qtracks/" + $scope.queue.qid + ".png";
         }).
